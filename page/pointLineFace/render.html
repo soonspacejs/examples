@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script>
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true
+      },
+      events: {}
+    })
+
+    /**
+     * 点
+     */
+    var posForPoints = [
+      { x: 100, y: 190, z: 90 },
+      { x: -100, y: 90, z: -90 },
+      { x: 100, y: 90, z: -90 }
+    ]
+
+    ssp.renderPoints({
+      points: posForPoints,
+      id: 'points',
+      size: 20,
+      color: 'red'
+    })
+
+    console.log('points', ssp.getPainterById('points'))
+
+    /**
+     * 线
+     */
+    var posForLine = [
+      { x: 100, y: 190, z: 90 },
+      { x: -100, y: 90, z: -90 },
+      { x: 100, y: 90, z: -90 },
+      { x: 100, y: 190, z: 90 }
+    ]
+
+    var line = ssp.renderLine({
+      points: posForLine,
+      id: 'line',
+      name: 'line',
+      color: 'green'
+    })
+
+    console.log('line', ssp.getPainterById('line'))
+
+    /**
+     * 面
+     */
+    var posForFace = [
+      { x: 0, y: 90, z: 0 },
+      { x: 50, y: 90, z: 0 },
+      { x: 80, y: 90, z: -30 },
+      { x: 30, y: 90, z: -100 },
+      { x: 0, y: 90, z: -30 }
+    ]
+
+    ssp.renderFace({
+      id: 'face',
+      points: posForFace,
+      opacity: 0.5,
+      color: 'yellow',
+    })
+
+    console.log('face', ssp.getPainterById('face'))
+
+    /**
+     * 围栏
+     */
+    var points = [
+      { x: 0, y: 90, z: 0 },
+      { x: 50, y: 90, z: 0 },
+      { x: 80, y: 90, z: -30 },
+      { x: 30, y: 90, z: -100 },
+      { x: 0, y: 90, z: -30 }
+    ]
+
+    const fence = ssp.renderFence({
+      id: 'fence',
+      points,
+      opacity: 0.5,
+      color: 'yellow',
+      height: 200
+    })
+
+    console.log('fence', fence)
+
+  </script>
+</body>
+
+</html>

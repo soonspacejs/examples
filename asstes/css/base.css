@@ -1,0 +1,74 @@
+* {
+  margin: 0;
+}
+
+html,
+body,
+#view,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+input[type='color'] {
+  padding: 0;
+}
+
+input[type='file'] {
+  width: 200px;
+}
+
+button {
+  border: none;
+  user-select: none;
+  min-width: 120px;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+  font-size: 12px;
+  height: 24px;
+  line-height: 24px;
+}
+
+button:hover{
+  background-color: #444;
+}
+button:active{
+  background-color: #3f3f3f;
+}
+button:focus{
+  outline: none !important;
+}
+
+#view,
+#app {
+  position: absolute;
+}
+
+.progress-container {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: table;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.progress-warp {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.ant-progress-text {
+  color: #fff;
+}
+
+/* ::-webkit-scrollbar {
+  width: 12px;
+  background-color: #000c17;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #012a51;
+  border-radius: 4px;
+} */

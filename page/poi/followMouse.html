@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+
+  <body>
+
+    <div id="view"></div>
+
+    <script src="../../sdk/index.js"></script>
+    <script src="../../../package/soon-gui/index.js"></script>
+
+    <script>
+
+      let targetPoi = null
+      let followMouse = null
+
+      const ssp = new SoonSpace({
+        el: '#view',
+        option: {
+        },
+        events: {
+          poiClick(poi) {
+            console.log(poi)
+            targetPoi = poi
+          }
+        }
+      })
+
+      /**
+       * createPoi
+       */
+      const poi0 = ssp.createPoi({
+        type: '3D',
+        id: "icon1",
+        name: "icon1",
+        iconUrl: "../../asstes/img/poi/icon1.png",
+        level: 1000,
+        position: {
+          x: 0,
+          y: 100,
+          z: 0
+        },
+        scale: {
+          width: 1,
+          height: 1
+        }
+      });
+
+      const poi1 = ssp.createPoi({
+        type: '3D',
+        id: "icon1",
+        name: "icon1",
+        iconUrl: "../../asstes/img/poi/icon1.png",
+        level: 1000,
+        position: {
+          x: 0,
+          y: 30,
+          z: 0
+        },
+        scale: {
+          width: 1,
+          height: 1
+        }
+      });
+
+
+
+
+      const ground = ssp.createGround({
+        imgUrl: '../../asstes/img/ground/001.jpg',
+        width: 500,
+        height: 300,
+        position: { x: 0, y: 0, z: 0 }
+      })
+
+      const gui = new GUI({
+        el: "#view"
+      });
+
+      gui.addButton({
+        text: "移动Poi",
+        onClick() {
+          if (targetPoi) {
+            followMouse = ssp.followMouse(targetPoi);
+
+            function followMouseEnd(e) {
+              console.log(e.object);
+            }
+
+            // 监听移动结束
+            followMouse.addEventListener("end", followMouseEnd, false);
+          } else alert("请先选中poi");
+        }
+      });
+
+      gui.addButton({
+        text: "撤销移动操作",
+        onClick() {
+          if (followMouse) {
+            followMouse.detach();
+            followMouse = null;
+          } else alert("请先开始移动poi！");
+        }
+      });
+
+
+    </script>
+  </body>
+
+</html>

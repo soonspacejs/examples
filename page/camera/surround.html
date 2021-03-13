@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    let lastEnd = true
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true,
+        showInfo: true
+      },
+      events: {}
+    })
+
+    const poi = ssp.createPoi({
+      id: "icon1",
+      name: "icon1",
+      iconUrl: "../../asstes/img/poi/icon1.png",
+      position: {
+        x: 800,
+        y: 10,
+        z: 800
+      }
+    });
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '围绕一个点环绕',
+      onClick() {
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        ssp.surroundOnTarget({ x: 0, y: 0, z: 0 }, { speed: 5 })
+          .then(() => lastEnd = true)
+      }
+    })
+
+    gui.addButton({
+      text: '围绕一个对象环绕',
+      onClick() {
+
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        ssp.surroundOnObject(poi)
+          .then(() => lastEnd = true)
+
+      }
+    })
+
+  </script>
+</body>
+
+</html>

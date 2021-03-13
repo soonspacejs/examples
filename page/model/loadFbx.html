@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../node_modules/dat.gui/build/dat.gui.module.js'
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+      },
+      events: {}
+    })
+
+    let model
+
+    ssp.loadModel({
+      id: 'firsFbxGroup',
+      url: '../../asstes/model/Fbx/dt/DTdh.fbx',
+      position: { x: 0, y: 0, z: 40 },
+      scale: { x: 20, y: 20, z: 20 },
+      onClick() {
+        console.log('model self click', this)
+      },
+      onLoad() {
+        console.log('onLoad', this)
+      }
+    })
+      .then(fbx => {
+        model = fbx
+        ssp.flyToObj(fbx, 'leftTop')
+      })
+
+    const param = {
+      '模型动画': false
+    }
+    const gui = new GUI();
+
+    gui.add(param, '模型动画').onChange(function (check) {
+      if (check) ssp.playModelAnimation(model, 0)
+      else ssp.stopModelAnimation(model, 0)
+    })
+
+  </script>
+</body>
+
+</html>

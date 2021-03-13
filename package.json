@@ -1,0 +1,18 @@
+{
+  "name": "soonspacejs-example",
+  "version": "1.0.0",
+  "description": "![logo](http://www.xwbuilders.com:9018/soonspacejs/Docs/logo/logo_all.jpg)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "serve": "serve ./"
+  },
+  "author": "xuek",
+  "license": "ISC",
+  "dependencies": {
+    "dat.gui": "^0.7.7",
+    "serve": "^11.3.2"
+  }
+}

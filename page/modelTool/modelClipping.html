@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {},
+      events: {}
+    })
+
+    const THREE = ssp.viewport.THREE
+    let model1, model2, plane;
+
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+    })
+      .then(model => {
+        model1 = model
+        return ssp.cloneSbm(model, { id: 'cloneFloor' })
+      })
+
+      // .then(model => {
+
+      //   model2 = model
+
+      //   ssp.flyMainViewpoint()
+
+      //   plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -3000)
+      //   const help = new THREE.PlaneHelper(plane, 50000, 'rgb(42, 87, 166)')
+      //   ssp.addObject(help, ssp.manager.helperManager.scene)
+
+      //   ssp.opacityShow(model2, { color: 'rgb(42, 87, 166)', opacity: 1 })
+
+      //   ssp.modelClipping(model1, {
+      //     axis: 'y',
+      //     position: -3000,
+      //     isForward: false
+      //   })
+
+      //   ssp.modelClipping(model2, {
+      //     axis: 'y',
+      //     position: 3000
+      //   })
+
+
+      // })
+
+    // const gui = new GUI({
+    //   el: '#view'
+    // })
+
+    // gui.addRange({
+    //   label: '淹没高度:',
+    //   value: 3000,
+    //   min: 0,
+    //   max: 3000,
+    //   unit: 'cm',
+    //   onInput(e) {
+
+    //     plane.constant = -Number(e.target.value)
+
+    //     ssp.removeModelClipping(model1, 'y')
+    //     ssp.modelClipping(model1, {
+    //       axis: 'y',
+    //       position: -Number(e.target.value),
+    //       isForward: false
+    //     })
+
+    //     ssp.removeModelClipping(model2, 'y')
+    //     ssp.modelClipping(model2, {
+    //       axis: 'y',
+    //       position: Number(e.target.value)
+    //     })
+
+    //   }
+    // })
+
+  </script>
+</body>
+
+</html>

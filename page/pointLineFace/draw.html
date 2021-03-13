@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: false
+      },
+      events: {}
+    })
+
+    ssp.createGround({
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 500,
+      height: 300,
+      position: { x: 0, y: 0, z: 0 }
+    })
+
+    const gui = new GUI({
+      text: '#view'
+    })
+
+    gui.addButton({
+      text: '绘制点',
+      onClick() {
+        ssp.drawPoint({
+          id: 'drawPoint',
+          size: 20,
+          color: 'green'
+        })
+          .then(res => console.log(res))
+      }
+    })
+
+    gui.addButton({
+      text: '绘制线',
+      onClick() {
+        ssp.drawLine({
+          id: 'drawLine',
+          color: 'red'
+        })
+          .then(res => console.log(res))
+      }
+    })
+
+    gui.addButton({
+      text: '绘制面',
+      onClick() {
+        ssp.drawFace({
+          id: 'drawFace',
+          color: 'yellow'
+        })
+          .then(res => console.log('drawFace', res))
+      }
+    })
+
+    gui.addButton({
+      text: '绘制围栏',
+      onClick() {
+        ssp.drawFence({
+          id: 'drawFence',
+          color: 'violet',
+          height: 200,
+          offsetY: 10
+        })
+          .then(res => console.log(res))
+      }
+    })
+
+  </script>
+</body>
+
+</html>

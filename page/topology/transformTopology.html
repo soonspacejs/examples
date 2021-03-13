@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script src="../../sdk/transform-controls.js"></script>
+  <script>
+
+    let gmlObj, transformControls;
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true
+      },
+      events: {}
+    })
+
+    transformControls = ssp.install(TransformControls)
+
+    ssp.loadXml({ id: 'hzl' }, '../../asstes/model/sbm/hzl/hzl.xml')
+
+      .then(() => ssp.loadGml({ id: 'gml' }, '../../asstes/model/sbm/hzl/hzl.gml'))
+      .then(gml => {
+
+        gmlObj = gml
+
+        return ssp.flyMainViewpoint()
+
+      })
+      .then(() => {
+         transformControls.start({
+          object: gmlObj,
+          mode: 'translate',
+        })
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '移动',
+      onClick() {
+        transformControls.changeMode('translate')
+      }
+    })
+
+    gui.addButton({
+      text: '旋转',
+      onClick() {
+        transformControls.changeMode('rotate')
+      }
+    })
+
+    gui.addButton({
+      text: '缩放',
+      onClick() {
+        transformControls.changeMode('scale')
+      }
+    })
+
+    gui.addButton({
+      text: '打印 Gml 对象',
+      onClick() {
+        console.log(gmlObj)
+      }
+    })
+
+  </script>
+</body>
+
+</html>

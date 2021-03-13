@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    let model = null
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+
+      },
+      events: {
+
+      }
+    })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '升',
+      onClick() {
+        ssp.animation(
+          // source
+          model.scale,
+          // target
+          {
+            x: model.scale.x,
+            y: model.scale.y,
+            z: model.scale.z * 0.05
+          },
+          // option
+          {
+            delay: 1000
+          }
+        )
+
+      }
+    })
+
+    gui.addButton({
+      text: '降',
+      onClick() {
+        ssp.animation(
+          // source
+          model.scale,
+          // target
+          {
+            x: model.scale.x,
+            y: model.scale.y,
+            z: model.scale.z * 20
+          },
+          // option
+          {
+            delay: 1000
+          }
+        )
+      }
+    })
+
+
+    const baseUrl = '../../asstes/model/sbm/juanlianmen'
+    ssp.loadSbm({
+      id: '1',
+      name: '1',
+      url: `${baseUrl}/juanlianmen.sbm`,
+      rotation: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0
+      }
+    })
+      .then(_model => {
+
+        model = _model
+
+        ssp.flyMainViewpoint()
+
+      })
+
+  </script>
+</body>
+
+</html>

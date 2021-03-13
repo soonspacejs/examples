@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=outline" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css" />
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+
+    let mode = "opacity"
+
+    const ssp = window.ssp = new SoonSpace({
+      el: "#view",
+      option: {
+        showInfo: true,
+      },
+      events: {
+        modelClick(param) {
+          const model = param.target;
+
+          console.log(model)
+
+          // opacity
+          if (mode === "opacity") {
+            ssp.opacityShow(model)
+          }
+          // highlight
+          else if (mode === "highlight") {
+            ssp.highlightShow(model, { color: "#0eb0c9", opacity: 0.5 });
+          }
+          // stroke
+          else if (mode === "stroke") {
+            ssp.strokeShow(model, {
+              isOpacityShow: true,
+              color: 0x46ebf7,
+              opacity: 0.2,
+              edgeColor: 0x00eeff,
+              edgeOpacity: 1,
+            });
+          }
+          // emissive
+          else if (mode === "emissive") {
+            ssp.emissiveShow(model, {
+              // 是否开始动画
+              isAnimation: true,
+              // 颜色
+              color: 0xff0000,
+              // 动画执行时间
+              duration: 1000,
+              // 关闭动画时的不透明度
+              opacity: 0.3,
+              // 开启动画时的最小不透明度
+              minOpacity: 0,
+              // 开启动画时的最大不透明度
+              maxOpacity: 1,
+            });
+          }
+        },
+      },
+    });
+
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+    })
+    ssp.loadSbm({
+      id: 'room_02',
+      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm',
+      position: {
+        x: 1500,
+        y: 0,
+        z: 0
+      }
+    })
+
+  </script>
+</body>
+
+</html>

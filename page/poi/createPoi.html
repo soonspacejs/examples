@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+  <script src="../../sdk/index.js"></script>
+  <script>
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true,
+        showInfo: false
+      },
+      events: {}
+    })
+
+    /**
+     * createPoi
+     */
+    const poi = ssp.createPoi({
+      id: "icon1",
+      name: "icon1",
+      iconUrl: "../../asstes/img/poi/WechatIMG709.png",
+      position: {
+        x: 0,
+        y: 10,
+        z: 0
+      },
+      level: {
+        max: 5000,
+        min: 10
+      },
+      scale: {
+        width: 5,
+        height: 5
+      },
+      text: {
+        scale: {
+          width: 2,
+          height: 2
+        }
+      },
+      line: {
+        color: 'red',
+        height: 50
+      },
+      point: {
+        color: 'blue',
+        size: 15
+      },
+      userData: {
+        name: 'xuekai',
+        age: 18,
+        sex: 1
+      }
+    });
+
+    console.log('createPoi', poi)
+
+    ssp.flyToObj(poi)
+
+    /**
+     * createPoiToGroup
+     */
+    const group = ssp.createPoiToGroup(
+      {
+        id: 'firstPoiGroup'
+      },
+      {
+        id: "icon2",
+        name: "icon2",
+        iconUrl: "../../asstes/img/poi/camera_poi_512.png",
+        position: {
+          x: 100,
+          y: 100,
+          z: 100
+        },
+        scale: {
+          width: 2,
+          height: 2
+        },
+      }
+    );
+
+    console.log('createPoiToGroup', group)
+
+  </script>
+</body>
+
+</html>

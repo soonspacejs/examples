@@ -1,0 +1,36 @@
+.right-top-toolBax {
+  position: absolute;
+  padding: 16px 32px;
+  background-color: rgba(0, 0, 0, .2);
+  top: 0;
+  right: 0;
+  z-index: 10;
+  font-size: 14px;
+}
+
+.line + .line{
+  margin-top: 12px;
+}
+
+.line-key {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  text-align: right;
+  color: #ccc;
+  padding-right: 12px;
+}
+
+.line-val {
+  display: inline-block;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+

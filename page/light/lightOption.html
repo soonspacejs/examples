@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    let ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: false
+      },
+      events: {}
+    })
+
+    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
+    const sbmsInfo = [
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
+      },
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_1F_1.sbm`,
+      },
+      {
+        id: '2F',
+        name: '2F',
+        url: `${baseUrl}/yingtaidasha_2F_2.sbm`,
+      },
+      {
+        id: '3F',
+        name: '3F',
+        url: `${baseUrl}/yingtaidasha_3F_3.sbm`,
+      },
+      {
+        id: '4F',
+        name: '4F',
+        url: `${baseUrl}/yingtaidasha_4F_4.sbm`,
+      },
+      {
+        id: '5F',
+        name: '5F',
+        url: `${baseUrl}/yingtaidasha_5F_5.sbm`,
+      },
+      {
+        id: '6F',
+        name: '6F',
+        url: `${baseUrl}/yingtaidasha_6F_6.sbm`,
+      },
+      {
+        id: '7F',
+        name: '7F',
+        url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
+      }
+      // ...
+    ]
+
+    ssp.loadSbm(sbmsInfo)
+      .then(group => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addColor({
+      label: '环境光:',
+      onChange(e) {
+        ssp.getLightById('defaultAmbientLight').color.set(e.target.value)
+      }
+    })
+
+
+    gui.addColor({
+      label: '平行光:',
+      onChange(e) {
+        ssp.getLightById('defaultDirectionalLight').color.set(e.target.value)
+      }
+    })
+
+    let defaultDirectionalLightTransform = null
+
+    gui.addButton({
+      text: '修改平行光位置',
+      onClick(e) {
+        if (!defaultDirectionalLightTransform) {
+          defaultDirectionalLightTransform = ssp.createTransform('defaultDirectionalLight', {
+            object: ssp.getLightById("defaultDirectionalLight")
+          })
+        } else {
+          defaultDirectionalLightTransform.close()
+          defaultDirectionalLightTransform = null
+        }
+      }
+    })
+
+  </script>
+</body>
+
+</html>

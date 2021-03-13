@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+  <link rel="stylesheet" href="../../asstes/css/tool.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    let s = 1.6
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {},
+      events: {
+        modelClick(e) {
+          console.log(e)
+        }
+      }
+    })
+
+    ssp.loadSbm([
+      {
+        id: '1',
+        url: '../../asstes/model/sbm/BOX/BOX_1F_0.sbm',
+      },
+      {
+        id: '2',
+        url: '../../asstes/model/sbm/oneroom/oneroom_1F_0.sbm',
+        position: {
+          x: 500,
+          y: 0,
+          z: 0
+        }
+      },
+      {
+        id: '3',
+        url: '../../asstes/model/sbm/shafa1/shafa1_1F_1F.sbm',
+        position: {
+          x: -500,
+          y: 0,
+          z: 0
+        }
+      },
+      {
+        id: '4',
+        url: '../../asstes/model/sbm/piples/排管图03_1F_0.sbm',
+        position: {
+          x: -1500,
+          y: 0,
+          z: 0
+        }
+      },
+      {
+        id: '5',
+        url: '../../asstes/model/sbm/xinglongzhan/xinglongzhan.sbm',
+        position: {
+          x: -2000,
+          y: 0,
+          z: 0
+        },
+        rotation: {
+          x: Math.PI / 2,
+          y: 0,
+          z: 0
+        }
+      },
+ 
+    ])
+      .then(() => {
+
+        ssp.flyMainViewpoint()
+
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addInput({
+      label: 'fly 时拉远模型体积的倍数',
+      value: 1.6,
+      onInput(e) {
+        s = Number(e.target.value)
+      }
+    })
+
+  </script>
+</body>
+
+</html>

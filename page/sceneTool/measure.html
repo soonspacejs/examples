@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: false,
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.createGround({
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 500,
+      height: 300,
+      position: { x: 0, y: 0, z: 0 }
+    })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '测量线',
+      onClick() {
+        ssp.measureLine({
+          id: 'measureLine',
+          color: 'red',
+          onSelectPoint: data => console.log('measureLine onSelectPoint', data)
+        })
+          .then(res => {
+            console.log('measureLine stop', res)
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '测量高度',
+      onClick() {
+        ssp.measureHeight({
+          id: 'measureHeight',
+          color: 'red',
+          onSelectPoint: data => console.log('measureHeight onSelectPoint', data)
+        })
+          .then(res => {
+            console.log('measureHeight stop', res)
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '测量面积',
+      onClick() {
+        ssp.measureFace({
+          id: 'measureFace',
+          color: 'yellow',
+          opacity: 0.5,
+          onSelectPoint: data => console.log('measureFace onSelectPoint', data)
+        })
+          .then(res => {
+            console.log('measureFace stop', res)
+          })
+      }
+    })
+
+  </script>
+</body>
+
+</html>

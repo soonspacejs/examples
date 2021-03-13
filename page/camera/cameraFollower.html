@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    let car
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: {
+          size: 20000,
+          divisions: 200,
+          color: '#fff'
+        },
+      },
+      events: {}
+    })
+
+    const modelInfo = {
+      id: 'car',
+      url: '../../asstes/model/json/hmCar.json',
+      scale: {
+        x: 10,
+        y: 10,
+        z: 10
+      }
+    }
+
+    ssp.loadModel(modelInfo)
+      .then(model => {
+        car = model
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '车辆行驶',
+      onClick() {
+        car.setMove(
+          {
+            x: -10000,
+            y: 0,
+            z: 0
+          },
+          {
+            duration: 150000
+          }
+        )
+      }
+    })
+
+    gui.addButton({
+      text: '相机跟随',
+      onClick() {
+        ssp.startCameraFollower(car, {
+          offset: {
+            x: 0.1,
+            y: 1.7,
+            z: 0.7
+          },
+          rotation: {
+            x: 0,
+            y: Math.PI / 2,
+            z: 0
+          }
+        })
+      }
+    })
+
+    gui.addButton({
+      text: '取消跟随',
+      onClick() {
+        ssp.stopCameraFollower()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

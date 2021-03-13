@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+      },
+      events: {
+        selectPosition(position) {
+          console.log('selectPosition', position)
+        },
+        modelClick(param) {
+          console.log(param)
+        }
+      }
+    })
+
+    const xmlUrl = '../../asstes/model/sbm/hzl/hzl.xml'
+    ssp.loadXml(
+      {
+        id: 'hzlGroup',
+        position: {
+          x: 1000,
+          y: 1000,
+          z: 1000
+        }
+      },
+      xmlUrl
+    )
+      .then(model => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '开始第一人称',
+      onClick() {
+        ssp.startFirstPerson({
+          startPosition: {
+            x: -35,
+            y: 1000,
+            z: 2515
+          },
+          moveSpeed: 3.0,
+          rotationSpeed: 1.0,
+          jumpSpeed: 3.0
+        })
+      }
+    })
+
+    gui.addButton({
+      text: '关闭第一人称',
+      onClick() {
+        ssp.stopFirstPerson()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

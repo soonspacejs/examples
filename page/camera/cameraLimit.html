@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+  <link rel="stylesheet" href="../../asstes/css/tool.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: false
+      },
+      events: {}
+    })
+
+    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
+    const sbmsInfo = [
+      {
+        id: 'B1_0',
+        name: 'B1',
+        url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
+        position: { x: 0, y: 0, z: 0 },
+        userData: {
+          modelCode: 'njnkjnkjnjdnkjnkjnm'
+        }
+      },
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_1F_1.sbm`,
+        userData: {
+          aaaaaaa: 'a'
+        }
+      },
+      {
+        id: '2F',
+        name: '2F',
+        url: `${baseUrl}/yingtaidasha_2F_2.sbm`,
+      },
+      {
+        id: '3F',
+        name: '3F',
+        url: `${baseUrl}/yingtaidasha_3F_3.sbm`,
+        userData: {
+          data: {
+            age: 17
+          }
+        }
+      },
+      {
+        id: '4F',
+        name: '4F',
+        url: `${baseUrl}/yingtaidasha_4F_4.sbm`,
+        userData: {
+          data: {
+            age: 18
+          }
+        }
+      },
+      {
+        id: '5F',
+        name: '5F',
+        url: `${baseUrl}/yingtaidasha_5F_5.sbm`,
+        userData: {
+          data: {
+            sex: '男'
+          }
+        }
+      },
+      {
+        id: '6F',
+        name: '6F',
+        url: `${baseUrl}/yingtaidasha_6F_6.sbm`,
+      },
+      {
+        id: '7F',
+        name: '7F',
+        url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
+      }
+    ]
+
+    ssp.loadSbm(sbmsInfo)
+      .then(models => {
+        ssp.flyMainViewpoint()
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addTitle({
+      text: '基础'
+    })
+
+    gui.addCheckBox({
+      label: '开始控制器',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enabled = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '以拾取点交互',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enabledPickupPosition = e.target.checked
+      }
+    })
+
+    gui.addSelect({
+      label: '交互中心点模式',
+      options: [
+        {
+          label: '场景中心点',
+          value: 'scene'
+        },
+        {
+          label: '屏幕中心点',
+          value: 'dom'
+        }
+      ],
+      onChange(e) {
+        ssp.viewport.controls.centerPositionType = e.target.value
+      }
+    })
+
+    gui.addTitle({
+      text: '缩放'
+    })
+
+    gui.addCheckBox({
+      label: '相机缩放',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enableZoom = e.target.checked
+      }
+    })
+
+    gui.addRange({
+      label: '缩放速度:',
+      max: 5,
+      min: 0.1,
+      value: 1,
+      step: 0.1,
+      onInput(e) {
+        ssp.viewport.controls.zoomSpeed = e.target.value
+      }
+    })
+
+    gui.addRange({
+      label: '缩放最大视距:',
+      max: 300000,
+      min: 100,
+      value: 300000,
+      step: 100,
+      onInput(e) {
+        ssp.viewport.controls.zoomMaxDistance = e.target.value
+      }
+    })
+
+    gui.addRange({
+      label: '缩放单步最小视距:',
+      max: 10,
+      min: 1,
+      value: 1,
+      step: 1,
+      onInput(e) {
+        ssp.viewport.controls.zoomMinStepDistance = e.target.value
+      }
+    })
+
+    gui.addRange({
+      label: '缩放单步最大视距:',
+      max: 50000,
+      min: 1000,
+      value: 20000,
+      step: 1000,
+      onInput(e) {
+        ssp.viewport.controls.zoomMaxStepDistance = e.target.value
+      }
+    })
+
+    gui.addTitle({
+      text: '移动'
+    })
+
+    gui.addCheckBox({
+      label: '相机移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePan = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机屏幕水平移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePanX = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机屏幕垂直移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePanY = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机空间 X轴 移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePanAxisX = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机空间 Y轴 移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePanAxisY = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机空间 Z轴 移动',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enablePanAxisZ = e.target.checked
+      }
+    })
+
+    gui.addTitle({
+      text: '旋转'
+    })
+
+    gui.addCheckBox({
+      label: '相机旋转',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enableRotate = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机屏幕水平旋转',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enableRotateX = e.target.checked
+      }
+    })
+
+    gui.addCheckBox({
+      label: '相机屏幕垂直旋转',
+      checked: true,
+      onChange(e) {
+        ssp.viewport.controls.enableRotateY = e.target.checked
+      }
+    })
+
+    gui.addRange({
+      label: '旋转速度:',
+      max: 2,
+      min: 0.1,
+      value: 0.75,
+      step: 0.01,
+      onInput(e) {
+        ssp.viewport.controls.rotateSpeed = e.target.value
+      }
+    })
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+  <script src="../../sdk/index.js"></script>
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        hoverEnabled: false
+      },
+      events: {
+        sceneClick(param) {
+
+          console.log('sceneClick', param)
+
+        },
+        modelClick(param) {
+
+          console.log('modelClick', param)
+
+        },
+        modelRightClick(param) {
+
+          console.log('modelRightClick', param)
+
+        },
+        modelDblClick(param) {
+
+          console.log('modelDblClick', param)
+
+        },
+        modelHover(param) {
+
+          console.log('modelHover', param)
+
+        },
+        poiClick(poi) {
+
+          console.log('poiClick', poi)
+
+        },
+        poiRightClick(poi) {
+
+          console.log('poiRightClick', poi)
+
+        },
+        poiDblClick(poi) {
+
+          console.log('poiDblClick', poi)
+
+        },
+        poiHover(poi) {
+
+          // console.log('poiHover', poi)
+
+        },
+        selectPosition(position) {
+
+          // console.log('selectPosition', position)
+
+        }
+      }
+
+    })
+
+    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
+    const sbmsInfo = [
+      {
+        id: 'B1',
+        name: 'B1',
+        url: `${baseUrl}/yingtaidasha_B1_0.sbm`
+      },
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_1F_1.sbm`
+      },
+      {
+        id: '2F',
+        name: '2F',
+        url: `${baseUrl}/yingtaidasha_2F_2.sbm`
+      },
+      {
+        id: '3F',
+        name: '3F',
+        url: `${baseUrl}/yingtaidasha_3F_3.sbm`
+      },
+      {
+        id: '4F',
+        name: '4F',
+        url: `${baseUrl}/yingtaidasha_4F_4.sbm`
+      },
+      {
+        id: '5F',
+        name: '5F',
+        url: `${baseUrl}/yingtaidasha_5F_5.sbm`
+      },
+      {
+        id: '6F',
+        name: '6F',
+        url: `${baseUrl}/yingtaidasha_6F_6.sbm`
+      },
+      {
+        id: '7F',
+        name: '7F',
+        url: `${baseUrl}/yingtaidasha_7F_7.sbm`
+      }
+      // ...
+    ]
+
+    ssp.loadSbm(sbmsInfo)
+
+    ssp.createPoi({
+      id: "icon1",
+      iconUrl: "../../asstes/img/poi/WechatIMG709.png",
+      position: {
+        x: 0,
+        y: 100,
+        z: 0
+      },
+      scale: {
+        width: 10,
+        height: 10
+      }
+    });
+
+  </script>
+</body>
+
+</html>

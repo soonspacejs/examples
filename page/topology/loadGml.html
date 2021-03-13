@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true
+      },
+      events: {}
+    })
+
+    ssp.loadXml({ id: 'hzl' }, '../../asstes/model/sbm/hzl/hzl.xml')
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '加载 Gml',
+      onClick() {
+        ssp.loadGml({ id: 'gml' }, '../../asstes/model/sbm/hzl/hzl.gml')
+          .then(gml => {
+            console.log('gml', gml)
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '清空 Gml',
+      onClick() {
+        ssp.clearTopology()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

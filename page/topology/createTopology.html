@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script src="../../sdk/patrol-controls.js"></script>
+
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true
+      },
+      events: {
+        selectPosition(pos) {
+          console.log(pos)
+        }
+      }
+    })
+
+    ssp.loadXml({ id: 'hzl' }, '../../asstes/model/sbm/hzl/hzl.xml')
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    const pointColors = [0xff0000, 0x00ff00, 0x0000ff]
+    const topologyColors = [0x0000ff, 0xff0000, 0x00ff00]
+
+    const patrolControls = ssp.install(PatrolControls)
+
+    gui.addButton({
+      text: '创建动态路径',
+      onClick() {
+
+        const group = ssp.createTopologyToGroup(
+          {
+            id: 'topologyGroup'
+          },
+          [
+            {
+              x: 0,
+              y: 10,
+              z: 4000,
+            },
+            {
+              x: 0,
+              y: 10,
+              z: 6000,
+            },
+            {
+              x: 1000,
+              y: 10,
+              z: 6000,
+            },
+            {
+              x: 1000,
+              y: 10,
+              z: 4000,
+            },
+            {
+              x: 0,
+              y: 10,
+              z: 4000,
+            },
+          ],
+          {
+            // 指向箭头的图片路径
+            imgUrl: '../../asstes/img/topology/1.png',
+            // 路径宽度（节点和管道的直径）
+            lineWidth: 50,
+            // 节点显示
+            pointVisible: false,
+            // 节点颜色
+            pointColors: ['red'],
+            // 管道显示
+            pipeVisible: false,
+            // 管道颜色
+            pipeColor: 0x00ff00,
+            // 管道不透明度
+            pipeOpacity: 0.3,
+            // 箭头动画
+            animation: /* true */ {
+              duration: 500
+            },
+            // 没有图片时纯色路径的颜色
+            topologyColors: ['red', 'green']
+          }
+        )
+
+        ssp.flyToObj(group, 'top')
+
+      }
+    })
+
+    let manualTopology = null
+    const manualPoints = []
+
+    function manualCreateTopology(position) {
+
+      manualPoints.push(position.setY(position.y + 10))
+
+      if (manualTopology) {
+        ssp.removeTopologyGroupById(manualTopology.sid)
+        manualTopology = null
+      }
+
+      manualTopology = ssp.createTopologyToGroup(
+        {
+          id: 'manualCreateTopology'
+        },
+        manualPoints,
+        {
+          pointColors,
+          topologyColors
+        }
+      )
+
+    }
+
+    gui.addButton({
+      text: '手动生成路径',
+      onClick() {
+
+        ssp.viewport.signals.selectPosition.add(manualCreateTopology)
+
+      }
+    })
+
+    gui.addButton({
+      text: '停止手动生成路径',
+      onClick() {
+
+        ssp.viewport.signals.selectPosition.remove(manualCreateTopology)
+
+      }
+    })
+
+    gui.addButton({
+      text: '清空 Gml',
+      onClick() {
+        ssp.clearTopology()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

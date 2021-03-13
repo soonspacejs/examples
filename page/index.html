@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../asstes/css/base.css">
+  <link rel="stylesheet" href="../lib/antd-vue/antd.min.css">
+  <style>
+    #layout-custom-trigger {
+      height: 100%;
+    }
+
+    .trigger {
+      font-size: 18px;
+      line-height: 64px;
+      padding: 0 24px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .trigger:hover {
+      color: #1890ff;
+    }
+
+    #code-button {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+
+      padding: 12px;
+      border-radius: 50%;
+      margin-bottom: 0px;
+
+      background-color: #FFF;
+      opacity: .9;
+      z-index: 999;
+
+      box-shadow: 0 0 4px rgba(0, 0, 0, .15);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script src="../lib/polyfill.min.js"></script>
+  <script src="../lib/vue/vue.min.js"></script>
+  <script src="../lib/antd-vue/antd.min.js"></script>
+  <script type="module">
+
+    import demoList from './demoList.js'
+
+    let hash = 'start_helloWorld'
+
+    var app = new Vue({
+      el: '#app',
+      template:
+        `
+<div id="app">
+  <a-layout id="layout-custom-trigger">
+    <a-layout-sider :style="{ overflow: 'auto', height: '100%', left: 0 }" :trigger="null" collapsible v-model="collapsed">
+      <a-menu
+        ref="navMenu"
+        mode="inline"
+        theme="dark"
+        :openKeys.sync="openKeys"
+        v-model="selectedKeys"
+        :inlineCollapsed="collapsed"
+        @click="menuItemClick"
+      >
+        <a-sub-menu v-for="item in demoList" :key="item.key">
+          <span slot="title"
+            ><a-icon :type="item.icon" />
+            <span>{{ item.title }}</span>
+          </span>
+          <template v-if="item.children">
+            <a-menu-item
+              v-for="childItem in item.children"
+              :key="childItem.demoLink"
+              >{{ childItem.title }}
+            </a-menu-item>
+          </template>
+        </a-sub-menu>
+      </a-menu>
+    </a-layout-sider>
+    <a-layout>
+      <a-layout-header style="background: #fff; padding: 0;">
+        <a-icon
+          class="trigger"
+          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+          @click="
+            () => {
+              collapsed = !collapsed;
+            }
+          "
+        />
+        <a-button style="float: right; top: 15px; right: 24px;"><a target="_blank" href="http://www.xwbuilders.com:9018/soonspacejs/Docs/">文档</a></a-button>
+      </a-layout-header>
+      <a-layout-content
+        :style="{
+          background: '#fff',
+          minHeight: '280px'
+        }"
+      >
+        <iframe
+          height="100%"
+          id="sspIframe"
+          width="100%"
+          style="border: none"
+          :src="iframeLink"
+          allowfullscreen allowvr onmousewheel=""
+        ></iframe>
+        <a id="code-button" target="_blank" :href="codeBtnHref"><img src="./close_black.svg"></a>
+      </a-layout-content>
+    </a-layout>
+  </a-layout>
+</div>
+`,
+      data: {
+        collapsed: false,
+        iframeLink: null,
+        demoList,
+        openKeys: [],
+        selectedKeys: []
+      },
+      computed: {
+        codeBtnHref: function () {
+          return "https://github.com/xuekai-china/xuekai-china.github.io/tree/master/soonspacejs/example/page/" + this.iframeLink
+        }
+      },
+      methods: {
+        _initLoadPage() {
+
+          const winHash = window.location.hash
+
+          if (winHash) hash = winHash.split('#')[1]
+
+          const hashArr = hash.split('_')
+          const iframeLink = `./${hashArr.join('/')}.html`
+
+          this.selectedKeys = [iframeLink]
+          this.openKeys = [hashArr[0]]
+
+          this.$nextTick(() => {
+
+            this.iframeLink = iframeLink
+
+          })
+
+        },
+        menuItemClick({ key }) {
+
+          this.$nextTick(() => {
+
+            const keyArr = key.split('/');
+            const hash = `${keyArr[1]}_${keyArr[2]}`.split('.')[0];
+
+            window.location.hash = hash;
+
+            this.iframeLink = key;
+
+          })
+
+        }
+      },
+      mounted() {
+        this._initLoadPage()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

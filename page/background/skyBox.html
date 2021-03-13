@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {},
+      events: {}
+    })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addSelect({
+      label: '天空风格',
+      options: [
+        {
+          label: '风格一',
+          value: 'sunny'
+        },
+        {
+          label: '风格二',
+          value: 'blueSky'
+        },
+        {
+          label: '风格三',
+          value: 'clouds'
+        },
+        {
+          label: '风格四',
+          value: 'night'
+        },
+        {
+          label: '风格五',
+          value: 'rainy'
+        },
+        {
+          label: '风格六',
+          value: 'starry'
+        },
+        {
+          label: '风格七',
+          value: 'sun'
+        },
+      ],
+      onChange(e) {
+        ssp.setSkyBackground(`../../asstes/img/skybox/${e.target.value}/`, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+      }
+    })
+
+    ssp.setSkyBackground('../../asstes/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+
+  </script>
+</body>
+
+</html>

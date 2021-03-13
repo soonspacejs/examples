@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+  <link rel="stylesheet" href="../../asstes/css/tool.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <div id="poiTemplate"
+    style="display: none; width: 160px; height: auto; padding: 8px; background-color: rgba(0, 0, 0, 0.6); color: #ccc;">
+    <h3 style="text-align: center;">标题</h3>
+    <div>
+      <label>数据一：</label>
+      <span>10</span>
+    </div>
+    <div>
+      <label>数据二：</label>
+      <span>20</span>
+    </div>
+    <div>
+      <label>数据三：</label>
+      <span>30</span>
+    </div>
+  </div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    let lastEnd = true
+    let model = null
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showGrid: true
+      },
+      events: {}
+    })
+
+    const poi = ssp.createPoi({
+      id: "icon1",
+      name: "icon1",
+      iconUrl: "../../asstes/img/poi/icon1.png",
+      position: {
+        x: 0,
+        y: 100,
+        z: 0
+      },
+      scale: {
+        width: 1,
+        height: 1
+      }
+    });
+
+    ssp.loadModel({
+      id: 'firstJson',
+      url: '../../asstes/model/json/hmCar.json',
+      rotation: {
+        x: 0,
+        y: Math.PI / 2,
+        z: 0
+      },
+      position: {
+        x: 100,
+        y: 60,
+        z: -59
+      }
+    })
+      .then(res => model = res)
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '飞向主场景',
+      onClick() {
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        ssp.flyMainViewpoint()
+          .then(res => {
+            lastEnd = true
+
+            console.log('flyMainViewpoint done', res)
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '飞向一点',
+      onClick() {
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        // flyTo
+        ssp.flyTo(
+          {
+            x: 500,
+            y: 500,
+            z: 500
+          },
+          {
+            x: -1.561157219504513,
+            y: 1.3269478591684332,
+            z: 1.5608633816668858
+          },
+          {
+            duration: 2000
+          }
+        )
+          .then(res => {
+            lastEnd = true
+
+            console.log('flyTo done', res)
+
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '飞向 Poi',
+      onClick() {
+
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        // flyTo
+        ssp.flyToObj(
+          poi,
+          "front",
+          {
+            padding: 100,
+            duration: 2000
+          }
+        )
+          .then(res => {
+            lastEnd = true
+
+            console.log('flyToPoi done', res)
+          })
+      }
+    })
+
+    gui.addButton({
+      text: '飞向模型',
+      onClick() {
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        // flyTo
+        ssp.flyToObj(
+          model,
+          "current",
+          // "frontTop",
+          {
+            padding: 10,
+            duration: 2000
+          }
+        )
+          .then(res => {
+            lastEnd = true
+
+            console.log('flyToModel done', res)
+
+            const leftEl = document.getElementById('poiTemplate').cloneNode(true)
+            leftEl.style.left = '-200px'
+            leftEl.style.top = '-100px'
+
+            ssp.createPoiNode({
+              type: '2d',
+              id: 'leftPoiNode',
+              position: ssp.getObjectLabelPosRelativeToScreen(model),
+              element: leftEl
+            })
+
+            const rightEl = document.getElementById('poiTemplate').cloneNode(true)
+            rightEl.style.left = '200px'
+            rightEl.style.top = '100px'
+
+            ssp.createPoiNode({
+              type: '2d',
+              id: 'rightPoiNode',
+              position: ssp.getObjectLabelPosRelativeToScreen(model),
+              element: rightEl
+            })
+          })
+      }
+    })
+
+  </script>
+</body>
+
+</html>

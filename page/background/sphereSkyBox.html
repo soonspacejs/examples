@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {},
+      events: {}
+    })
+
+    ssp.setSphereSkyBackground('../../asstes/img/skybox/天空球3.jpg') 
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addSelect({
+      label: '天空风格',
+      options: [
+        {
+          label: '天空球3',
+          value: '天空球3'
+        },
+        {
+          label: '星空球2',
+          value: '星空球2'
+        },
+      ],
+      onChange(e) {
+        ssp.setSphereSkyBackground(`../../asstes/img/skybox/${e.target.value}.jpg`)
+      }
+    })
+    
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      optiona: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {
+        modelClick(e) {
+          console.log(e)
+        },
+        modelRightClick(e) {
+          console.log(e)
+        },
+        selectPosition(p) {
+          console.log(p)
+        }
+      }
+    })
+
+    ssp.loadSbm(
+      // sbmInfo
+      {
+        id: 'room_01',
+        url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+      },
+      // onProgress
+      progress => console.log(progress)
+    )
+      .then(models => {
+        ssp.flyMainViewpoint()
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+  </script>
+</body>
+
+</html>

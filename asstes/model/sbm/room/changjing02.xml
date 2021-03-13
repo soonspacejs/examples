@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>changjing02</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0.000000">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false"/>
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR,FACILITY</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\changjing02_1F_0.sbm" type="SBM"/>
+                <BoundingBox minimum="-1147.500000, -377.599487, -536.307251" maximum="1147.500000, 2121.000000, 594.959839"/>
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="2030925431" baseFloor="1" level="0.000000"/>
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="2030925431">
+                <Entity id="25" name="MERGED_0_1_Board_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="9" name="MERGED_0_AirconStand01/AirconStand01_01_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="10" name="MERGED_0_AirconStand01/AirconStand01_02_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="22" name="MERGED_0_AirconWall01/AirconWall01_01_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="23" name="MERGED_0_AirconWall01/AirconWall01_02_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="24" name="MERGED_0_CCTV_01/07-Default_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="26" name="MERGED_0_Cabinet02/Cabinet02_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="11" name="MERGED_0_Chair_CM01/Chair_CM0111_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="12" name="MERGED_0_Chair_CM01/Chair_CM0112_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="13" name="MERGED_0_Chair_CM01/Chair_CM0113_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="14" name="MERGED_0_Chair_CM01/Chair_CM0114_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="15" name="MERGED_0_Chair_CM01/Chair_CM0115_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="18" name="MERGED_0_DeskOffice_01/DeskOffice_01Gray_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="17" name="MERGED_0_DeskOffice_01/DeskOffice_01Green_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="16" name="MERGED_0_FireT/FireT_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="19" name="MERGED_0_Keyborad01/Keyborad01_01_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="20" name="MERGED_0_Keyborad01/Keyborad01_02_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="5" name="MERGED_0_LIBENT10_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="6" name="MERGED_0_LIBENT15_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="3" name="MERGED_0_LIBENT16_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="1" name="MERGED_0_LIBENT1_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="2" name="MERGED_0_LIBENT2_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="4" name="MERGED_0_LIBENT3_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="7" name="MERGED_0_LIBENT4_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="8" name="MERGED_0_LIBENT5_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="21" name="MERGED_0_PDP_003/Material#122_0" longname="" type="MERGED" visible="True"/>
+            </Entity>
+        </ObjectHierarchy>
+    <GLBFShells><GLBFShell><FileSource name=".\changjing02_1F_0.json" type="GLBF"/><BoundingBox/></GLBFShell></GLBFShells></Building>
+</Project>

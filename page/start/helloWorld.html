@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    
+    const ssp = new SoonSpace({
+      // 绑定场景的元素选择器
+      el: '#view',
+      // 初始配置项
+      options: {
+        // 背景色
+        background: {
+          color: 'black',
+          // img: '../../asstes/img/background/1.jpg',
+          // skyBox: {
+          //   dirPath: '../../asstes/img/skybox/sunny/',
+          //   fileNames: ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']
+          // },
+          alpha: false
+        },
+        // 是否显示网格
+        showGrid: true,
+        // 是否显示左下角的加载数量信息
+        showInfo: true
+      },
+      // 场景交互事件
+      events: {}
+    })
+
+  </script>
+</body>
+
+</html>

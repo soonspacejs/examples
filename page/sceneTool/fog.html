@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        fog: {
+          color: 0xcce0ff,
+          near: 50000,
+          far: 100000
+        }
+      },
+      events: {}
+    })
+
+    const ground = ssp.createGround({
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 50000,
+      height: 50000,
+      position: { x: 0, y: 0, z: 0 }
+    })
+
+    ssp.setSkyBackground('../../asstes/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+
+    ssp.flyMainViewpoint()
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    gui.addButton({
+      text: '开启雾化',
+      onClick() {
+        ssp.openSceneFog({
+          color: 0xcce0ff,
+          near: 50000,
+          far: 100000
+        })
+      }
+    })
+
+    gui.addButton({
+      text: '关闭雾化',
+      onClick() {
+        ssp.closeSceneFog()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script>
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+      },
+      events: {
+      }
+    })
+
+    const ground = ssp.createGround({
+      imgUrl: '../../asstes/img/ground/004.jpg',
+      width: 500,
+      height: 500,
+      opacity: 0.6,
+      position: { x: 0, y: 0, z: 0 },
+      repeat: { width: 10, height: 10 }
+    })
+
+    ssp.createPoi({
+      id: "icon1",
+      iconUrl: "../../asstes/img/poi/WechatIMG709.png",
+      position: {
+        x: 0,
+        y: 100,
+        z: 0
+      },
+    });
+
+  </script>
+</body>
+
+</html>

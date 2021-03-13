@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script>
+
+    let mode = '3D'
+
+    const gui = new GUI({
+      el: '#view',
+    })
+
+    gui.addButton({
+      text: '2D',
+      onClick() {
+        if(mode !== '2D') {
+          mode = '2D'
+          ssp.enable2DMode(true)
+        }
+      }
+    })
+
+    gui.addButton({
+      text: '3D',
+      onClick() {
+        console.log(mode)
+        if(mode !== '3D') {
+          mode = '3D'
+          ssp.enable2DMode(false)
+        }
+      }
+    })
+    
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showInfo: true
+      },
+      events: {}
+    })
+
+    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
+    const mapsUrl = `${baseUrl}/Maps/`
+    const sbmsInfo = [
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
+        mapsUrl
+      },
+      {
+        id: '1F',
+        name: '1F',
+        url: `${baseUrl}/yingtaidasha_1F_1.sbm`,
+        mapsUrl
+      },
+      {
+        id: '2F',
+        name: '2F',
+        url: `${baseUrl}/yingtaidasha_2F_2.sbm`,
+        mapsUrl
+      },
+      {
+        id: '3F',
+        name: '3F',
+        url: `${baseUrl}/yingtaidasha_3F_3.sbm`,
+        mapsUrl
+      },
+      {
+        id: '4F',
+        name: '4F',
+        url: `${baseUrl}/yingtaidasha_4F_4.sbm`,
+        mapsUrl
+      },
+      {
+        id: '5F',
+        name: '5F',
+        url: `${baseUrl}/yingtaidasha_5F_5.sbm`,
+        mapsUrl
+      },
+      {
+        id: '6F',
+        name: '6F',
+        url: `${baseUrl}/yingtaidasha_6F_6.sbm`,
+        mapsUrl
+      },
+      {
+        id: '7F',
+        name: '7F',
+        url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
+        mapsUrl
+      },
+      {
+        id: '7_1F',
+        name: '7F',
+        url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
+        mapsUrl
+      }
+      // ...
+    ]
+
+    ssp.loadSbm(sbmsInfo)
+
+    ssp.createPoi({
+      id: "icon1",
+      name: "icon1",
+      iconUrl: "../../asstes/img/poi/icon1.png",
+      position: {
+        x: 0,
+        y: 100,
+        z: 0
+      },
+      scale: {
+        width: 10,
+        height: 10
+      }
+    });
+
+  </script>
+</body>
+
+</html>

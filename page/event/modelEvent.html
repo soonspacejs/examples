@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script src="../../sdk/index.js"></script>
+  <script src="../../../package/soon-gui/index.js"></script>
+  <script src="https://unpkg.com/vconsole@3.3.4/dist/vconsole.min.js"></script>
+
+  <script>
+
+    // var vConsole = new VConsole();
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showInfo: false,
+        hoverEnabled: false
+      },
+      events: {
+        modelClick(param) {
+
+          console.log('Global modelClick event', param)
+          alert('Global modelClick event')
+
+        },
+        modelRightClick(param) {
+
+          console.log('Global modelClick event', param)
+          alert('Global modelClick event')
+
+        },
+        modelDblClick(param) {
+
+          console.log('Global modelDblClick event', param)
+          alert('Global modelDblClick event')
+
+        },
+        modelHover(param) {
+
+          console.log('Global modelHover event', param)
+          alert('Global modelHover event')
+
+        },
+        selectPosition(position) {
+
+          console.log('selectPosition', position)
+
+        }
+      }
+    })
+
+    const gui = new GUI({
+      el: '#view'
+    })
+
+    const clickCheck = gui.addCheckBox({
+      label: '点击事件传递'
+    })
+
+    const dbClickCheck = gui.addCheckBox({
+      label: '双击事件传递'
+    })
+
+    const rightClickCheck = gui.addCheckBox({
+      label: '右键点击事件传递'
+    })
+
+    // 样例模型服务地址
+    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
+    const sbmsInfo = {
+      id: 'B1',
+      name: 'B1',
+      url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
+      position: { x: 1000, y: 0, z: 1000 },
+      onClick() {
+
+        if (clickCheck.checked) this.eventPropagation()
+
+        console.log('Model self onClick', this)
+        alert('Model self onClick')
+
+        // test eval
+        eval('console.log("Model self onClick in eval", this)')
+
+      },
+      onDblClick() {
+
+        if (dbClickCheck.checked) this.eventPropagation()
+
+        console.log('Model self onDblClick', this)
+        alert('Model self onDblClick')
+
+      },
+      onRightClick() {
+
+        if (rightClickCheck.checked) this.eventPropagation()
+
+        console.log('Model self onRightClick', this)
+        alert('Model self onRightClick')
+
+      },
+      onLoad() {
+        console.log('Model loaded!', this)
+      }
+    }
+
+    ssp.loadSbm(sbmsInfo)
+      .then(model => {
+        ssp.flyToObj(model)
+      })
+
+  </script>
+</body>
+
+</html>

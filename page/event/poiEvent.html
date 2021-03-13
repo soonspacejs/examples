@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+  <script src="../../sdk/index.js"></script>
+  <script>
+    const ssp = new SoonSpace({
+      el: '#view',
+      option: {
+        showInfo: true,
+        hoverEnabled: false
+      },
+      events: {
+        poiClick(poi) {
+
+          console.log('global poiClick', poi)
+
+        },
+        poiRightClick(param) {
+
+          console.log('global poiRightClick', param)
+
+        },
+        poiDblClick(poi) {
+
+          console.log('global poiDblClick', poi)
+
+        }
+      }
+    })
+
+    const poi = ssp.createPoi({
+      id: "icon1",
+      name: "icon1icon1icon1",
+      iconUrl: "../../asstes/img/poi/icon1.png",
+      onClick() {
+        this.eventPropagation()
+
+        console.log('poi self onClick', this)
+
+      },
+      onDblClick() {
+        this.eventPropagation()
+
+        console.log('poi self onDblClick', this)
+      },
+      onRightClick() {
+        this.eventPropagation()
+
+        console.log('poi self onRightClick', this)
+      }
+    });
+
+    console.log(poi)
+
+    ssp.flyToObj(poi)
+
+  </script>
+</body>
+
+</html>
