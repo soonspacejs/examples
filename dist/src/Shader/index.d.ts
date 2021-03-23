@@ -1,1 +1,0 @@
-export { SweepingLightShader } from './SweepingLight';

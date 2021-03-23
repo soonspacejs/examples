@@ -14,6 +14,7 @@
 
   <script type="module">
     import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
     let mode = "opacity"
 
@@ -25,8 +26,6 @@
       events: {
         modelClick(param) {
           const model = param.target;
-
-          console.log(model)
 
           // opacity
           if (mode === "opacity") {
@@ -67,19 +66,57 @@
       },
     });
 
-    ssp.loadSbm({
-      id: 'room_01',
-      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
-    })
-    ssp.loadSbm({
-      id: 'room_02',
-      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm',
-      position: {
-        x: 1500,
-        y: 0,
-        z: 0
-      }
-    })
+    ssp.loadSbmToGroup(
+      {
+        id: 'group'
+      },
+      [
+        {
+          id: 'room_01',
+          url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+        },
+        {
+          id: 'room_02',
+          url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm',
+          position: {
+            x: 1500,
+            y: 0,
+            z: 0
+          }
+        }
+      ]
+    )
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI();
+
+    gui
+      .add({ '选中模式': mode }, '选中模式')
+      .options(['opacity', 'highlight', 'stroke', 'emissive'])
+      .onChange(val => {
+        mode = val
+      })
+
+    const claarFn = {
+      '清除透明': function () {
+        ssp.unOpacityShow()
+      },
+      '清除高亮': function () {
+        ssp.unHighlightShow()
+      },
+      '清除描边': function () {
+        ssp.unStrokeShow()
+      },
+      '清除自发光': function () {
+        ssp.unEmissiveShow()
+      },
+    }
+
+    for (let i in claarFn) {
+      gui.add(claarFn, i)
+    }
 
   </script>
 </body>

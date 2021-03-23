@@ -14,9 +14,9 @@
 
   <script type="module">
     import SoonSpace from '../../dist/index.js'
-    import { GUI } from '../../node_modules/dat.gui/build/dat.gui.module.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
       options: {
         showInfo: true,
