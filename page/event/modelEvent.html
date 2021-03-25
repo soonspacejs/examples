@@ -11,113 +11,74 @@
 
 <body>
   <div id="view"></div>
+  <div id="tip">鼠标点击交互后，在控制台查看输出信息。</div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-  <script src="https://unpkg.com/vconsole@3.3.4/dist/vconsole.min.js"></script>
-
-  <script>
-
-    // var vConsole = new VConsole();
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
     const ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
         showInfo: false,
-        hoverEnabled: false
+        hoverEnabled: true
       },
       events: {
         modelClick(param) {
-
-          console.log('Global modelClick event', param)
-          alert('Global modelClick event')
-
+          console.log('Global modelClick', param)
         },
         modelRightClick(param) {
-
-          console.log('Global modelClick event', param)
-          alert('Global modelClick event')
-
+          console.log('Global modelClick', param)
         },
         modelDblClick(param) {
-
-          console.log('Global modelDblClick event', param)
-          alert('Global modelDblClick event')
-
+          console.log('Global modelDblClick', param)
         },
         modelHover(param) {
-
-          console.log('Global modelHover event', param)
-          alert('Global modelHover event')
-
+          console.log('Global modelHover', param)
         },
-        selectPosition(position) {
-
-          console.log('selectPosition', position)
-
+        modelUnHover(param) {
+          console.log('Global modelUnHover', param)
         }
       }
     })
 
-    const gui = new GUI({
-      el: '#view'
-    })
+    const param = {
+      点击冒泡: false,
+      右键冒泡: false,
+      双击冒泡: false,
+      悬浮冒泡: false
+    }
 
-    const clickCheck = gui.addCheckBox({
-      label: '点击事件传递'
-    })
-
-    const dbClickCheck = gui.addCheckBox({
-      label: '双击事件传递'
-    })
-
-    const rightClickCheck = gui.addCheckBox({
-      label: '右键点击事件传递'
-    })
-
-    // 样例模型服务地址
-    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
-    const sbmsInfo = {
-      id: 'B1',
-      name: 'B1',
-      url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
-      position: { x: 1000, y: 0, z: 1000 },
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm',
       onClick() {
-
-        if (clickCheck.checked) this.eventPropagation()
-
-        console.log('Model self onClick', this)
-        alert('Model self onClick')
-
-        // test eval
-        eval('console.log("Model self onClick in eval", this)')
-
+        if (param.点击冒泡) this.eventPropagation()
+        console.log('Model onClick', this)
       },
       onDblClick() {
-
-        if (dbClickCheck.checked) this.eventPropagation()
-
-        console.log('Model self onDblClick', this)
-        alert('Model self onDblClick')
-
+        if (param.双击冒泡) this.eventPropagation()
+        console.log('Model onDblClick', this)
       },
       onRightClick() {
-
-        if (rightClickCheck.checked) this.eventPropagation()
-
-        console.log('Model self onRightClick', this)
-        alert('Model self onRightClick')
-
+        if (param.右键冒泡) this.eventPropagation()
+        console.log('Model onRightClick', this)
+      },
+      onHover() {
+        if (param.悬浮冒泡) this.eventPropagation()
+        console.log('Model onHover', this)
+      },
+      onUnHover() {
+        if (param.悬浮冒泡) this.eventPropagation()
+        console.log('Model onUnHover', this)
       },
       onLoad() {
         console.log('Model loaded!', this)
       }
-    }
+    })
 
-    ssp.loadSbm(sbmsInfo)
-      .then(model => {
-        ssp.flyToObj(model)
-      })
+    const gui = new GUI()
+    for (let i in param) gui.add(param, i)
 
   </script>
 </body>

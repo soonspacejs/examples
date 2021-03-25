@@ -72,3 +72,14 @@ button:focus{
   background-color: #012a51;
   border-radius: 4px;
 } */
+
+#tip {
+  width: 100%;
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  font-size: 18px;
+  line-height: 32px;
+  color: white;
+  pointer-events: none;
+}
