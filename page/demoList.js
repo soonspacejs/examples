@@ -44,19 +44,7 @@ export default [
       {
         title: "模型切割",
         demoLink: "./modelTool/modelClipping.html"
-      },
-      // {
-      //   title: "模型爆炸",
-      //   demoLink: "./modelTool/blastModel.html"
-      // },
-      // {
-      //   title: "复制模型",
-      //   demoLink: "./modelTool/copyModel.html"
-      // },
-      // {
-      //   title: "模型跟随鼠标",
-      //   demoLink: "./modelTool/followMouse.html"
-      // },
+      }
     ]
   },
   // poi
@@ -76,10 +64,6 @@ export default [
       {
         title: "PoiNode 空间视频",
         demoLink: "./poi/createPoiNodeForVideo.html"
-      },
-      {
-        title: "Poi 跟随鼠标",
-        demoLink: "./poi/followMouse.html"
       }
     ]
   },

@@ -30,8 +30,8 @@
   </div>
 
   <script type="module">
-    import SoonSpace from '../../../dist/index.esm.js'
-    import { GUI } from '../../../node_modules/dat.gui/build/dat.gui.module.js'
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
     const ssp = new SoonSpace({
       el: '#view',
@@ -46,119 +46,85 @@
 
     const el = document.getElementById('poiTemplate')
 
-    const poi2DEl = el.cloneNode(true)
-    poi2DEl.style.display = 'block'
-    poi2DEl.onclick = function () {
-      alert('2D PoiNode click')
-    }
-    poi2DEl.ontouchend = function () {
-      alert('2D PoiNode click')
-    }
+    const gui = new GUI();
+    const paramFn = {
+      '2DPoiNode': function () {
+        const poiNodeEl = el.cloneNode(true)
+        poiNodeEl.style.display = 'block'
+        // pc 点击
+        poiNodeEl.onclick = function () {
+          alert('2D PoiNode click')
+        }
+        // 移动点击
+        poiNodeEl.ontouchend = function () {
+          alert('2D PoiNode click')
+        }
 
-    const poiNode = ssp.createPoiNode({
-      type: '2.5D',
-      id: '2DPoiNode',
-      position: {
-        x: 0,
-        y: 0,
-        z: 0
+        const poiNode = ssp.createPoiNode({
+          type: '2D',
+          id: '2DPoiNode',
+          position: {
+            x: -500,
+            y: 0,
+            z: 0
+          },
+          element: poiNodeEl
+        })
       },
-      element: poi2DEl
-    })
+      '2.5DPoiNode': function () {
+        const poiNodeEl = el.cloneNode(true)
+        poiNodeEl.style.display = 'block'
+        // pc 点击
+        poiNodeEl.onclick = function () {
+          alert('2D PoiNode click')
+        }
+        // 移动点击
+        poiNodeEl.ontouchend = function () {
+          alert('2D PoiNode click')
+        }
 
-    console.log(poiNode)
+        const poiNode = ssp.createPoiNode({
+          type: '2.5D',
+          id: '2DPoiNode',
+          position: {
+            x: 0,
+            y: 0,
+            z: 0
+          },
+          element: poiNodeEl
+        })
+      },
+      '3DPoiNode': function () {
+        const poiNodeEl = el.cloneNode(true)
+        poiNodeEl.style.display = 'block'
+        // pc 点击
+        poiNodeEl.onclick = function () {
+          alert('2D PoiNode click')
+        }
+        // 移动点击
+        poiNodeEl.ontouchend = function () {
+          alert('2D PoiNode click')
+        }
 
-    // const gui = new GUI({
-    //   el: '#view'
-    // })
+        const poiNode = ssp.createPoiNode({
+          type: '3D',
+          id: '2DPoiNode',
+          position: {
+            x: 500,
+            y: 0,
+            z: 0
+          },
+          element: poiNodeEl
+        })
+      },
+      '清除PoiNode': function () {
+        ssp.clearPoiNode()
+      },
+    }
 
-    // gui.addButton({
-    //   text: '创建 2D PoiNode',
-    //   onClick() {
-
-    //     const poi2DEl = el.cloneNode(true)
-    //     poi2DEl.style.display = 'block'
-    //     poi2DEl.onclick = function () {
-    //       alert('2D PoiNode click')
-    //     }
-    //     poi2DEl.ontouchend = function () {
-    //       alert('2D PoiNode click')
-    //     }
-
-    //     ssp.createPoiNodeToGroup({
-    //       id: '1111111'
-    //     }, {
-    //       type: '2D',
-    //       id: '2DPoiNode',
-    //       position: {
-    //         x: -1000,
-    //         y: 0,
-    //         z: 0
-    //       },
-    //       element: poi2DEl
-    //     })
-    //   }
-    // })
-
-    // gui.addButton({
-    //   text: '创建 2.5D PoiNode',
-    //   onClick() {
-
-    //     const poi2_5DEl = el.cloneNode(true)
-    //     poi2_5DEl.style.display = 'block'
-    //     poi2_5DEl.onclick = function () {
-    //       alert('2.5D PoiNode click')
-    //     }
-    //     poi2_5DEl.ontouchend = function () {
-    //       alert('2.5D PoiNode click')
-    //     }
-
-    //     ssp.createPoiNode({
-    //       type: '2.5D',
-    //       id: '2.5DPoiNode',
-    //       position: {
-    //         x: 0,
-    //         y: 0,
-    //         z: 0
-    //       },
-    //       element: poi2_5DEl
-    //     })
-
-    //   }
-    // })
-
-    // gui.addButton({
-    //   text: '创建 3D PoiNode',
-    //   onClick() {
-
-    //     const poi3DEl = el.cloneNode(true)
-    //     poi3DEl.style.display = 'block'
-    //     poi3DEl.onclick = function () {
-    //       alert('3D PoiNode click')
-    //     }
-    //     poi3DEl.ontouchend = function () {
-    //       alert('3D PoiNode click')
-    //     }
-
-    //     ssp.createPoiNode({
-    //       type: '3D',
-    //       id: '3DPoiNode',
-    //       position: {
-    //         x: 1000,
-    //         y: 0,
-    //         z: 0
-    //       },
-    //       element: poi3DEl
-    //     })
-    //   }
-    // })
-
-    // gui.addButton({
-    //   text: '清空 PoiNode',
-    //   onClick() {
-    //     ssp.clearPoiNode()
-    //   }
-    // })
+    for (let i in paramFn) {
+      gui.add(paramFn, i)
+    }
 
   </script>
 </body>
