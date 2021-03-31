@@ -31,25 +31,9 @@ export default [
       }
     ]
   },
-  // modelTool
-  {
-    title: "模型操作工具 🔧",
-    icon: "bank",
-    key: "modelTool",
-    children: [
-      {
-        title: "选中模型",
-        demoLink: "./modelTool/selectModel.html"
-      },
-      {
-        title: "模型切割",
-        demoLink: "./modelTool/modelClipping.html"
-      }
-    ]
-  },
   // poi
   {
-    title: "POI",
+    title: "Poi",
     icon: "bank",
     key: "poi",
     children: [
@@ -87,60 +71,80 @@ export default [
       }
     ]
   },
-  // pointLineFace
+  // canvas3D
   {
-    title: "点线面",
+    title: "空间画布",
     icon: "bank",
-    key: "pointLineFace",
+    key: "canvas3D",
     children: [
       {
-        title: "绘制点线面",
-        demoLink: "./pointLineFace/draw.html"
-      },
-      {
-        title: "渲染点线面",
-        demoLink: "./pointLineFace/render.html"
+        title: "点线面",
+        demoLink: "./canvas3D/pointLinePolygon.html"
       }
     ]
   },
-  // background
+  // topology
   {
-    title: "背景",
+    title: "路径",
     icon: "bank",
-    key: "background",
+    key: "topology",
     children: [
       {
-        title: "背景色",
-        demoLink: "./background/backgroundColor.html"
+        title: "加载 Gml 路径",
+        demoLink: "./topology/loadGml.html"
       },
       {
-        title: "背景图",
-        demoLink: "./background/backgroundImage.html"
+        title: "创建 topology 路径",
+        demoLink: "./topology/createTopology.html"
       },
       {
-        title: "天空盒",
-        demoLink: "./background/skyBox.html"
+        title: "操控 topology 路径",
+        demoLink: "./topology/transformTopology.html"
+      }
+    ]
+  },
+  // modelTool
+  {
+    title: "模型操作工具",
+    icon: "bank",
+    key: "modelTool",
+    children: [
+      {
+        title: "选中模型",
+        demoLink: "./modelTool/selectModel.html"
       },
       {
-        title: "球体天空盒",
-        demoLink: "./background/sphereSkyBox.html"
+        title: "模型切割",
+        demoLink: "./modelTool/modelClipping.html"
       }
     ]
   },
   // sceneTool
   {
-    title: "场景工具 🔧",
+    title: "场景工具",
     icon: "bank",
     key: "sceneTool",
     children: [
       {
-        title: "创建地面",
-        demoLink: "./sceneTool/createGround.html"
+        title: "背景色",
+        demoLink: "./sceneTool/backgroundColor.html"
       },
       {
-        title: "2D模式",
-        demoLink: "./sceneTool/2DMode.html"
+        title: "背景图",
+        demoLink: "./sceneTool/backgroundImage.html"
       },
+      {
+        title: "天空盒",
+        demoLink: "./sceneTool/skyBox.html"
+      },
+      {
+        title: "球体天空盒",
+        demoLink: "./sceneTool/sphereSkyBox.html"
+      },
+      // {
+      //   title: "2D模式",
+      //   demoLink: "./sceneTool/2DMode.html"
+      // },
       {
         title: "场景雾化",
         demoLink: "./sceneTool/fog.html"
@@ -149,10 +153,10 @@ export default [
         title: "场景切割",
         demoLink: "./sceneTool/sceneClipping.html"
       },
-      {
-        title: "测量",
-        demoLink: "./sceneTool/measure.html"
-      }
+      // {
+      //   title: "测量",
+      //   demoLink: "./sceneTool/measure.html"
+      // }
     ]
   },
   // camera
@@ -188,39 +192,31 @@ export default [
     ]
   },
   // light
+  // {
+  //   title: "灯光",
+  //   icon: "bank",
+  //   key: "light",
+  //   children: [
+  //     {
+  //       title: "灯光配置",
+  //       demoLink: "./light/lightOption.html"
+  //     },
+  //     {
+  //       title: "创建点光源",
+  //       demoLink: "./light/createSpotLight.html"
+  //     },
+  //   ]
+  // },
+  // 辅助器
   {
-    title: "灯光",
+    title: "辅助器",
     icon: "bank",
-    key: "light",
+    key: "helper",
     children: [
       {
-        title: "灯光配置",
-        demoLink: "./light/lightOption.html"
+        title: "创建地面",
+        demoLink: "./helper/createGround.html"
       },
-      {
-        title: "创建点光源",
-        demoLink: "./light/createSpotLight.html"
-      },
-    ]
-  },
-  // topology
-  {
-    title: "路径",
-    icon: "bank",
-    key: "topology",
-    children: [
-      {
-        title: "加载 Gml 路径",
-        demoLink: "./topology/loadGml.html"
-      },
-      {
-        title: "创建 topology 路径",
-        demoLink: "./topology/createTopology.html"
-      },
-      {
-        title: "操控 topology 路径",
-        demoLink: "./topology/transformTopology.html"
-      }
     ]
   },
   // animation

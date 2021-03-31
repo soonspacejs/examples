@@ -12,27 +12,28 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
-  <script>
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
+        background: {
+          color: '#330'
+        }
       },
       events: {}
     })
 
-    const gui = new GUI({
-      el: '#view'
-    })
+    const gui = new GUI()
+    
+    gui
+      .addColor({ 背景色: '#330' }, '背景色')
+      .onChange(value => {
+        ssp.setBackgroundColor(value)
+      })
 
-    gui.addColor({
-      label: '背景色',
-      onInput(e) {
-        ssp.setBackgroundColor(e.target.value)
-      }
-    })
   </script>
 </body>
 

@@ -12,15 +12,14 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script>
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
-      },
-      events: {
-      }
+      options: {},
+      events: {}
     })
 
     const ground = ssp.createGround({
@@ -29,18 +28,8 @@
       height: 500,
       opacity: 0.6,
       position: { x: 0, y: 0, z: 0 },
-      repeat: { width: 10, height: 10 }
+      repeat: { x: 10, y: 10 }
     })
-
-    ssp.createPoi({
-      id: "icon1",
-      iconUrl: "../../asstes/img/poi/WechatIMG709.png",
-      position: {
-        x: 0,
-        y: 100,
-        z: 0
-      },
-    });
 
   </script>
 </body>

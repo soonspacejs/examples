@@ -20,7 +20,7 @@
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {},
+      options: {},
       events: {}
     })
 
@@ -36,7 +36,7 @@
 
         ssp.modelClipping(model, {
           axis: 'x',
-          position: param.X
+          position: param.x
         })
 
         ssp.modelClipping(model, {
@@ -46,7 +46,7 @@
 
         ssp.modelClipping(model, {
           axis: 'z',
-          position: param.Z
+          position: param.z
         })
       })
 
@@ -57,26 +57,32 @@
       z: 100
     }
 
-    gui.add(param, 'x', -700, 700).onChange(val => {
-      ssp.changeModelClipping(model, {
-        axis: 'x',
-        position: val
+    gui
+      .add(param, 'x', -700, 700)
+      .onChange(val => {
+        ssp.changeModelClipping(model, {
+          axis: 'x',
+          position: val
+        })
       })
-    })
 
-    gui.add(param, 'y', -10, 400).onChange(val => {
-      ssp.changeModelClipping(model, {
-        axis: 'y',
-        position: val
+    gui
+      .add(param, 'y', -10, 400)
+      .onChange(val => {
+        ssp.changeModelClipping(model, {
+          axis: 'y',
+          position: val
+        })
       })
-    })
 
-    gui.add(param, 'z', -700, 700).onChange(val => {
-      ssp.changeModelClipping(model, {
-        axis: 'z',
-        position: val
+    gui
+      .add(param, 'z', -700, 700)
+      .onChange(val => {
+        ssp.changeModelClipping(model, {
+          axis: 'z',
+          position: val
+        })
       })
-    })
 
   </script>
 </body>

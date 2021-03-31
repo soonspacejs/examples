@@ -18,41 +18,20 @@
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      options: {
-        fog: {
-          color: 0xcce0ff,
-          near: 50000,
-          far: 100000
-        }
-      },
+      options: {},
       events: {}
     })
 
-    ssp.createGround({
-      imgUrl: '../../asstes/img/ground/001.jpg',
-      width: 50000,
-      height: 50000,
-      position: { x: 0, y: 0, z: 0 }
-    })
     ssp.setSkyBackground('../../asstes/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
-    ssp.flyMainViewpoint()
 
     const gui = new GUI();
 
-    const claarFn = {
-      开启雾化: function () {
-        ssp.openSceneFog({
-          color: 0xcce0ff,
-          near: 50000,
-          far: 100000
-        })
-      },
-      关闭雾化: function () {
-        ssp.closeSceneFog()
-      }
-    }
-
-    for (let i in claarFn) gui.add(claarFn, i)
+    gui
+      .add({ 天空盒风格: 'sunny' }, '天空盒风格')
+      .options(['sunny', 'blueSky', 'clouds', 'night', 'rainy', 'starry', 'sun'])
+      .onChange(value => {
+        ssp.setSkyBackground(`../../asstes/img/skybox/${value}/`, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+      })
 
   </script>
 </body>

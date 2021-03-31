@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true
+      },
+      events: {}
+    })
+
+    const canvas3D = ssp.createCanvas3D({
+      id: 'test_canvas',
+      points: [{
+        id: 'point_1',
+        radius: 10,
+        color: 0xff0000,
+        opacity: 1,
+        position: {
+          x: 0,
+          y: 0,
+          z: 0
+        }
+      }, {
+        id: 'point_2',
+        radius: 10,
+        color: 0xff0000,
+        opacity: 1,
+        position: {
+          x: 100,
+          y: 0,
+          z: 0
+        }
+      }],
+      lines: [{
+        id: 'line_1',
+        start: {
+          x: 0,
+          y: 0,
+          z: 100
+        },
+        end: {
+          x: 2000,
+          y: 0,
+          z: 100
+        },
+        width: 2
+      }],
+      faces: [{
+        id: 'face_1',
+        points: [
+          {
+            x: 0,
+            y: 0,
+            z: 300,
+          },
+          {
+            x: 100,
+            y: 0,
+            z: 300,
+          },
+          {
+            x: 100,
+            y: 0,
+            z: 400,
+          },
+          {
+            x: 0,
+            y: 0,
+            z: 400,
+          }
+        ],
+        color: 0xffff00,
+        opacity: .8
+      }],
+      circles: [{
+        id: 'circle_1',
+        radius: 50,
+        color: 'blue',
+        position: {
+          x: 0,
+          y: 0,
+          z: 200
+        },
+        rotation: {
+          x: Math.PI / 2,
+          y: 0,
+          z: 0
+        }
+      }]
+    })
+
+    console.log(canvas3D)
+
+  </script>
+</body>
+
+</html>

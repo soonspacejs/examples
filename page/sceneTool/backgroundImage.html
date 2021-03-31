@@ -12,30 +12,25 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
-  <script>
-
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
-      },
+      options: {},
       events: {}
     })
 
     ssp.setBackgroundImage('../../asstes/img/background/1.jpg')
 
-    const gui = new GUI({
-      el: '#view'
-    })
-
-    gui.addInput({
-      label: '背景图',
-      onInput(e) {
-        ssp.setBackgroundImage(e.target.value)
-      }
-    })
+    const gui = new GUI()
+    
+    gui
+      .add({ 图片地址: '' }, '图片地址')
+      .onChange(value => {
+        ssp.setBackgroundColor(value)
+      })
 
   </script>
 </body>

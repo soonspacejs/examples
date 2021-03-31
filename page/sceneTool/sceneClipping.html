@@ -12,130 +12,107 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
+  <script type="module">
+    import SoonSpace from '../../dist/index.js'
+    import { GUI } from '../../lib/dat.gui.module.js'
 
-  <script>
-
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
-      },
+      options: {},
       events: {}
     })
 
-    const baseUrl = '../../asstes/model/sbm/yingtaidasha'
-    const sbmsInfo = [
-      {
-        id: '1F',
-        name: '1F',
-        url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
-      },
-      {
-        id: '1F',
-        name: '1F',
-        url: `${baseUrl}/yingtaidasha_1F_1.sbm`,
-      },
-      {
-        id: '2F',
-        name: '2F',
-        url: `${baseUrl}/yingtaidasha_2F_2.sbm`,
-      },
-      {
-        id: '3F',
-        name: '3F',
-        url: `${baseUrl}/yingtaidasha_3F_3.sbm`,
-      },
-      {
-        id: '4F',
-        name: '4F',
-        url: `${baseUrl}/yingtaidasha_4F_4.sbm`,
-      },
-      {
-        id: '5F',
-        name: '5F',
-        url: `${baseUrl}/yingtaidasha_5F_5.sbm`,
-      },
-      {
-        id: '6F',
-        name: '6F',
-        url: `${baseUrl}/yingtaidasha_6F_6.sbm`,
-      },
-      {
-        id: '7F',
-        name: '7F',
-        url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
-      }
-      // ...
-    ]
-    ssp.loadSbm(sbmsInfo)
+    const baseUrl = '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
 
+    ssp.loadSbmToGroup(
+      {
+        id: 'sbm_group'
+      },
+      [
+        {
+          id: 'room_01',
+          url: baseUrl
+        },
+        {
+          id: 'room_01',
+          url: baseUrl,
+          position: {
+            x: 1300,
+            y: 0,
+            z: 0
+          }
+        },
+        {
+          id: 'room_01',
+          url: baseUrl,
+          position: {
+            x: 2600,
+            y: 0,
+            z: 0
+          }
+        },
+        {
+          id: 'room_01',
+          url: baseUrl,
+          position: {
+            x: 3900,
+            y: 0,
+            z: 0
+          }
+        },
+      ])
       .then(models => {
-
-        ssp.addAxishelper(10000)
+        ssp.flyMainViewpoint()
 
         ssp.sceneClipping({
           axis: 'x',
-          position: 5000,
-          isForward: true
+          position: param.x
         })
 
         ssp.sceneClipping({
           axis: 'y',
-          position: 1000,
-          isForward: true
+          position: param.y
         })
 
         ssp.sceneClipping({
           axis: 'z',
-          position: 0,
-          isForward: true
+          position: param.z
         })
-
       })
 
-    const gui = new GUI({
-      el: '#view'
-    })
+    const gui = new GUI();
+    const param = {
+      x: 3000,
+      y: 400,
+      z: 300
+    }
 
-    gui.addRange({
-      label: 'X 轴切割:',
-      value: 5000,
-      min: -5000,
-      max: 13000,
-      onInput(e) {
+    gui
+      .add(param, 'x', -700, 4500)
+      .onChange(val => {
         ssp.changeSceneClipping({
           axis: 'x',
-          position: e.target.value
+          position: val
         })
-      }
-    })
+      })
 
-    gui.addRange({
-      label: 'Y 轴切割:',
-      value: 1000,
-      min: -1000,
-      max: 5000,
-      onInput(e) {
+    gui
+      .add(param, 'y', -10, 400)
+      .onChange(val => {
         ssp.changeSceneClipping({
           axis: 'y',
-          position: e.target.value
+          position: val
         })
-      }
-    })
+      })
 
-    gui.addRange({
-      label: 'Z 轴切割:',
-      value: 5000,
-      min: -5000,
-      max: 5000,
-      onInput(e) {
+    gui
+      .add(param, 'z', -700, 700)
+      .onChange(val => {
         ssp.changeSceneClipping({
           axis: 'z',
-          position: e.target.value
+          position: val
         })
-      }
-    })
+      })
 
   </script>
 </body>
