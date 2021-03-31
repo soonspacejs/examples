@@ -8,7 +8,10 @@
   <title>SoonSpace Example</title>
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="../asstes/css/base.css">
-  <link rel="stylesheet" href="../lib/antd-vue/antd.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@1.7.4/dist/antd.min.css">
+  <script src="https://unpkg.com/vue@2.6.12/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/ant-design-vue@1.7.4/dist/antd.min.js"></script>
+
   <style>
     #layout-custom-trigger {
       height: 100%;
@@ -47,11 +50,7 @@
 <body>
   <div id="app"></div>
 
-  <script src="../lib/polyfill.min.js"></script>
-  <script src="../lib/vue/vue.min.js"></script>
-  <script src="../lib/antd-vue/antd.min.js"></script>
   <script type="module">
-
     import demoList from './demoList.js'
 
     let hash = 'start_helloWorld'

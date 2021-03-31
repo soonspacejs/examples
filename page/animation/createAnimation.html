@@ -1,165 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../asstes/css/base.css" />
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css" />
+</head>
 
-    <script src="../../sdk/index.js"></script>
-    <script src="../../../package/soon-gui/index.js"></script>
-    <script>
-      let model = null;
+<body>
+  <div id="view"></div>
 
-      const ssp = new SoonSpace({
-        el: "#view",
-        option: {},
-        events: {},
-      });
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-      var currentPosition = 0;
-      var distance = 0;
-      var originPosition = 0;
-      var moveDistance = 100;
-      var targetDistance = 5000;
-      var changeOpacity = 0.05;
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {},
+      events: {},
+    });
 
-      const loopAnimation = (ssp) => {
-        originPosition = model.position.z;
-        setTimeout(function() {
-          ssp.viewport.renderer.setAnimationLoop(function() {
-            currentPosition = model.position.z;
-            console.log("work");
+    let model
 
-            if (distance < targetDistance) {
-              // 往右
-              model.position.z += moveDistance;
-              distance += moveDistance;
-            } else if (distance >= targetDistance) {
-              if (currentPosition == originPosition) {
-                // 碰到原点
-                distance = 0;
-              } else {
-                // 往左
-                model.position.z -= moveDistance;
-              }
-            }
+    ssp
+      .loadSbm({
+        id: 'room_01',
+        url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+      })
+      .then(sbm => {
+        model = sbm
+        ssp.flyMainViewpoint()
+      })
 
-            // console.log('current opacity: ' +changeOpacity);
-            // console.log('distance: ' +distance);
-            // console.log('currentPosition: ' +currentPosition+ ' and model position z: '+ model.position.z);
+    const gui = new GUI();
+    const fns = {
+      '移动': function () {
+        ssp.animation(
+          // source
+          model.position,
+          // target
+          {
+            ...model.position,
+            x: model.position.x + 10000,
+          },
+          // option
+          {
+            mode: 'Quintic.Out',
+            duration: 5000
+          }
+        )
+      },
+      '旋转': function () {
+        ssp.animation(
+          // source
+          model.rotation,
+          // target
+          {
+            x: Math.PI / 2,
+            y: Math.PI / 2,
+            z: Math.PI / 2,
+          },
+          // option
+          {
+            delay: 1000,
+          }
+        )
+      },
+      '缩放': function () {
+        ssp.animation(
+          // source
+          model.scale,
+          // target
+          {
+            x: 10,
+            y: 10,
+            z: 10,
+          },
+          // option
+          {
+            delay: 1000,
+          }
+        )
+      }
+    }
 
-            ssp.viewport.trigerRender();
-          });
-        }, 1000 / 30);
-      };
+    for (let i in fns) gui.add(fns, i)
 
-      const gui = new GUI({
-        el: "#view",
-      });
+  </script>
+</body>
 
-      gui.addButton({
-        text: "移动",
-        onClick() {
-          loopAnimation(ssp);
-        },
-      });
-
-      gui.addButton({
-        text: "旋转",
-        onClick() {
-          ssp.animation(
-            // source
-            model.rotation,
-            // target
-            {
-              x: Math.PI / 2,
-              y: Math.PI / 2,
-              z: Math.PI / 2,
-            },
-            // option
-            {
-              delay: 1000,
-            }
-          );
-        },
-      });
-
-      gui.addButton({
-        text: "缩放",
-        onClick() {
-          ssp.animation(
-            // source
-            model.scale,
-            // target
-            {
-              x: 10,
-              y: 10,
-              z: 10,
-            },
-            // option
-            {
-              delay: 1000,
-            }
-          );
-        },
-      });
-
-      const baseUrl = "../../asstes/model/sbm/yingtaidasha";
-      const sbmsInfo = [
-        {
-          id: "1F",
-          name: "1F",
-          url: `${baseUrl}/yingtaidasha_B1_0.sbm`,
-        },
-        {
-          id: "1F",
-          name: "1F",
-          url: `${baseUrl}/yingtaidasha_1F_1.sbm`,
-        },
-        {
-          id: "2F",
-          name: "2F",
-          url: `${baseUrl}/yingtaidasha_2F_2.sbm`,
-        },
-        {
-          id: "3F",
-          name: "3F",
-          url: `${baseUrl}/yingtaidasha_3F_3.sbm`,
-        },
-        {
-          id: "4F",
-          name: "4F",
-          url: `${baseUrl}/yingtaidasha_4F_4.sbm`,
-        },
-        {
-          id: "5F",
-          name: "5F",
-          url: `${baseUrl}/yingtaidasha_5F_5.sbm`,
-        },
-        {
-          id: "6F",
-          name: "6F",
-          url: `${baseUrl}/yingtaidasha_6F_6.sbm`,
-        },
-        {
-          id: "7F",
-          name: "7F",
-          url: `${baseUrl}/yingtaidasha_7F_7.sbm`,
-        },
-        // ...
-      ];
-
-      ssp.loadSbm(sbmsInfo).then((models) => {
-        model = models[2];
-
-        ssp.flyMainViewpoint();
-      });
-    </script>
-  </body>
 </html>

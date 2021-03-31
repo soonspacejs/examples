@@ -13,8 +13,8 @@
   <div id="view"></div>
 
   <script type="module">
-    import SoonSpace from '../../dist/index.js'
-    import { GUI } from '../../lib/dat.gui.module.js'
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
@@ -39,7 +39,7 @@
 
     const gui = new GUI();
 
-    const claarFn = {
+    const fns = {
       开启雾化: function () {
         ssp.openSceneFog({
           color: 0xcce0ff,
@@ -52,7 +52,7 @@
       }
     }
 
-    for (let i in claarFn) gui.add(claarFn, i)
+    for (let i in fns) gui.add(fns, i)
 
   </script>
 </body>

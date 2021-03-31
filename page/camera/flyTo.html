@@ -30,112 +30,94 @@
     </div>
   </div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-
-  <script>
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
     let lastEnd = true
     let model = null
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
         showGrid: true
       },
       events: {}
     })
 
+    // createPoi
     const poi = ssp.createPoi({
       id: "icon1",
       name: "icon1",
-      iconUrl: "../../asstes/img/poi/icon1.png",
+      url: "../../asstes/img/poi/icon1.png",
       position: {
         x: 0,
-        y: 100,
+        y: 700,
         z: 0
       },
       scale: {
-        width: 1,
-        height: 1
+        x: 5,
+        y: 5,
+        z: 1
       }
     });
 
-    ssp.loadModel({
-      id: 'firstJson',
-      url: '../../asstes/model/json/hmCar.json',
-      rotation: {
-        x: 0,
-        y: Math.PI / 2,
-        z: 0
+    // loadSbm
+    ssp
+      .loadSbm(
+        {
+          id: 'room_01',
+          url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+        }
+      )
+      .then(sbm => {
+        model = sbm
+      })
+
+    const gui = new GUI();
+    const fns = {
+      飞向主场景: function () {
+        if (!lastEnd) return alert('请等待上一次结束！')
+
+        lastEnd = false
+
+        ssp
+          .flyMainViewpoint()
+          .then(() => lastEnd = true)
       },
-      position: {
-        x: 100,
-        y: 60,
-        z: -59
-      }
-    })
-      .then(res => model = res)
-
-    const gui = new GUI({
-      el: '#view'
-    })
-
-    gui.addButton({
-      text: '飞向主场景',
-      onClick() {
-        if (!lastEnd) return alert('请等待上一次结束！')
-
-        ssp.flyMainViewpoint()
-          .then(res => {
-            lastEnd = true
-
-            console.log('flyMainViewpoint done', res)
-          })
-      }
-    })
-
-    gui.addButton({
-      text: '飞向一点',
-      onClick() {
+      飞向一点: function () {
         if (!lastEnd) return alert('请等待上一次结束！')
 
         lastEnd = false
 
         // flyTo
-        ssp.flyTo(
-          {
-            x: 500,
-            y: 500,
-            z: 500
-          },
-          {
-            x: -1.561157219504513,
-            y: 1.3269478591684332,
-            z: 1.5608633816668858
-          },
-          {
-            duration: 2000
-          }
-        )
-          .then(res => {
-            lastEnd = true
-
-            console.log('flyTo done', res)
-
-          })
-      }
-    })
-
-    gui.addButton({
-      text: '飞向 Poi',
-      onClick() {
-
+        ssp
+          .flyTo(
+            // position
+            {
+              x: 500,
+              y: 500,
+              z: 500
+            },
+            // rotation
+            {
+              x: -1.561157219504513,
+              y: 1.3269478591684332,
+              z: 1.5608633816668858
+            },
+            // options
+            {
+              duration: 2000
+            }
+          )
+          .then(() => lastEnd = true)
+      },
+      '飞向 Poi': function () {
         if (!lastEnd) return alert('请等待上一次结束！')
 
         lastEnd = false
 
-        // flyTo
+        // flyToObj
         ssp.flyToObj(
           poi,
           "front",
@@ -144,60 +126,27 @@
             duration: 2000
           }
         )
-          .then(res => {
-            lastEnd = true
-
-            console.log('flyToPoi done', res)
-          })
-      }
-    })
-
-    gui.addButton({
-      text: '飞向模型',
-      onClick() {
+          .then(() => lastEnd = true)
+      },
+      飞向模型: function () {
         if (!lastEnd) return alert('请等待上一次结束！')
 
         lastEnd = false
 
-        // flyTo
+        // flyToObj
         ssp.flyToObj(
           model,
           "current",
-          // "frontTop",
           {
             padding: 10,
             duration: 2000
           }
         )
-          .then(res => {
-            lastEnd = true
+          .then(() => lastEnd = true)
+      },
+    }
 
-            console.log('flyToModel done', res)
-
-            const leftEl = document.getElementById('poiTemplate').cloneNode(true)
-            leftEl.style.left = '-200px'
-            leftEl.style.top = '-100px'
-
-            ssp.createPoiNode({
-              type: '2d',
-              id: 'leftPoiNode',
-              position: ssp.getObjectLabelPosRelativeToScreen(model),
-              element: leftEl
-            })
-
-            const rightEl = document.getElementById('poiTemplate').cloneNode(true)
-            rightEl.style.left = '200px'
-            rightEl.style.top = '100px'
-
-            ssp.createPoiNode({
-              type: '2d',
-              id: 'rightPoiNode',
-              position: ssp.getObjectLabelPosRelativeToScreen(model),
-              element: rightEl
-            })
-          })
-      }
-    })
+    for (let i in fns) gui.add(fns, i)
 
   </script>
 </body>

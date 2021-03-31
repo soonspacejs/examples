@@ -165,10 +165,10 @@ export default [
     icon: "bank",
     key: "camera",
     children: [
-      {
-        title: "相机限制",
-        demoLink: "./camera/cameraLimit.html"
-      },
+      // {
+      //   title: "相机限制",
+      //   demoLink: "./camera/cameraLimit.html"
+      // },
       {
         title: "视角枚举",
         demoLink: "./camera/viewpointEnum.html"
@@ -181,14 +181,14 @@ export default [
         title: "环绕",
         demoLink: "./camera/surround.html"
       },
-      {
-        title: "相机跟随",
-        demoLink: "./camera/cameraFollower.html"
-      },
-      {
-        title: "第一人称",
-        demoLink: "./camera/firstPersonRoot.html"
-      },
+      // {
+      //   title: "相机跟随",
+      //   demoLink: "./camera/cameraFollower.html"
+      // },
+      // {
+      //   title: "第一人称",
+      //   demoLink: "./camera/firstPersonRoot.html"
+      // },
     ]
   },
   // light
@@ -229,10 +229,10 @@ export default [
         title: "创建动画",
         demoLink: "./animation/createAnimation.html"
       },
-      {
-        title: "卷帘门升降",
-        demoLink: "./animation/juanlianmen.html"
-      },
+      // {
+      //   title: "卷帘门升降",
+      //   demoLink: "./animation/juanlianmen.html"
+      // },
     ]
   }
 ]

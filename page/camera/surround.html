@@ -12,16 +12,15 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-
-  <script>
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
     let lastEnd = true
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
         showGrid: true,
         showInfo: true
       },
@@ -31,7 +30,7 @@
     const poi = ssp.createPoi({
       id: "icon1",
       name: "icon1",
-      iconUrl: "../../asstes/img/poi/icon1.png",
+      url: "../../asstes/img/poi/icon1.png",
       position: {
         x: 800,
         y: 10,
@@ -39,35 +38,35 @@
       }
     });
 
-    const gui = new GUI({
-      el: '#view'
-    })
-
-    gui.addButton({
-      text: '围绕一个点环绕',
-      onClick() {
+    const gui = new GUI();
+    const fns = {
+      点环绕: function () {
         if (!lastEnd) return alert('请等待上一次结束！')
 
         lastEnd = false
 
-        ssp.surroundOnTarget({ x: 0, y: 0, z: 0 }, { speed: 5 })
+        ssp
+          .surroundOnTarget(
+            { x: 0, y: 0, z: 0 },
+            { angle: 180, speed: 1 }
+          )
           .then(() => lastEnd = true)
-      }
-    })
-
-    gui.addButton({
-      text: '围绕一个对象环绕',
-      onClick() {
-
+      },
+      对象环绕: function () {
         if (!lastEnd) return alert('请等待上一次结束！')
 
         lastEnd = false
 
-        ssp.surroundOnObject(poi)
+        ssp
+          .surroundOnObject(
+            poi,
+            { angle: 360, speed: 3 }
+          )
           .then(() => lastEnd = true)
+      },
+    }
 
-      }
-    })
+    for (let i in fns) gui.add(fns, i)
 
   </script>
 </body>

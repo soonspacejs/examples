@@ -13,8 +13,8 @@
   <div id="view"></div>
 
   <script type="module">
-    import SoonSpace from '../../dist/index.js'
-    import { GUI } from '../../lib/dat.gui.module.js'
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
     let model
 
@@ -27,6 +27,16 @@
     ssp.loadSbm({
       id: 'room_01',
       url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+    })
+
+    ssp.loadSbm({
+      id: 'room_02',
+      url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm',
+      position: {
+        x: 1500,
+        y: 0,
+        z: 0
+      }
     })
       .then(sbm => {
 

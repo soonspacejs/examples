@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<Project>
+<ProjectInfo gkxmlVersion="1.2">
+<Title>juanlianmen</Title>
+</ProjectInfo>
+<Building sourceType="GPL" northAxis="0.000000">
+<Floors>
+<Floor id="0" name="juanlianmen" baseFloor="1" groupID="0" isMain="True">
+<FileSource name=".\juanlianmen.sbm" type="SBM" />
+<BoundingBox minimum="0,0,0" maximum="0,0,0" />
+</Floor>
+</Floors>
+</Building>
+</Project>

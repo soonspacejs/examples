@@ -13,108 +13,53 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-  <script>
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-    let car = null
+    let model
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
-        showGrid: true
-      },
+      options: {},
       events: {}
     })
 
-    ssp.loadModel({
-      id: 'car',
-      url: '../../asstes/model/json/hmCar.json',
-      rotation: {
-        x: 0,
-        y: Math.PI / 2,
-        z: 0
-      },
-      scale: {
-        x: 10,
-        y: 10,
-        z: 10
+    ssp.loadSbm(
+      {
+        id: 'room_01',
+        url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
       }
-    })
-      .then(model => car = model)
+    )
+      .then(sbm => {
+        ssp.flyToObj(sbm, 'frontTop')
 
-    const gui = new GUI({
-      el: '#view'
-    })
+        model = sbm
+      })
 
-    gui.addSelect({
-      label: '飞向某个角度',
-      options: [
-        {
-          label: '请选择',
-          value: '请选择'
-        },
-        {
-          label: 'top',
-          value: 'top'
-        },
-        {
-          label: 'bottom',
-          value: 'bottom'
-        },
-        {
-          label: 'front',
-          value: 'front'
-        },
-        {
-          label: 'back',
-          value: 'back'
-        },
-        {
-          label: 'left',
-          value: 'left'
-        },
-        {
-          label: 'right',
-          value: 'right'
-        },
-        {
-          label: 'frontTop',
-          value: 'frontTop'
-        },
-        {
-          label: 'backTop',
-          value: 'backTop'
-        },
-        {
-          label: 'leftTop',
-          value: 'leftTop'
-        },
-        {
-          label: 'rightTop',
-          value: 'rightTop'
-        },
-        {
-          label: 'leftFrontTop',
-          value: 'leftFrontTop'
-        },
-        {
-          label: 'rightFrontTop',
-          value: 'rightFrontTop'
-        },
-        {
-          label: 'leftBackTop',
-          value: 'leftBackTop'
-        },
-        {
-          label: 'rightBackTop',
-          value: 'rightBackTop'
-        },
-      ],
-      onChange(e) {
-        if(e.target.value !== '请选择') ssp.flyToObj(car, e.target.value)
-      }
-    })
+    const gui = new GUI();
+
+    gui
+      .add({ 飞向角度: 'frontTop' }, '飞向角度')
+      .options([
+        'top',
+        'bottom',
+        'front',
+        'back',
+        'left',
+        'right',
+        'frontTop',
+        'backTop',
+        'leftTop',
+        'rightTop',
+        'leftFrontTop',
+        'rightFrontTop',
+        'leftBackTop',
+        'rightBackTop',
+      ])
+      .onChange(value => {
+        ssp.flyToObj(model, value)
+      })
 
   </script>
 </body>

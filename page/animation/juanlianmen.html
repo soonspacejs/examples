@@ -12,29 +12,36 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-  <script>
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-    let model = null
-
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {},
+      events: {}
+    })
 
-      },
-      events: {
+    let model
 
+    ssp.loadSbm({
+      id: '1',
+      name: '1',
+      url: `../../asstes/model/sbm/juanlianmen/juanlianmen.sbm`,
+      rotation: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0
       }
     })
+      .then(sbm => {
+        model = sbm
+        ssp.flyMainViewpoint()
+      })
 
-    const gui = new GUI({
-      el: '#view'
-    })
-
-    gui.addButton({
-      text: '升',
-      onClick() {
+      const gui = new GUI();
+    const fns = {
+      '升': function () {
         ssp.animation(
           // source
           model.scale,
@@ -49,13 +56,8 @@
             delay: 1000
           }
         )
-
-      }
-    })
-
-    gui.addButton({
-      text: '降',
-      onClick() {
+      },
+      '降': function () {
         ssp.animation(
           // source
           model.scale,
@@ -70,28 +72,10 @@
             delay: 1000
           }
         )
-      }
-    })
+      },
+    }
 
-
-    const baseUrl = '../../asstes/model/sbm/juanlianmen'
-    ssp.loadSbm({
-      id: '1',
-      name: '1',
-      url: `${baseUrl}/juanlianmen.sbm`,
-      rotation: {
-        x: -Math.PI / 2,
-        y: 0,
-        z: 0
-      }
-    })
-      .then(_model => {
-
-        model = _model
-
-        ssp.flyMainViewpoint()
-
-      })
+    for (let i in fns) gui.add(fns, i)
 
   </script>
 </body>
