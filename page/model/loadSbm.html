@@ -17,28 +17,13 @@
 
     const ssp = new SoonSpace({
       el: '#view',
-      optiona: {
-        showInfo: true,
-        showGrid: false
-      },
-      events: {
-        modelClick(e) {
-          console.log(e)
-        },
-        modelRightClick(e) {
-          console.log(e)
-        },
-        selectPosition(p) {
-          console.log(p)
-        }
-      }
     })
 
     ssp.loadSbm(
       // sbmInfo
       {
         id: 'room_01',
-        url: '../../asstes/model/sbm/room/changjing02_1F_0.sbm'
+        url: '../../asstes/model/sbm/juanlianmen/juanlianmen.sbm'
       },
       // onProgress
       progress => console.log(progress)
