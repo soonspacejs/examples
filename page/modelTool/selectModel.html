@@ -29,11 +29,11 @@
 
           // opacity
           if (mode === "opacity") {
-            ssp.opacityShow(model)
+            ssp.opacityShow(model, { color: "#fff", opacity: 0.5 })
           }
           // highlight
           else if (mode === "highlight") {
-            ssp.highlightShow(model, { color: "#0eb0c9", opacity: 0.5 });
+            ssp.highlightShow(model, { color: "#f00", opacity: 0.5 });
           }
           // stroke
           else if (mode === "stroke") {
@@ -47,20 +47,7 @@
           }
           // emissive
           else if (mode === "emissive") {
-            ssp.emissiveShow(model, {
-              // 是否开始动画
-              isAnimation: true,
-              // 颜色
-              color: 0xff0000,
-              // 动画执行时间
-              duration: 1000,
-              // 关闭动画时的不透明度
-              opacity: 0.3,
-              // 开启动画时的最小不透明度
-              minOpacity: 0,
-              // 开启动画时的最大不透明度
-              maxOpacity: 1,
-            });
+            ssp.emissiveShow(model);
           }
         },
       },
