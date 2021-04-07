@@ -234,5 +234,45 @@ export default [
       //   demoLink: "./animation/juanlianmen.html"
       // },
     ]
+  },
+  // plugin
+  {
+    title: "插件",
+    icon: "bank",
+    key: "plugin",
+    children: [
+      {
+        title: "SoonManager 协同",
+        demoLink: "./plugin/soonmanagerSync.html"
+      },
+      {
+        title: "热力图",
+        demoLink: "./plugin/heatMap.html"
+      },
+      {
+        title: "切割控制器 - 模型切割",
+        demoLink: "./plugin/modelClipping.html"
+      },
+      {
+        title: "切割控制器 - 场景切割",
+        demoLink: "./plugin/sceneClipping.html"
+      },
+      {
+        title: "模型操作控制器",
+        demoLink: "./plugin/transformControls.html"
+      },
+      {
+        title: "跟随鼠标控制器",
+        demoLink: "./plugin/followMouse.html"
+      },
+      {
+        title: "路径巡检控制器",
+        demoLink: "./plugin/patrolControls.html"
+      },
+      {
+        title: "第一人称漫游控制器",
+        demoLink: "./plugin/firstPersonControls.html"
+      },
+    ]
   }
 ]

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import FirstPersonControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-first-person-controls@next/dist/index.esm.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {
+        selectPosition(position) {
+          console.log(position)
+        }
+      }
+    })
+
+    ssp.loadSbm({
+      id: 'room',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+      position: {
+        x: 100,
+        y: 120,
+        z: 100
+      }
+    })
+      .then(sbm => {
+        return ssp.flyToObj(sbm, "leftFrontTop", { padding: 100 })
+      })
+      .then(sbm => {
+        const firstPersonControls = ssp.registerPlugin(FirstPersonControlsPlugin, 'firstPersonControls')
+        console.log(firstPersonControls)
+
+        firstPersonControls.start({
+          position: { x: 260, y: 50, z: 100 },
+          rotation: { x: 0, y: 0, z: 0 },
+          moveSpeed: 1.0,
+          enableClash: true
+        })
+      })
+
+    ssp.manager.store.helperManager.createGround({
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 10000,
+      height: 10000
+    })
+
+  </script>
+</body>
+
+</html>

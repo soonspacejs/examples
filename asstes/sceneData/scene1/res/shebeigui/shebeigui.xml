@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>shebeigui</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0.000000">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false"/>
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR,FACILITY</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\shebeigui_1F_0.sbm" type="SBM"/>
+                <BoundingBox minimum="-1147.500000, -21.000000, -413.609985" maximum="1147.500000, 2121.000000, 413.609985"/>
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="276524571" baseFloor="1" level="0.000000"/>
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="276524571">
+                <Entity id="2" name="MERGED_0_1_Board_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="1" name="MERGED_0_4_Automatic_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="3" name="MERGED_0_4_Generator_0" longname="" type="MERGED" visible="True"/>
+            </Entity>
+        </ObjectHierarchy>
+    <GLBFShells><GLBFShell><FileSource name=".\shebeigui_1F_0.json" type="GLBF"/><BoundingBox/></GLBFShell></GLBFShells></Building>
+</Project>

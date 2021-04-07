@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import HeatMapPlugin from 'https://unpkg.com/@soonspacejs/plugin-heat-map@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {
+        selectPosition(pos) {
+          console.log(pos)
+        }
+      }
+    })
+
+    ssp.addAxesHelper({ id: 'hm_axesHelper' })
+
+    const heatMap = ssp.registerPlugin(HeatMapPlugin, 'heatMap')
+    heatMap.create({
+      id: 'hm1',
+      name: 'hm_name',
+      yAxisHeight: 100,
+      max: 100,
+      min: 1,
+      data: [
+        {
+          position: { x: 200, y: 10000, z: 100 },
+          radius: 100,
+          value: 100
+        },
+        {
+          position: { x: 100, y: 20000, z: 100 },
+          radius: 20,
+          value: 50
+        },
+      ]
+    })
+
+
+    const gui = new GUI()
+    const fns = {
+      第二个热力图: function () {
+        heatMap.create({
+          id: 'hm2',
+          name: 'hm_name',
+          yAxisHeight: 100,
+          max: 250,
+          min: 1,
+          data: [
+            {
+              position: { x: 500, y: 10000, z: 200 },
+              radius: 10,
+              value: 100
+            },
+            {
+              position: { x: 500, y: 20000, z: 100 },
+              radius: 50,
+              value: 100
+            }
+          ]
+        })
+      },
+      通过id获取: function () {
+        console.log(heatMap.getById('hm1'))
+      },
+      通过名称获取: function () {
+        console.log(heatMap.getByName('hm_name'))
+      },
+      通过id移除: function () {
+        heatMap.removeById('hm1')
+      },
+    }
+
+    for (let i in fns) gui.add(fns, i)
+
+  </script>
+</body>
+
+</html>

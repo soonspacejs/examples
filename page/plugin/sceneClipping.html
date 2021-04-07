@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import ClippingControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-clipping-controls@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {}
+    })
+
+    const baseUrl = '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+    ssp.loadSbmToGroup(
+      {
+        id: 'sbm_group'
+      },
+      [
+        {
+          id: 'room_01',
+          url: baseUrl
+        },
+        {
+          id: 'room_02',
+          url: baseUrl,
+          position: {
+            x: 1300,
+            y: 0,
+            z: 0
+          }
+        },
+        {
+          id: 'room_03',
+          url: baseUrl,
+          position: {
+            x: 2600,
+            y: 0,
+            z: 0
+          }
+        },
+        {
+          id: 'room_04',
+          url: baseUrl,
+          position: {
+            x: 3900,
+            y: 0,
+            z: 0
+          }
+        },
+      ])
+      .then(models => {
+        return ssp.flyMainViewpoint()
+      })
+      .then(sbm => {
+        const clippingControls = ssp.registerPlugin(ClippingControlsPlugin, 'clippingControls')
+
+        const gui = new GUI();
+        const param = {
+          x: 5000,
+          y: 1000,
+          z: 1000,
+          isForward: true,
+          openHelper: true
+        }
+
+        clippingControls.sceneClipping({
+          axis: 'x',
+          clipPoint: param.x,
+          isForward: param.isForward,
+          openHelper: param.openHelper
+        })
+
+        clippingControls.sceneClipping({
+          axis: 'y',
+          clipPoint: param.y,
+          isForward: param.isForward,
+          openHelper: param.openHelper
+        })
+
+        clippingControls.sceneClipping({
+          axis: 'z',
+          clipPoint: param.z,
+          isForward: param.isForward,
+          openHelper: param.openHelper
+        })
+
+        gui
+          .add(param, 'openHelper')
+          .name('打开切割辅助面')
+          .onChange(val => {
+            clippingControls.sceneClipping({
+              axis: 'x',
+              clipPoint: param.x,
+              isForward: param.isForward,
+              openHelper: val
+            })
+
+            clippingControls.sceneClipping({
+              axis: 'y',
+              clipPoint: param.y,
+              isForward: param.isForward,
+              openHelper: val
+            })
+
+            clippingControls.sceneClipping({
+              axis: 'z',
+              clipPoint: param.z,
+              isForward: param.isForward,
+              openHelper: val
+            })
+          })
+
+        gui
+          .add(param, 'isForward')
+          .name('是否正向切割')
+          .onChange(val => {
+            clippingControls.sceneClipping({
+              axis: 'x',
+              clipPoint: param.x,
+              isForward: val,
+              openHelper: param.openHelper
+            })
+
+            clippingControls.sceneClipping({
+              axis: 'y',
+              clipPoint: param.y,
+              isForward: val,
+              openHelper: param.openHelper
+            })
+
+            clippingControls.sceneClipping({
+              axis: 'z',
+              clipPoint: param.z,
+              isForward: val,
+              openHelper: param.openHelper
+            })
+          })
+
+        gui
+          .add(param, 'x', -5000, 5000)
+          .name('X 轴切割点')
+          .onChange(val => {
+            clippingControls.sceneClipping({
+              axis: 'x',
+              clipPoint: val,
+              isForward: param.isForward,
+              openHelper: param.openHelper
+            })
+          })
+
+        gui
+          .add(param, 'y', -1000, 1000)
+          .name('Y 轴切割点')
+          .onChange(val => {
+            clippingControls.sceneClipping({
+              axis: 'y',
+              clipPoint: val,
+              isForward: param.isForward,
+              openHelper: param.openHelper
+            })
+          })
+
+        gui
+          .add(param, 'z', -1000, 1000)
+          .name('Z 轴切割点')
+          .onChange(val => {
+            clippingControls.sceneClipping({
+              axis: 'z',
+              clipPoint: val,
+              isForward: param.isForward,
+              openHelper: param.openHelper
+            })
+          })
+      })
+
+  </script>
+</body>
+
+</html>

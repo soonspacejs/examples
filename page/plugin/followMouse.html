@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import FollowMousePlugin from 'https://unpkg.com/@soonspacejs/plugin-follow-mouse@next/dist/index.esm.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {}
+    })
+
+    const followMousePlugin = ssp.registerPlugin(FollowMousePlugin, 'followMousePlugin')
+
+    ssp.createGround({
+      id: 'ground',
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 10000,
+      height: 10000
+    })
+
+    ssp.loadSbmToGroup(
+      {
+        id: 'sbm_group',
+        position: {
+          x: 1000,
+          y: 100,
+          z: 0
+        }
+      },
+      [
+        {
+          id: 'room',
+          url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+        },
+        {
+          id: 'v1_1',
+          url: '../../asstes/model/sbm/juanlianmen/juanlianmen.sbm',
+          scale: {
+            x: 10,
+            y: 10,
+            z: 10
+          },
+          rotation: {
+            x: Math.PI / 2,
+            y: 0,
+            z: 0
+          }
+        }
+      ]
+    )
+      .then(group => {
+        const sbm = ssp.getSbmById('v1_1')
+
+        followMousePlugin.start(sbm, {
+          offsetY: 1,
+          openHelper: true,
+          helperColor: 'blue',
+          onPlace(model) { console.log('onPlace', model) },
+          onBack(model) { console.log('onBack', model) },
+          onDone(model) { console.log('onDone', model) },
+          onCancel() { console.log('onCancel') }
+        })
+
+        return ssp.flyToObj(group, "leftFrontTop", { padding: 100 })
+      })
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="yes"?>
+<folder name="sxt">
+<file name="sxt.xml" Extension=".xml" />
+<file name="sxt.sbm" Extension=".sbm" />
+</folder>

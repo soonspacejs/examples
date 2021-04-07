@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import TransformControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-transform-controlss@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: true
+      },
+      events: {}
+    })
+
+    ssp.loadSbm({
+      id: 'v1_1',
+      url: '../../asstes/model/sbm/changjing02_1F_0.sbm',
+      position: {
+        x: 100,
+        y: 0,
+        z: 100
+      }
+    })
+      .then(sbm => {
+        ssp.flyToObj(sbm, "leftFrontTop", { padding: 100 })
+
+        const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls')
+
+        transformControls.start(sbm, {
+          mode: 'translate',
+          onUpdate(object) { console.log('onUpdate', object) },
+          onClose() { console.log('onClose') }
+        })
+        console.log(transformControls)
+
+        const gui = new GUI()
+        gui
+          .add({ mode: 'translate' }, 'mode')
+          .options(['translate', 'rotate', 'scale'])
+          .name('操作模式')
+          .onChange(val => transformControls.changeMode(val))
+
+      })
+
+  </script>
+</body>
+
+</html>

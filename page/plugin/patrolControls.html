@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import PatrolControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-patrol-controls@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
+
+    const ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: true
+      },
+      events: {
+        selectPosition(pos) {
+          console.log(pos)
+        }
+      }
+    })
+
+    ssp.createTopologyGroupFromGml(
+      // groupInfo
+      {
+        id: 'gml_group_test'
+      },
+      // topologyInfo
+      {
+        url: '../../asstes/gml/hzl.gml',
+        id: ['gml_for_topology_001', 'gml_for_topology_002'],
+        name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+        linkWidth: 20,
+        linkColor: 0xff0000,
+        renderNode: false,
+        nodeColor: 0x0000ff
+      }
+    )
+      .then(group => {
+
+        ssp.flyToObj(group)
+
+        const topology = ssp.getTopologyById('gml_for_topology_001')
+        const shortestPath = ssp.getShortestPath(topology, {
+          start: { x: -1900.5777202843196, y: 2, z: 1567.6909796911968 },
+          end: { x: -1957.6272358858914, y: 2, z: -2796.2790465298626 },
+          id: 'shortestPath',
+          linkColor: 'red',
+          nodeColor: ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'violet'],
+          imgUrl: '../../asstes/img/topology/arrow.png',
+          animation: true
+        })
+
+        const patrolControls = ssp.registerPlugin(PatrolControlsPlugin, 'patrolControls')
+
+        const gui = new GUI()
+        const fns = {
+          '暂停': function () {
+            patrolControls.pause()
+          },
+          '继续': function () {
+            patrolControls.resume()
+          },
+          '结束': function () {
+            patrolControls.stop()
+          }
+        }
+
+        for (let i in fns) gui.add(fns, i)
+
+        return patrolControls.start(
+          shortestPath,
+          {
+            naviSpeed: 1,
+            eyeHeight: 100,
+            onUpdate: (currPosition) => {
+              console.log('onUpdate', currPosition)
+            }
+          })
+
+      })
+      .then(position => {
+        console.log('巡检结束！', position)
+      })
+
+  </script>
+</body>
+
+</html>
