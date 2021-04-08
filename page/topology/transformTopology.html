@@ -12,71 +12,53 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
-  <script src="../../sdk/transform-controls.js"></script>
-  <script>
 
-    let gmlObj, transformControls;
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import TransformControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-transform-controls@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
         showGrid: true
       },
       events: {}
     })
 
-    transformControls = ssp.install(TransformControls)
+    ssp.createTopologyGroupFromGml(
+      // groupInfo
+      {
+        id: 'gml_group_test'
+      },
+      // topologyInfo
+      {
+        url: '../../asstes/gml/hzl.gml',
+        id: ['gml_for_topology_001', 'gml_for_topology_002'],
+        name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+        linkWidth: 20,
+        linkColor: 0xff0000,
+        renderNode: true,
+        nodeColor: 0x0000ff
+      }
+    )
+      .then(group => {
+        const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls')
 
-    ssp.loadXml({ id: 'hzl' }, '../../asstes/model/sbm/hzl/hzl.xml')
-
-      .then(() => ssp.loadGml({ id: 'gml' }, '../../asstes/model/sbm/hzl/hzl.gml'))
-      .then(gml => {
-
-        gmlObj = gml
-
-        return ssp.flyMainViewpoint()
-
-      })
-      .then(() => {
-         transformControls.start({
-          object: gmlObj,
+        transformControls.start(group, {
           mode: 'translate',
+          onUpdate(object) { console.log('onUpdate', object) },
+          onClose() { console.log('onClose') }
         })
+        console.log(transformControls)
+
+        const gui = new GUI()
+        gui
+          .add({ mode: 'translate' }, 'mode')
+          .options(['translate', 'rotate', 'scale'])
+          .name('操作模式')
+          .onChange(val => transformControls.changeMode(val))
       })
-
-    const gui = new GUI({
-      el: '#view'
-    })
-
-    gui.addButton({
-      text: '移动',
-      onClick() {
-        transformControls.changeMode('translate')
-      }
-    })
-
-    gui.addButton({
-      text: '旋转',
-      onClick() {
-        transformControls.changeMode('rotate')
-      }
-    })
-
-    gui.addButton({
-      text: '缩放',
-      onClick() {
-        transformControls.changeMode('scale')
-      }
-    })
-
-    gui.addButton({
-      text: '打印 Gml 对象',
-      onClick() {
-        console.log(gmlObj)
-      }
-    })
 
   </script>
 </body>

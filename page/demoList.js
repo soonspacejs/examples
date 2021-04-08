@@ -90,15 +90,11 @@ export default [
     key: "topology",
     children: [
       {
-        title: "加载 Gml 路径",
+        title: "加载路径",
         demoLink: "./topology/loadGml.html"
       },
       {
-        title: "创建 topology 路径",
-        demoLink: "./topology/createTopology.html"
-      },
-      {
-        title: "操控 topology 路径",
+        title: "操控路径",
         demoLink: "./topology/transformTopology.html"
       }
     ]
@@ -112,10 +108,6 @@ export default [
       {
         title: "选中模型",
         demoLink: "./modelTool/selectModel.html"
-      },
-      {
-        title: "模型切割",
-        demoLink: "./modelTool/modelClipping.html"
       }
     ]
   },
@@ -149,14 +141,6 @@ export default [
         title: "场景雾化",
         demoLink: "./sceneTool/fog.html"
       },
-      {
-        title: "场景切割",
-        demoLink: "./sceneTool/sceneClipping.html"
-      },
-      // {
-      //   title: "测量",
-      //   demoLink: "./sceneTool/measure.html"
-      // }
     ]
   },
   // camera

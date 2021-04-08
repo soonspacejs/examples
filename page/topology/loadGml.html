@@ -12,44 +12,46 @@
 <body>
   <div id="view"></div>
 
-  <script src="../../sdk/index.js"></script>
-  <script src="../../../package/soon-gui/index.js"></script>
+  <script type="module">
+    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-  <script>
-
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      option: {
+      options: {
         showGrid: true
       },
       events: {}
     })
 
-    ssp.loadXml({ id: 'hzl' }, '../../asstes/model/sbm/hzl/hzl.xml')
-      .then(() => {
-        ssp.flyMainViewpoint()
-      })
+    const gui = new GUI()
 
-    const gui = new GUI({
-      el: '#view'
-    })
+    // gui.add
+    const fns = {
+      加载路径: function () {
+        ssp.createTopologyGroupFromGml(
+          // groupInfo
+          {
+            id: 'gml_group_test'
+          },
+          // topologyInfo
+          {
+            url: '../../asstes/gml/hzl.gml',
+            id: ['gml_for_topology_001', 'gml_for_topology_002'],
+            name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+            linkWidth: 20,
+            linkColor: 0xff0000,
+            renderNode: true,
+            nodeColor: 0x0000ff
+          }
+        )
+      },
+      清除路径: function () {
+        ssp.removeTopologyGroupById('gml_group_test')
+      },
+    }
 
-    gui.addButton({
-      text: '加载 Gml',
-      onClick() {
-        ssp.loadGml({ id: 'gml' }, '../../asstes/model/sbm/hzl/hzl.gml')
-          .then(gml => {
-            console.log('gml', gml)
-          })
-      }
-    })
-
-    gui.addButton({
-      text: '清空 Gml',
-      onClick() {
-        ssp.clearTopology()
-      }
-    })
+    for (let i in fns) gui.add(fns, i)
 
   </script>
 </body>
