@@ -21,7 +21,7 @@
     import PatrolControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-patrol-controls@next/dist/index.esm.js'
     import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
       options: {
         showInfo: true,
@@ -54,6 +54,7 @@
 
         ssp.flyToObj(group)
 
+        const patrolControls = ssp.registerPlugin(PatrolControlsPlugin, 'patrolControls')
         const topology = ssp.getTopologyById('gml_for_topology_001')
         const shortestPath = ssp.getShortestPath(topology, {
           start: { x: -1900.5777202843196, y: 2, z: 1567.6909796911968 },
@@ -65,10 +66,23 @@
           animation: true
         })
 
-        const patrolControls = ssp.registerPlugin(PatrolControlsPlugin, 'patrolControls')
-
         const gui = new GUI()
         const fns = {
+          '开始巡检': function () {
+            patrolControls.start(
+              shortestPath,
+              {
+                naviSpeed: 1,
+                eyeHeight: 100,
+                onUpdate: (currPosition) => {
+                  // console.log('onUpdate', currPosition)
+                }
+              }
+            )
+              .then(position => {
+                console.log('巡检结束！', position)
+              })
+          },
           '暂停': function () {
             patrolControls.pause()
           },
@@ -82,19 +96,6 @@
 
         for (let i in fns) gui.add(fns, i)
 
-        return patrolControls.start(
-          shortestPath,
-          {
-            naviSpeed: 1,
-            eyeHeight: 100,
-            onUpdate: (currPosition) => {
-              console.log('onUpdate', currPosition)
-            }
-          })
-
-      })
-      .then(position => {
-        console.log('巡检结束！', position)
       })
 
   </script>
