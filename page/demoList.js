@@ -162,6 +162,10 @@ export default [
         demoLink: "./camera/flyTo.html"
       },
       {
+        title: "始终飞向正面",
+        demoLink: "./camera/autoFrontViewpoint.html"
+      },
+      {
         title: "环绕",
         demoLink: "./camera/surround.html"
       },
