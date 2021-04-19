@@ -26,26 +26,22 @@
       events: {}
     })
 
-    ssp.createTopologyGroupFromGml(
-      // groupInfo
-      {
-        id: 'gml_group_test'
-      },
+    ssp.createTopologyFromGml(
       // topologyInfo
       {
         url: '../../asstes/gml/hzl.gml',
-        id: ['gml_for_topology_001', 'gml_for_topology_002'],
-        name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+        id: 'gml_for_topology_001',
+        name: 'gml_for_topology_name_001',
         linkWidth: 20,
         linkColor: 0xff0000,
         renderNode: true,
         nodeColor: 0x0000ff
       }
     )
-      .then(group => {
+      .then(topology => {
         const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls')
 
-        transformControls.start(group, {
+        transformControls.start(topology, {
           mode: 'translate',
           onUpdate(object) { console.log('onUpdate', object) },
           onClose() { console.log('onClose') }

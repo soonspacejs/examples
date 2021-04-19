@@ -29,16 +29,12 @@
     // gui.add
     const fns = {
       加载路径: function () {
-        ssp.createTopologyGroupFromGml(
-          // groupInfo
-          {
-            id: 'gml_group_test'
-          },
+        ssp.createTopologyFromGml(
           // topologyInfo
           {
             url: '../../asstes/gml/hzl.gml',
-            id: ['gml_for_topology_001', 'gml_for_topology_002'],
-            name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+            id: 'gml_for_topology_001',
+            name: 'gml_for_topology_name_001',
             linkWidth: 20,
             linkColor: 0xff0000,
             renderNode: true,
