@@ -34,31 +34,27 @@
       }
     })
 
-    ssp.createTopologyGroupFromGml(
-      // groupInfo
-      {
-        id: 'gml_group_test'
-      },
+    ssp.createTopologyFromGml(
       // topologyInfo
       {
-        url: '../../asstes/gml/hzl.gml',
-        id: ['gml_for_topology_001', 'gml_for_topology_002'],
-        name: ['gml_for_topology_name_001', 'gml_for_topology_name_002'],
+        url: '../../asstes/gml/tuobutujinzui.gml',
+        id: 'gml_for_topology',
+        name: 'gml_for_topology_name',
         linkWidth: 20,
         linkColor: 0xff0000,
         renderNode: false,
         nodeColor: 0x0000ff
       }
     )
-      .then(group => {
+      .then(topology => {
 
-        ssp.flyToObj(group)
+        ssp.flyToObj(topology)
 
         const patrolControls = ssp.registerPlugin(PatrolControlsPlugin, 'patrolControls')
-        const topology = ssp.getTopologyById('gml_for_topology_001')
+
         const shortestPath = ssp.getShortestPath(topology, {
-          start: { x: -1900.5777202843196, y: 2, z: 1567.6909796911968 },
-          end: { x: -1957.6272358858914, y: 2, z: -2796.2790465298626 },
+          start: { x: -2276.699237322046, y: 299.9999999999998, z: -2981.9710830239715, isVector3: true },
+          end: { x: 2118.35618722643, y: -650.0000000000001, z: -17893.889427365742, isVector3: true },
           id: 'shortestPath',
           linkColor: 'red',
           nodeColor: ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'violet'],

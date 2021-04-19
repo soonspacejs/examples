@@ -85,7 +85,7 @@ export default [
   },
   // topology
   {
-    title: "路径",
+    title: "拓扑路径",
     icon: "bank",
     key: "topology",
     children: [

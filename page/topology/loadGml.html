@@ -25,25 +25,26 @@
     })
 
     const gui = new GUI()
-
-    // gui.add
     const fns = {
       加载路径: function () {
         ssp.createTopologyFromGml(
           // topologyInfo
           {
-            url: '../../asstes/gml/hzl.gml',
-            id: 'gml_for_topology_001',
-            name: 'gml_for_topology_name_001',
+            url: '../../asstes/gml/tuobutujinzui.gml',
+            id: 'gml_for_topology',
+            name: 'gml_for_topology_name',
             linkWidth: 20,
             linkColor: 0xff0000,
             renderNode: true,
             nodeColor: 0x0000ff
           }
         )
+          .then(topology => {
+            ssp.flyToObj(topology)
+          })
       },
       清除路径: function () {
-        ssp.removeTopologyGroupById('gml_group_test')
+        ssp.removeTopologyById('gml_for_topology')
       },
     }
 
