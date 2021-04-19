@@ -17,9 +17,9 @@
   <div id="view" style="width: 100vw; height: 100vh;"></div>
   <script type="module">
 
-    import SoonSpace from 'https://unpkg.com/soonspacejs@next/dist/index.esm.js'
+    import SoonSpace from '../../lib/soonspace.js'
     import PatrolControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-patrol-controls@next/dist/index.esm.js'
-    import { GUI } from 'https://unpkg.com/dat.gui/build/dat.gui.module.js'
+    import { GUI } from '../../lib/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
