@@ -205,6 +205,10 @@ export default [
         title: "创建地面",
         demoLink: "./helper/createGround.html"
       },
+      {
+        title: "添加辅助器",
+        demoLink: "./helper/addHelper.html"
+      },
     ]
   },
   // animation
