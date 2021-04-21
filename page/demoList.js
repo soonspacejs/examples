@@ -180,21 +180,21 @@ export default [
     ]
   },
   // light
-  // {
-  //   title: "灯光",
-  //   icon: "bank",
-  //   key: "light",
-  //   children: [
-  //     {
-  //       title: "灯光配置",
-  //       demoLink: "./light/lightOption.html"
-  //     },
-  //     {
-  //       title: "创建点光源",
-  //       demoLink: "./light/createSpotLight.html"
-  //     },
-  //   ]
-  // },
+  {
+    title: "灯光",
+    icon: "bank",
+    key: "light",
+    children: [
+      {
+        title: "自定义灯光",
+        demoLink: "./light/customCreateLight.html"
+      },
+      {
+        title: "灯光辅助器",
+        demoLink: "./light/lightHelper.html"
+      },
+    ]
+  },
   // 辅助器
   {
     title: "辅助器",

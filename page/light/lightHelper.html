@@ -14,26 +14,23 @@
 
   <script type="module">
     import SoonSpace from '../../lib/soonspace.js'
+    import { GUI } from '../../lib/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
     })
 
-    ssp.loadSbm(
-      // sbmInfo
-      {
-        id: 'room_01',
-        url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
-      },
-      // onProgress
-      progress => console.log(progress)
-    )
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+    })
       .then(models => {
         ssp.flyMainViewpoint()
       })
-      .catch(err => {
-        console.error(err)
-      })
+
+
+    const gui = new GUI()
+
 
   </script>
 </body>
