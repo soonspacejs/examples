@@ -2,99 +2,96 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../asstes/css/base.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
 </head>
 
 <body>
-    <div id="view"></div>
+  <div id="view"></div>
 
-    <script type="module">
-        import SoonSpace from '../../lib/soonspace.js'
-        import { GUI } from '../../lib/gui.js'
+  <script type="module">
+    import SoonSpace from '../../lib/soonspace.js'
+    import { GUI } from '../../lib/gui.js'
 
-        const ssp = window.ssp = new SoonSpace({
-            el: '#view',
-            options: {},
-            events: {}
-        })
-        console.log(ssp)
-        ssp.setCameraViewpoint({
-            "position": {
-                "x": 1590.133737849201,
-                "y": 872.3450547965435,
-                "z": 1454.0707925200213
-            },
-            "rotation": {
-                "x": -0.4636476090008061,
-                "y": 0.7297276562269661,
-                "z": 0.3217505543966421
-            }
-        })
-        ssp.loadSbm({
-            id: 'test001',
-            url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
-            position: {
-                x: 1000,
-                y: 0,
-                z: 0
-            },
-            scale: { x: 0.4, y: 0.4, z: 0.4 },
-        }).then(sbm => {
-            const gui = new GUI()
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {},
+      events: {}
+    })
 
-            const helper = {
-                '坐标轴辅助器': function () {
-                    ssp.addAxesHelper({
-                        id: 'test_axesHelper',
-                        axesLength: 1000,
-                    });
-                },
-                '网格辅助器': function () {
-                    ssp.addGridHelper({
-                        id: 'test_gridHelper',
-                        size: 1000,
-                        divisions: 20,
-                        color: '#fff'
-                    })
-                },
-                '面辅助器': function () {
-                    ssp.addPlaneHelper({
-                        id: 'test_planeHelper',
-                        width: 500,
-                        height: 500,
-                        color: '#00ff00',
-                        opacity: 0.2,
-                        position: { x: 0, y: 0, z: 0 },
-                        rotation: { x: 0, y: 0, z: 0 },
-                    });
-                },
-                '包围盒辅助器': function () {
-                    ssp.addBoxHelper({
-                        id: 'test_boxHelper',
-                        box: sbm.getBoundingBox(),
-                        color: '#00ff00',
-                    });
-                },
-                '清空辅助器': function () {
-                    ['test_axesHelper', 'test_gridHelper', 'test_planeHelper', 'test_boxHelper'].forEach(id => {
-                        ssp.removeHelperById(id)
-                    })
-                }
-            }
+    ssp.setCameraViewpoint({
+      position: {
+        x: 1590.133737849201,
+        y: 872.3450547965435,
+        z: 1454.0707925200213
+      },
+      rotation: {
+        x: -0.4636476090008061,
+        y: 0.7297276562269661,
+        z: 0.3217505543966421
+      }
+    })
 
-            for (let i in helper) {
-                if (i !== '清空辅助器') {
-                    helper[i]()
-                }
-                gui.add(helper, i)
-            }
+    ssp.loadSbm({
+      id: 'test001',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+      position: {
+        x: 1000,
+        y: 0,
+        z: 0
+      },
+      scale: { x: 0.4, y: 0.4, z: 0.4 },
+    }).then(sbm => {
+      const gui = new GUI()
 
-        })
-    </script>
+      const helper = {
+        坐标轴辅助器: function () {
+          ssp.addAxesHelper({
+            id: 'test_axesHelper',
+            axesLength: 1000,
+          });
+        },
+        网格辅助器: function () {
+          ssp.addGridHelper({
+            id: 'test_gridHelper',
+            size: 1000,
+            divisions: 20,
+            color: '#fff'
+          })
+        },
+        面辅助器: function () {
+          ssp.addPlaneHelper({
+            id: 'test_planeHelper',
+            width: 500,
+            height: 500,
+            color: '#00ff00',
+            opacity: 0.2,
+            position: { x: 0, y: 0, z: 0 },
+            rotation: { x: 0, y: 0, z: 0 },
+          });
+        },
+        包围盒辅助器: function () {
+          ssp.addBoxHelper({
+            id: 'test_boxHelper',
+            box: sbm.getBoundingBox(),
+            color: '#ffff00',
+          });
+        },
+        清空辅助器: function () {
+          ssp.clearHelper()
+        }
+      }
+
+      for (let i in helper) {
+        gui.add(helper, i)
+      }
+
+    })
+
+  </script>
 </body>
 
 </html>
