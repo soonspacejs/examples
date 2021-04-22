@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css" />
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspace.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {},
+      events: {},
+    });
+
+    let model, position
+
+    ssp
+      .loadSbm({
+        id: 'room_01',
+        url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+      })
+      .then(sbm => {
+        model = sbm
+        position = sbm.position.clone()
+
+        ssp.flyMainViewpoint('frontTop', { padding: 3000 })
+      })
+
+    const gui = new GUI();
+    gui
+      .add({ 动画模式: 'Linear.None' }, '动画模式')
+      .options([
+        'Linear.None',
+        'Quadratic.In',
+        'Quadratic.Out',
+        'Quadratic.InOut',
+        'Cubic.In',
+        'Cubic.Out',
+        'Cubic.InOut',
+        'Quartic.In',
+        'Quartic.Out',
+        'Quartic.InOut',
+        'Quintic.In',
+        'Quintic.Out',
+        'Quintic.InOut',
+        'Sinusoidal.In',
+        'Sinusoidal.Out',
+        'Sinusoidal.InOut',
+        'Exponential.In',
+        'Exponential.Out',
+        'Exponential.InOut',
+        'Circular.In',
+        'Circular.Out',
+        'Circular.InOut',
+        'Elastic.In',
+        'Elastic.Out',
+        'Elastic.InOut',
+        'Back.In',
+        'Back.Out',
+        'Back.InOut',
+        'Bounce.In',
+        'Bounce.Out',
+        'Bounce.InOut'
+      ])
+      .onChange(async value => {
+
+        console.log(value)
+
+        await ssp.render(() => {
+          model.position.copy(position)
+        })
+
+        await ssp.animation(
+          model.position,
+          {
+            ...model.position,
+            x: model.position.x + 2000,
+          },
+          {
+            mode: value
+          }
+        )
+      })
+
+  </script>
+</body>
+
+</html>

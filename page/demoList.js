@@ -133,10 +133,6 @@ export default [
         title: "球体天空盒",
         demoLink: "./sceneTool/sphereSkyBox.html"
       },
-      // {
-      //   title: "2D模式",
-      //   demoLink: "./sceneTool/2DMode.html"
-      // },
       {
         title: "场景雾化",
         demoLink: "./sceneTool/fog.html"
@@ -149,10 +145,6 @@ export default [
     icon: "bank",
     key: "camera",
     children: [
-      // {
-      //   title: "相机限制",
-      //   demoLink: "./camera/cameraLimit.html"
-      // },
       {
         title: "视角枚举",
         demoLink: "./camera/viewpointEnum.html"
@@ -168,15 +160,7 @@ export default [
       {
         title: "环绕",
         demoLink: "./camera/surround.html"
-      },
-      // {
-      //   title: "相机跟随",
-      //   demoLink: "./camera/cameraFollower.html"
-      // },
-      // {
-      //   title: "第一人称",
-      //   demoLink: "./camera/firstPersonRoot.html"
-      // },
+      }
     ]
   },
   // light
@@ -190,8 +174,8 @@ export default [
         demoLink: "./light/customCreateLight.html"
       },
       {
-        title: "灯光辅助器",
-        demoLink: "./light/lightHelper.html"
+        title: "动态设置灯光",
+        demoLink: "./light/setLight.html"
       },
     ]
   },
@@ -221,10 +205,14 @@ export default [
         title: "创建动画",
         demoLink: "./animation/createAnimation.html"
       },
-      // {
-      //   title: "卷帘门升降",
-      //   demoLink: "./animation/juanlianmen.html"
-      // },
+      {
+        title: "动画模式枚举",
+        demoLink: "./animation/animationModeEnum.html"
+      },
+      {
+        title: "卷帘门模拟",
+        demoLink: "./animation/juanlianmen.html"
+      }
     ]
   },
   // plugin
