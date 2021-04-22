@@ -33,20 +33,6 @@
     const gui = new GUI()
 
     const fns = {
-      创建半球光: function () {
-        const id = 'hemisphereLight'
-
-        const light = ssp.getLightById(id)
-        if (light) return
-
-        ssp.createHemisphereLight({
-          id,
-          skyColor: 'yellow',
-          groundColor: 'green',
-          intensity: 0.3,
-          position: { x: 0, y: 500, z: 0 }
-        })
-      },
       创建环境光: function () {
         const id = 'ambientLight'
 
@@ -74,6 +60,20 @@
           openShadow: false
         })
       },
+      创建半球光: function () {
+        const id = 'hemisphereLight'
+
+        const light = ssp.getLightById(id)
+        if (light) return
+
+        ssp.createHemisphereLight({
+          id,
+          skyColor: 'yellow',
+          groundColor: 'green',
+          intensity: 0.3,
+          position: { x: 0, y: 500, z: 0 }
+        })
+      },
       创建聚光灯: function () {
         const id = 'spotLight'
 
@@ -89,7 +89,7 @@
           openShadow: false
         })
       },
-      创建点光: function () {
+      创建点光源: function () {
         const id = 'pointLight'
 
         const light = ssp.getLightById(id)
