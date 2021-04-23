@@ -17,6 +17,7 @@
     import { GUI } from '../../lib/gui.js'
 
     let lastEnd = true
+    let tween
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
@@ -27,16 +28,18 @@
       events: {}
     })
 
-    const poi = ssp.createPoi({
-      id: "icon1",
-      name: "icon1",
-      url: "../../asstes/img/poi/icon1.png",
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
       position: {
-        x: 800,
-        y: 10,
-        z: 800
+        x: 1000,
+        y: 0,
+        z: 0
       }
-    });
+    })
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
 
     const gui = new GUI();
     const fns = {
@@ -48,7 +51,11 @@
         ssp
           .surroundOnTarget(
             { x: 0, y: 0, z: 0 },
-            { angle: 180, speed: 1 }
+            { 
+              angle: 180,
+              speed: 1,
+              onStart: t => tween = t
+            }
           )
           .then(() => lastEnd = true)
       },
@@ -59,11 +66,21 @@
 
         ssp
           .surroundOnObject(
-            poi,
-            { angle: 360, speed: 3 }
+            ssp.getSbmById('room_01'),
+            {
+              angle: 360,
+              speed: 3,
+              onStart: t => tween = t
+            }
           )
           .then(() => lastEnd = true)
       },
+      环绕暂停: function() {
+        tween && tween.pause()
+      },
+      环绕继续: function() {
+        tween && tween.resume()
+      }
     }
 
     for (let i in fns) gui.add(fns, i)
