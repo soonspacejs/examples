@@ -63,29 +63,38 @@
         })
 
         const gui = new GUI()
+        const options = {
+          eyeHeight: 150,
+          naviSpeed: 1,
+          rotateSpeed: 1
+        }
+
+        gui.add(options, 'eyeHeight', 100, 200).name('眼睛高度').onChange(() => patrolControls.setOptions(options))
+        gui.add(options, 'naviSpeed', 0.1, 2).name('巡检速度').onChange(() => patrolControls.setOptions(options))
+        gui.add(options, 'rotateSpeed', 0.1, 2).name('转角速度').onChange(() => patrolControls.setOptions(options))
+
         const fns = {
-          '开始巡检': function () {
+          开始巡检: function () {
             patrolControls.start(
               shortestPath,
               {
-                naviSpeed: 1,
-                eyeHeight: 100,
+                ...options,
                 onUpdate: (currPosition) => {
                   // console.log('onUpdate', currPosition)
+                },
+                onEnd: (position) => {
+                  console.log('巡检结束！', position)
                 }
               }
             )
-              .then(position => {
-                console.log('巡检结束！', position)
-              })
           },
-          '暂停': function () {
+          暂停: function () {
             patrolControls.pause()
           },
-          '继续': function () {
+          继续: function () {
             patrolControls.resume()
           },
-          '结束': function () {
+          结束: function () {
             patrolControls.stop()
           }
         }
