@@ -38,27 +38,35 @@
 
     soonmanagerSync.setGlobalSetting()
 
-    soonmanagerSync.loadScene({
-      /**
-       * 指定开始加载的树节点 ID
-       *   未指定或指定为空，从根节点开始加载场景
-       *   指定的 ID 无法命中节点，不会加载任何模型
-       */
-      // targetId: 'xxxxx',
+    soonmanagerSync.loadScene(
+      // options
+      {
+        /**
+         * 指定开始加载的树节点 ID
+         *   未指定或指定为空，从根节点开始加载场景
+         *   指定的 ID 无法命中节点，不会加载任何模型
+         */
+        // targetId: 'xxxxx',
 
-      /**
-       * 从指定节点开始，设置广度遍历加载多少层子集模型
-       *   不设置时加载全部层级子集
-       */
-      // targetLevel: 2,
+        /**
+         * 从指定节点开始，设置广度遍历加载多少层子集模型
+         *   不设置时加载全部层级子集
+         */
+        // targetLevel: 2,
 
-      /**
-       * 是否利用页面交互空闲时间去加载剩余模型
-       */
-      isIdleRest: true,
-    })
+        /**
+         * 是否利用页面交互空闲时间去加载剩余模型
+         */
+        isIdleRest: true,
+
+        // 全部加载完成回调
+        loadSceneAllSuccess: () => {
+          console.loh('全部加载完成！')
+        }
+      }
+    )
       .then(() => {
-        console.log("加载完成");
+        console.log("主层级加载完成！");
         ssp.flyMainViewpoint()
       })
 

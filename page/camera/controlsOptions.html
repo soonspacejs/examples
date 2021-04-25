@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspace.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true,
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+      position: {
+        x: 1000,
+        y: 0,
+        z: 0
+      }
+    })
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI();
+    const options = {
+      enableAutoRotate: false,
+      autoRotateSpeed: 1
+    }
+    gui.add(options, 'enableAutoRotate').name('自动旋转').onChange(() => {
+      ssp.viewport.controls.enableAutoRotate = options.enableAutoRotate
+    })
+    gui.add(options, 'autoRotateSpeed', 0.1, 5).name('自动旋转速度').onChange(() => {
+      ssp.viewport.controls.autoRotateSpeed = options.autoRotateSpeed
+    })
+
+  </script>
+</body>
+
+</html>

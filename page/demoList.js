@@ -146,6 +146,10 @@ export default [
     key: "camera",
     children: [
       {
+        title: "控制器配置",
+        demoLink: "./camera/controlsOptions.html"
+      },
+      {
         title: "视角枚举",
         demoLink: "./camera/viewpointEnum.html"
       },
