@@ -41,13 +41,17 @@
     const gui = new GUI();
     const options = {
       enableAutoRotate: false,
-      autoRotateSpeed: 1
+      autoRotateSpeed: 1,
+      autoRotateClockwise: true
     }
     gui.add(options, 'enableAutoRotate').name('自动旋转').onChange(() => {
       ssp.viewport.controls.enableAutoRotate = options.enableAutoRotate
     })
     gui.add(options, 'autoRotateSpeed', 0.1, 5).name('自动旋转速度').onChange(() => {
       ssp.viewport.controls.autoRotateSpeed = options.autoRotateSpeed
+    })
+    gui.add(options, 'autoRotateClockwise').name('顺时针旋转').onChange(() => {
+      ssp.viewport.controls.autoRotateClockwise = options.autoRotateClockwise
     })
 
   </script>

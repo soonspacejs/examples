@@ -320,7 +320,7 @@
           const light = ssp.getLightById(poinntLightOptions.id)
           if (light) return
 
-          ssp.createPoinntLight(poinntLightOptions)
+          ssp.createPointLight(poinntLightOptions)
         }
       },
       '创建点光源'
@@ -331,31 +331,31 @@
       .addColor(poinntLightOptions, 'color')
       .name('颜色')
       .onChange(value => {
-        ssp.setPoinntLight(poinntLightOptions)
+        ssp.setPointLight(poinntLightOptions)
       })
     poinntLightFolder
       .add(poinntLightOptions, 'intensity', 0, 2)
       .name('光强度')
       .onChange(value => {
-        ssp.setPoinntLight(poinntLightOptions)
+        ssp.setPointLight(poinntLightOptions)
       })
     poinntLightFolder
       .add(poinntLightOptions.position, 'x', -200, 200)
       .name('x 坐标')
       .onChange(value => {
-        ssp.setPoinntLight(poinntLightOptions)
+        ssp.setPointLight(poinntLightOptions)
       })
     poinntLightFolder
       .add(poinntLightOptions.position, 'y', 0, 500)
       .name('y 坐标')
       .onChange(value => {
-        ssp.setPoinntLight(poinntLightOptions)
+        ssp.setPointLight(poinntLightOptions)
       })
     const i = poinntLightFolder
       .add(poinntLightOptions.position, 'z', -200, 200)
       .name('z 坐标')
       .onChange(value => {
-        ssp.setPoinntLight(poinntLightOptions)
+        ssp.setPointLight(poinntLightOptions)
       })
 
   </script>
