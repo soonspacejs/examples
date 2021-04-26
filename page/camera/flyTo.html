@@ -45,10 +45,6 @@
       events: {}
     })
 
-    ssp.viewport.controls.enableAutoRotate = true
-    ssp.viewport.controls.autoRotateSpeed = 1
-    ssp.viewport.controls.autoRotateClockwise = true
-
     // createPoi
     const poi = ssp.createPoi({
       id: "icon1",
@@ -140,9 +136,9 @@
         // flyToObj
         ssp.flyToObj(
           model,
-          "left",
+          "frontTop",
           {
-            padding: 10,
+            padding: -1000,
             duration: 2000
           }
         )
