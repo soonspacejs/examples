@@ -43,7 +43,17 @@
         linkWidth: 20,
         linkColor: 0xff0000,
         renderNode: false,
-        nodeColor: 0x0000ff
+        nodeColor: 0x0000ff,
+        position: {
+          x: 1000,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 1.5,
+          y: 1.5,
+          z: 1.5,
+        }
       }
     )
       .then(topology => {
@@ -64,11 +74,13 @@
 
         const gui = new GUI()
         const options = {
+          flyToStartPoint: true,
           eyeHeight: 150,
           naviSpeed: 1,
           rotateSpeed: 1
         }
 
+        gui.add(options, 'flyToStartPoint').name('飞向起始点')
         gui.add(options, 'eyeHeight', 100, 200).name('眼睛高度').onChange(() => patrolControls.setOptions(options))
         gui.add(options, 'naviSpeed', 0.1, 2).name('巡检速度').onChange(() => patrolControls.setOptions(options))
         gui.add(options, 'rotateSpeed', 0.1, 2).name('转角速度').onChange(() => patrolControls.setOptions(options))
