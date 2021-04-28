@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from '../../lib/soonspace.js'
+    import DrawTopologyPlugin from 'https://unpkg.com/@soonspacejs/plugin-draw-topology@next/dist/index.esm.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.createGround({
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 10000,
+      height: 10000
+    })
+
+    const drawTopologyPlugin = ssp.registerPlugin(DrawTopologyPlugin, 'drawTopologyPlugin')
+
+    ssp.loadSbm({
+      id: 'room',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+      position: {
+        x: 100,
+        y: 120,
+        z: 100
+      }
+    })
+      .then(sbm => {
+        return ssp.flyToObj(sbm, "frontTop", { padding: 100 })
+      })
+      .then(() => {
+        const gui = new GUI()
+
+        const fns = {
+          开始绘制: function () {
+            drawTopologyPlugin.start({
+              id: 'draing_topology',
+              onDone(nodes) {
+                console.log('drawEnd', nodes)
+              },
+              onCancel() {
+                console.log('drawCancel')
+              }
+            })
+          }
+        }
+
+        for (let i in fns) gui.add(fns, i)
+      })
+
+  </script>
+</body>
+
+</html>

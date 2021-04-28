@@ -72,13 +72,26 @@
         const sbm = ssp.getSbmById('v1_1')
 
         followMousePlugin.start(sbm, {
-          offsetY: 1,
           openHelper: true,
           helperColor: 'blue',
-          onPlace(model) { console.log('onPlace', model) },
-          onBack(model) { console.log('onBack', model) },
-          onDone(model) { console.log('onDone', model) },
-          onCancel() { console.log('onCancel') }
+          offset: {
+            x: 2,
+            y: 2,
+            z: 2
+          },
+          onPlace(model) {
+            console.log('onPlace', model)
+          },
+          onBack(model) {
+            console.log('onBack', model)
+          },
+          onDone(model) {
+            ssp.removeSbmById('v1_1')
+            console.log('onDone', model)
+          },
+          onCancel() {
+            console.log('onCancel')
+          }
         })
 
         return ssp.flyToObj(group, "leftFrontTop", { padding: 100 })

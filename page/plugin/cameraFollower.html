@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from '../../lib/soonspace.js'
+    import CameraFollowerPlugin from 'https://unpkg.com/@soonspacejs/plugin-camera-follower@next/dist/index.esm.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: true
+      },
+      events: {}
+    })
+
+    const cameraFollower = ssp.registerPlugin(CameraFollowerPlugin, 'cameraFollower')
+    const gui = new GUI()
+
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+      scale: {
+        x: 0.1,
+        y: 0.1,
+        z: 0.1
+      }
+    })
+      .then(model => {
+        ssp.flyMainViewpoint()
+        return model
+      })
+      .then(model => {
+
+        model.setMove(
+          {
+            x: model.position.x - 100,
+            y: model.position.y,
+            z: model.position.z
+          },
+          {
+            duration: 10000
+          }
+        )
+
+        const fns = {
+          开始: function () {
+            cameraFollower.start(model, {
+              position: {
+                x: 1500,
+                y: 300,
+                z: 0
+              },
+              rotation: {
+                x: 0,
+                y: Math.PI / 2,
+                z: 0
+              }
+            })
+          },
+          结束: function () {
+            cameraFollower.stop()
+          }
+        }
+
+        for( let i in fns ) gui.add(fns, i)
+
+      })
+
+  </script>
+</body>
+
+</html>

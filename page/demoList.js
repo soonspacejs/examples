@@ -234,14 +234,6 @@ export default [
         demoLink: "./plugin/heatMap.html"
       },
       {
-        title: "切割控制器 - 模型切割",
-        demoLink: "./plugin/modelClipping.html"
-      },
-      {
-        title: "切割控制器 - 场景切割",
-        demoLink: "./plugin/sceneClipping.html"
-      },
-      {
         title: "模型操作控制器",
         demoLink: "./plugin/transformControls.html"
       },
@@ -254,8 +246,24 @@ export default [
         demoLink: "./plugin/patrolControls.html"
       },
       {
+        title: "绘制拓扑路径",
+        demoLink: "./plugin/drawTopology.html"
+      },
+      {
         title: "第一人称漫游控制器",
         demoLink: "./plugin/firstPersonControls.html"
+      },
+      {
+        title: "相机跟随模型",
+        demoLink: "./plugin/cameraFollower.html"
+      },
+      {
+        title: "切割控制器 - 模型切割",
+        demoLink: "./plugin/modelClipping.html"
+      },
+      {
+        title: "切割控制器 - 场景切割",
+        demoLink: "./plugin/sceneClipping.html"
       },
     ]
   }
