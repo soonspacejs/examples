@@ -18,7 +18,7 @@
   <script type="module">
 
     import SoonSpace from '../../lib/soonspace.js'
-    import ClippingControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-clipping-controls@next/dist/index.esm.js'
+    import ClippingControlsPlugin from '../../lib/plugins/clipping-controls.js'
     import { GUI } from '../../lib/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
@@ -87,21 +87,21 @@
 
         clippingControls.modelClipping(model, {
           axis: 'x',
-          clipLength: param.x,
+          clipPercent: param.x,
           isForward: param.isForward,
           openHelper: param.openHelper
         })
 
         clippingControls.modelClipping(model, {
           axis: 'y',
-          clipLength: param.y,
+          clipPercent: param.y,
           isForward: param.isForward,
           openHelper: param.openHelper
         })
 
         clippingControls.modelClipping(model, {
           axis: 'z',
-          clipLength: param.z,
+          clipPercent: param.z,
           isForward: param.isForward,
           openHelper: param.openHelper
         })
@@ -112,21 +112,21 @@
           .onChange(val => {
             clippingControls.modelClipping(model, {
               axis: 'x',
-              clipLength: param.x,
+              clipPercent: param.x,
               isForward: param.isForward,
               openHelper: val
             })
 
             clippingControls.modelClipping(model, {
               axis: 'y',
-              clipLength: param.y,
+              clipPercent: param.y,
               isForward: param.isForward,
               openHelper: val
             })
 
             clippingControls.modelClipping(model, {
               axis: 'z',
-              clipLength: param.z,
+              clipPercent: param.z,
               isForward: param.isForward,
               openHelper: val
             })
@@ -138,57 +138,57 @@
           .onChange(val => {
             clippingControls.modelClipping(model, {
               axis: 'x',
-              clipLength: param.x,
+              clipPercent: param.x,
               isForward: val,
               openHelper: param.openHelper
             })
 
             clippingControls.modelClipping(model, {
               axis: 'y',
-              clipLength: param.y,
+              clipPercent: param.y,
               isForward: val,
               openHelper: param.openHelper
             })
 
             clippingControls.modelClipping(model, {
               axis: 'z',
-              clipLength: param.z,
+              clipPercent: param.z,
               isForward: val,
               openHelper: param.openHelper
             })
           })
 
         gui
-          .add(param, 'x', 0, 1200)
-          .name('X 轴切割长度')
+          .add(param, 'x', 0, 100)
+          .name('X 轴切割百分比')
           .onChange(val => {
             clippingControls.modelClipping(model, {
               axis: 'x',
-              clipLength: val,
+              clipPercent: val,
               isForward: param.isForward,
               openHelper: param.openHelper
             })
           })
 
         gui
-          .add(param, 'y', 0, 310)
-          .name('Y 轴切割长度')
+          .add(param, 'y', 0, 100)
+          .name('Y 轴切割百分比')
           .onChange(val => {
             clippingControls.modelClipping(model, {
               axis: 'y',
-              clipLength: val,
+              clipPercent: val,
               isForward: param.isForward,
               openHelper: param.openHelper
             })
           })
 
         gui
-          .add(param, 'z', 0, 1200)
-          .name('Z 轴切割长度')
+          .add(param, 'z', 0, 100)
+          .name('Z 轴切割百分比')
           .onChange(val => {
             clippingControls.modelClipping(model, {
               axis: 'z',
-              clipLength: val,
+              clipPercent: val,
               isForward: param.isForward,
               openHelper: param.openHelper
             })

@@ -24,8 +24,7 @@
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
       options: {
-        showInfo: true,
-        showGrid: true
+        showInfo: true
       },
       events: {
         selectPosition(pos) {
@@ -34,14 +33,23 @@
       }
     })
 
+    ssp.createGround({
+      id: 'test_ground',
+      imgUrl: '../../asstes/img/ground/005.jpg',
+      width: 200000,
+      height: 200000,
+      position: { x: 0, y: -1000, z: 0 },
+      repeat: { x: 10, y: 10 }
+    })
+
     ssp.createTopologyFromGml(
       // topologyInfo
       {
         url: '../../asstes/gml/tuobutujinzui.gml',
         id: 'gml_for_topology',
         name: 'gml_for_topology_name',
-        linkWidth: 20,
-        linkColor: 0xff0000,
+        linkWidth: 100,
+        linkColor: ['green', 'yellow', 'orange'],
         renderNode: false,
         nodeColor: 0x0000ff,
         position: {
@@ -66,7 +74,8 @@
           start: { x: -2276.699237322046, y: 299.9999999999998, z: -2981.9710830239715, isVector3: true },
           end: { x: 2118.35618722643, y: -650.0000000000001, z: -17893.889427365742, isVector3: true },
           id: 'shortestPath',
-          linkColor: 'red',
+          // linkColor: 'red',
+          linkWidth: 100,
           nodeColor: ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'violet'],
           imgUrl: '../../asstes/img/topology/arrow.png',
           animation: true
