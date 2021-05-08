@@ -2,7 +2,6 @@ export default [
   // start
   {
     title: "起步",
-    icon: "bank",
     key: "start",
     children: [
       {
@@ -14,7 +13,6 @@ export default [
   // model
   {
     title: "模型",
-    icon: "bank",
     key: "model",
     children: [
       {
@@ -34,7 +32,6 @@ export default [
   // poi
   {
     title: "Poi",
-    icon: "bank",
     key: "poi",
     children: [
       {
@@ -54,7 +51,6 @@ export default [
   // event
   {
     title: "事件",
-    icon: "bank",
     key: "event",
     children: [
       {
@@ -74,7 +70,6 @@ export default [
   // canvas3D
   {
     title: "空间画布",
-    icon: "bank",
     key: "canvas3D",
     children: [
       {
@@ -86,7 +81,6 @@ export default [
   // topology
   {
     title: "拓扑路径",
-    icon: "bank",
     key: "topology",
     children: [
       {
@@ -102,7 +96,6 @@ export default [
   // modelTool
   {
     title: "模型操作工具",
-    icon: "bank",
     key: "modelTool",
     children: [
       {
@@ -114,7 +107,6 @@ export default [
   // sceneTool
   {
     title: "场景工具",
-    icon: "bank",
     key: "sceneTool",
     children: [
       {
@@ -142,7 +134,6 @@ export default [
   // camera
   {
     title: "相机",
-    icon: "bank",
     key: "camera",
     children: [
       {
@@ -170,7 +161,6 @@ export default [
   // light
   {
     title: "灯光",
-    icon: "bank",
     key: "light",
     children: [
       {
@@ -186,7 +176,6 @@ export default [
   // 辅助器
   {
     title: "辅助器",
-    icon: "bank",
     key: "helper",
     children: [
       {
@@ -202,7 +191,6 @@ export default [
   // animation
   {
     title: "动画",
-    icon: "bank",
     key: "animation",
     children: [
       {
@@ -222,7 +210,6 @@ export default [
   // plugin
   {
     title: "插件",
-    icon: "bank",
     key: "plugin",
     children: [
       {
