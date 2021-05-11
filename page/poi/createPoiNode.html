@@ -48,7 +48,7 @@
 
     const gui = new GUI();
     const paramFn = {
-      '2DPoiNode': function () {
+      '2D': function () {
         const poiNodeEl = el.cloneNode(true)
         poiNodeEl.style.display = 'block'
         // pc 点击
@@ -69,13 +69,13 @@
             z: 0
           },
           element: poiNodeEl,
-          // level: {
-          //   max: 3000,
-          //   min: null
-          // }
+          level: {
+            max: 3000,
+            min: null
+          }
         })
       },
-      '2.5DPoiNode': function () {
+      '2.5D': function () {
         const poiNodeEl = el.cloneNode(true)
         poiNodeEl.style.display = 'block'
         // pc 点击
@@ -96,13 +96,13 @@
             z: 0
           },
           element: poiNodeEl,
-          // level: {
-          //   max: 3000,
-          //   min: null
-          // }
+          level: {
+            max: 3000,
+            min: null
+          }
         })
       },
-      '3DPoiNode': function () {
+      '3D': function () {
         const poiNodeEl = el.cloneNode(true)
         poiNodeEl.style.display = 'block'
         // pc 点击
@@ -123,13 +123,19 @@
             z: 0
           },
           element: poiNodeEl,
-          // level: {
-          //   max: 3000,
-          //   min: null
-          // }
+          level: {
+            max: 3000,
+            min: null
+          }
         })
       },
-      '清除PoiNode': function () {
+      隐藏全部: function () {
+        ssp.hideAllPoiNode()
+      },
+      显示全部: function () {
+        ssp.showAllPoiNode()
+      },
+      清除全部: function () {
         ssp.clearPoiNode()
       },
     }
