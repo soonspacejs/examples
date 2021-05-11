@@ -2,67 +2,91 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
   <style>
     * {
       margin: 0;
     }
+
+    #tips {
+      position: fixed;
+      top: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: rgb(255, 255, 255);
+      z-index: 1;
+    }
+    #tips a {
+      color: bisque;
+    }
   </style>
 </head>
 
 <body>
-  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <p id="tips">
+    由于键盘事件无法直接跨过 iframe，样例请看<a href="./firstPersonControls.html" target="_blank">这里</a>
+  </p>
+  <div id="view" style="width: 100vw; height: 100vh"></div>
+  <script>
+    const tips = document.querySelector('#tips');
+    if (globalThis === globalThis.parent) {
+      tips.setAttribute('hidden', true)
+    }
+  </script>
   <script type="module">
+    import SoonSpace from '../../lib/soonspace.js';
+    import FirstPersonControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-first-person-controls/dist/index.esm.js';
 
-    import SoonSpace from '../../lib/soonspace.js'
-    import FirstPersonControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-first-person-controls/dist/index.esm.js'
-
-    const ssp = window.ssp = new SoonSpace({
+    const ssp = (window.ssp = new SoonSpace({
       el: '#view',
       options: {
         showInfo: true,
-        showGrid: false
+        showGrid: false,
       },
       events: {
         selectPosition(position) {
-          console.log(position)
-        }
-      }
-    })
+          console.log(position);
+        },
+      },
+    }));
 
-    ssp.loadSbm({
-      id: 'room',
-      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
-      position: {
-        x: 100,
-        y: 120,
-        z: 100
-      }
-    })
-      .then(sbm => {
-        return ssp.flyToObj(sbm, "leftFrontTop", { padding: 100 })
+    ssp
+      .loadSbm({
+        id: 'room',
+        url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 100,
+          y: 120,
+          z: 100,
+        },
       })
-      .then(sbm => {
-        const firstPersonControls = ssp.registerPlugin(FirstPersonControlsPlugin, 'firstPersonControls')
-        console.log(firstPersonControls)
+      .then((sbm) => {
+        return ssp.flyToObj(sbm, 'leftFrontTop', { padding: 100 });
+      })
+      .then((sbm) => {
+        const firstPersonControls = ssp.registerPlugin(
+          FirstPersonControlsPlugin,
+          'firstPersonControls'
+        );
+        console.log(firstPersonControls);
 
         firstPersonControls.start({
           position: { x: 260, y: 50, z: 100 },
           rotation: { x: 0, y: 0, z: 0 },
           moveSpeed: 1.0,
-          enableClash: true
-        })
-      })
+          enableClash: true,
+        });
+      });
 
     ssp.manager.store.helperManager.createGround({
       imgUrl: '../../asstes/img/ground/001.jpg',
       width: 10000,
-      height: 10000
-    })
-
+      height: 10000,
+    });
   </script>
 </body>
 
