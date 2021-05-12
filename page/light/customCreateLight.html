@@ -95,10 +95,11 @@
         const light = ssp.getLightById(id)
         if (light) return
 
-        ssp.createPoinntLight({
+        ssp.createPointLight({
           id,
           color: 'green',
           intensity: 2,
+          distance: 10000,
           position: { x: 0, y: 200, z: 0 }
         })
       },

@@ -309,6 +309,7 @@
       id: lightIds.poinntLight,
       color: '#00ff00',
       intensity: 2,
+      distance: 5000,
       position: { x: 0, y: 200, z: 0 }
     }
 
@@ -336,6 +337,12 @@
     poinntLightFolder
       .add(poinntLightOptions, 'intensity', 0, 2)
       .name('光强度')
+      .onChange(value => {
+        ssp.setPointLight(poinntLightOptions)
+      })
+    poinntLightFolder
+      .add(poinntLightOptions, 'distance', 100, 10000)
+      .name('光照最大距离')
       .onChange(value => {
         ssp.setPointLight(poinntLightOptions)
       })
