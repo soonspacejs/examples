@@ -88,6 +88,10 @@ export default [
         demoLink: "./topology/loadGml.html"
       },
       {
+        title: "最短路径计算",
+        demoLink: "./topology/getShortestPath.html"
+      },
+      {
         title: "操控路径",
         demoLink: "./topology/transformTopology.html"
       }
