@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+  <script type="module">
+
+    import SoonSpace from '../../lib/soonspace.js'
+    import SoonmanagerSyncPlugin from 'https://unpkg.com/@soonspacejs/plugin-soonmanager-sync/dist/index.esm.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true
+      },
+      events: {
+        modelClick(pos) {
+          console.log(pos)
+        }
+      }
+    })
+
+    const soonmanagerSync = ssp.registerPlugin(SoonmanagerSyncPlugin, 'soonmanagerSync')
+    // 设置资源路径，可以使用本地资源或者平台发布的资源链接
+    soonmanagerSync.setBaseUrl('http://soon.xwbuilders.com:8066//model/a57eb4b2f7d549c6afe8a7b58c86dcaa/')
+
+    soonmanagerSync.loadScene(
+      // options
+      {
+        /**
+         * 指定开始加载的树节点 ID
+         *   未指定或指定为空，从根节点开始加载场景
+         *   指定的 ID 无法命中节点，不会加载任何模型
+         */
+        // targetId: 'xxxxx',
+
+        /**
+         * 从指定节点开始，设置广度遍历加载多少层子集模型
+         *   不设置时加载全部层级子集
+         */
+        // targetLevel: 2,
+
+        /**
+         * 是否利用页面交互空闲时间去加载剩余模型
+         */
+        isIdleRest: true,
+
+        // 全部加载完成回调
+        loadSceneAllSuccess: () => {
+          console.log('全部加载完成！')
+        }
+      }
+    )
+      .then(() => {
+        console.log("主层级加载完成！");
+        ssp.flyMainViewpoint()
+
+        const sbm = ssp.getSbmById(6666835)
+
+        ssp.createTopologyFromGml({
+          url: './FHY.gml',
+          id: 'gml_for_topology',
+          name: 'gml_for_topology_name',
+          linkWidth: 50,
+          linkColor: 'red',
+          renderNode: false,
+          nodeColor: 'blue',
+          position: sbm.position.clone().setY(50),
+          rotation: sbm.rotation,
+          scale: sbm.scale
+        })
+      })
+
+  </script>
+</body>
+
+</html>
