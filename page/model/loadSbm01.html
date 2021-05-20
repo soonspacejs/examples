@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspace.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.loadModel({
+      id: 'model_id',
+      url: '../../asstes/model/gltf/test01/model.gltf',
+      name: 'model_name',
+      onClick() {
+        console.log('model self click', this)
+      }
+    })
+      .then(gltf => {
+        console.log(gltf)
+        ssp.flyToObj(gltf)
+      })
+
+  </script>
+</body>
+
+</html>

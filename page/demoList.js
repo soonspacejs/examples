@@ -20,6 +20,10 @@ export default [
         demoLink: "./model/loadSbm.html"
       },
       {
+        title: "加载 sbm 01",
+        demoLink: "./model/loadSbm01.html"
+      },
+      {
         title: "加载 gltf",
         demoLink: "./model/loadGltf.html"
       },
