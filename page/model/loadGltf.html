@@ -17,13 +17,15 @@
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      options: {},
+      options: {
+        showInfo: true
+      },
       events: {}
     })
 
     ssp.loadModel({
       id: 'model_id',
-      url: '../../asstes/model/gltf/Hospital_Room.gltf',
+      url: '../../asstes/model/gltf/test01/model.gltf',
       name: 'model_name',
       onClick() {
         console.log('model self click', this)
