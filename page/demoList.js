@@ -270,6 +270,10 @@ export default [
       {
         title: "多场景",
         demoLink: "./featrue/moreScene.html"
+      },
+      {
+        title: "方向辅助器",
+        demoLink: "./featrue/directionHelper.html"
       }
     ]
   }

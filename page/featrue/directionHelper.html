@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoonSpace Example</title>
+  <style>
+    .box {
+      display: inline-block;
+      position: fixed;
+      right: 24px;
+      top: 100px;
+      width: 64px;
+      height: 64px;
+      transform-style: preserve-3d;
+      user-select: none;
+      transform: rotateX(0deg) rotatey(0deg);
+      /* pointer-events: none; */
+    }
+
+    .box_item {
+      display: inline-block;
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 64px;
+    }
+
+    .box_item:hover {
+      font-size: 32px;
+    }
+
+    .box_item:nth-child(1) {
+      background-color: rgba(0, 255, 0, .9);
+      transform: rotateX(-90deg) translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    .box_item:nth-child(2) {
+      background-color: rgba(0, 255, 0, .9);
+      transform: rotateX(90deg) translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    .box_item:nth-child(3) {
+      background-color: rgba(0, 0, 255, .9);
+      transform: translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    .box_item:nth-child(4) {
+      background-color: rgba(0, 0, 255);
+      transform: rotateY(180deg) translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    .box_item:nth-child(5) {
+      background-color: rgba(255, 0, 0, .9);
+      transform: rotateY(-90deg) translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    .box_item:nth-child(6) {
+      background-color: rgba(255, 0, 0, .9);
+      transform: rotateY(90deg) translateZ(32px) matrix3d(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+  </style>
+</head>
+
+<body style="margin: 0;">
+
+  <div id="view" style="display: inline-block; position: absolute; width: 100vw; height: 100vh;"></div>
+
+  <span id="compass" style="position: fixed; right: 12px; top: 12px;">
+    <svg t="1619422630720" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      p-id="2017" width="32" height="32">
+      <path
+        d="M841.77307 441.446318c-25.459092-14.5761-58.626592-4.924803-74.110867 21.711614L567.604042 806.797276 567.604042 75.910422c0-32.788926-24.258932-59.36461-54.211575-59.36461l-0.025171 0c-29.952643 0-54.240774 26.57669-54.240774 59.36461L459.126522 812.225179 255.906867 463.157931c-15.484275-26.536417-48.651775-36.287714-74.136038-21.711614-25.488291 14.547909-33.585341 47.962408-18.097039 74.446147l279.942279 480.998547c12.616779 21.683422 37.040834 32.131456 59.451198 27.334845 3.335679 0.702778 6.777076 1.083366 10.300028 1.083366l0.025171 0c2.970194 0 5.980984-0.271848 8.721295-0.774264 21.95527 3.972005 45.505383-6.47905 57.940246-27.64294l279.942279-480.998547C875.383583 489.308726 867.261361 455.99322 841.77307 441.446318z"
+        p-id="2018" fill="#1296db"></path>
+    </svg>
+  </span>
+
+  <div class="box" id="box_helper">
+    <div class="box_item">上</div>
+    <div class="box_item">下</div>
+    <div class="box_item">前</div>
+    <div class="box_item">后</div>
+    <div class="box_item">左</div>
+    <div class="box_item">右</div>
+  </div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspace.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true
+      },
+      events: {}
+    })
+
+    function epsilon(value) {
+
+      return Math.abs(value) < 1e-10 ? 0 : value;
+
+    }
+
+    function getCameraCSSMatrix(matrix) {
+
+      const elements = matrix.elements;
+
+      return 'matrix3d(' +
+        epsilon(elements[0]) + ',' +
+        epsilon(-elements[1]) + ',' +
+        epsilon(elements[2]) + ',' +
+        epsilon(elements[3]) + ',' +
+
+        epsilon(elements[4]) + ',' +
+        epsilon(-elements[5]) + ',' +
+        epsilon(elements[6]) + ',' +
+        epsilon(elements[7]) + ',' +
+
+        epsilon(elements[8]) + ',' +
+        epsilon(-elements[9]) + ',' +
+        epsilon(elements[10]) + ',' +
+        epsilon(elements[11]) + ',' +
+
+        0 + ',' +
+        0 + ',' +
+        0 + ',' +
+        1 +
+        ')';
+
+    }
+
+    ssp.signals.cameraChange.add(position => {
+      const direction = ssp.viewport.camera.getWorldDirection();
+
+      const rad = new ssp.THREE.Vector2(direction.x, direction.z).angle();
+      const angle = ssp.THREE.Math.radToDeg(rad) - 90;
+      document.getElementById('compass').style.transform = `rotateZ(${angle}deg)`;
+
+      document.getElementById('box_helper').style.transform = getCameraCSSMatrix(ssp.viewport.camera.matrixWorldInverse)
+    })
+
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+    })
+      .then(sbm => {
+        ssp.flyToObj(sbm, 'front')
+      })
+
+  </script>
+</body>
+
+</html>
