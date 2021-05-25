@@ -261,5 +261,16 @@ export default [
         demoLink: "./plugin/sceneClipping.html"
       },
     ]
+  },
+  // featrue
+  {
+    title: "特性",
+    key: "featrue",
+    children: [
+      {
+        title: "多场景",
+        demoLink: "./featrue/moreScene.html"
+      }
+    ]
   }
 ]
