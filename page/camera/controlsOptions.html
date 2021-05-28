@@ -39,20 +39,191 @@
       })
 
     const gui = new GUI();
+    const rotateTiltRange = {
+      max: Math.PI,
+      min: 0
+    }
     const options = {
+      enabled: true,
+      enabledMousePointInteractive: true,
+
+      enableZoom: true,
+      zoomSpeed: 1,
+      zoomMinDistance: 50,
+      zoomMaxDistance: 100000,
+      zoomMinStepDistance: 5,
+      zoomMaxStepDistance: 20000,
+
+      enableRotate: true,
+      enableRotateX: true,
+      enableRotateY: true,
+      rotateSpeed: 1,
+      rotateTiltRange,
+
+      enablePan: true,
+      enablePanX: true,
+      enablePanY: true,
+      enablePanAxisX: true,
+      enablePanAxisY: true,
+      enablePanAxisZ: true,
+
       enableAutoRotate: false,
       autoRotateSpeed: 1,
-      autoRotateClockwise: true
+      autoRotateClockwise: true,
     }
-    gui.add(options, 'enableAutoRotate').name('自动旋转').onChange(() => {
-      ssp.viewport.controls.enableAutoRotate = options.enableAutoRotate
-    })
-    gui.add(options, 'autoRotateSpeed', 0.1, 5).name('自动旋转速度').onChange(() => {
-      ssp.viewport.controls.autoRotateSpeed = options.autoRotateSpeed
-    })
-    gui.add(options, 'autoRotateClockwise').name('顺时针旋转').onChange(() => {
-      ssp.viewport.controls.autoRotateClockwise = options.autoRotateClockwise
-    })
+
+    const base = gui.addFolder('基础')
+    base.open()
+    base
+      .add(options, 'enabled')
+      .name('启用控制器')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    base
+      .add(options, 'enabledMousePointInteractive')
+      .name('开启鼠标点交互')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+
+    const zoom = gui.addFolder('缩放')
+    zoom.open()
+    zoom
+      .add(options, 'enableZoom')
+      .name('开启缩放')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    zoom
+      .add(options, 'zoomSpeed', 0.1, 2)
+      .name('缩放速度')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    zoom
+      .add(options, 'zoomMinDistance', 1, 1000)
+      .name('缩放最小距离')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    zoom
+      .add(options, 'zoomMinDistance', 5000, 500000)
+      .name('缩放最大距离')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    zoom
+      .add(options, 'zoomMinStepDistance', 1, 100)
+      .name('单步最小距离')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    zoom
+      .add(options, 'zoomMaxStepDistance', 5000, 500000)
+      .name('单步最大距离')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+
+    const rotate = gui.addFolder('旋转')
+    rotate.open()
+    rotate
+      .add(options, 'enableRotate')
+      .name('开启旋转')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    rotate
+      .add(options, 'enableRotateX')
+      .name('开启水平旋转')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    rotate
+      .add(options, 'enableRotateY')
+      .name('开启垂直旋转')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    rotate
+      .add(options, 'rotateSpeed', 0.1, 2)
+      .name('旋转速度')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    rotate
+      .add(rotateTiltRange, 'min', 0, Math.PI / 2)
+      .name('旋转最小倾斜度')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    rotate
+      .add(rotateTiltRange, 'max', Math.PI / 2, Math.PI)
+      .name('旋转最小倾斜度')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+
+    const pan = gui.addFolder('平移')
+    pan.open()
+    pan
+      .add(options, 'enablePan')
+      .name('开启平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'enablePanX')
+      .name('屏幕水平平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'enablePanY')
+      .name('屏幕垂直平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'enablePanAxisX')
+      .name('空间X轴平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'enablePanAxisY')
+      .name('空间Y轴平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'enablePanAxisZ')
+      .name('空间Z轴平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+
+    const autoRotate = gui.addFolder('自动旋转')
+    autoRotate.open()
+    autoRotate
+      .add(options, 'enableAutoRotate')
+      .name('开启自动旋转')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    autoRotate
+      .add(options, 'autoRotateSpeed', 0.1, 5)
+      .name('自动旋转速度')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    autoRotate
+      .add(options, 'autoRotateClockwise')
+      .name('顺时针自动旋转')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
 
   </script>
 </body>
