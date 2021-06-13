@@ -32,4 +32,4 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           source: "asstes,lib,page"
-          target: "/www/webSample/BusanStation/soonspacejs/examples/2.x"
+          target: "/mnt/soonspacejs/examples/"
