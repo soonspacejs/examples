@@ -6,7 +6,7 @@ export default [
     children: [
       {
         title: "Hello World",
-        demoLink: "./start/helloWorld.html"
+        demoLink: "./page/start/helloWorld.html"
       }
     ]
   },
@@ -17,19 +17,19 @@ export default [
     children: [
       {
         title: "加载 sbm",
-        demoLink: "./model/loadSbm.html"
+        demoLink: "./page/model/loadSbm.html"
       },
       {
         title: "加载 sbm 01",
-        demoLink: "./model/loadSbm01.html"
+        demoLink: "./page/model/loadSbm01.html"
       },
       {
         title: "加载 gltf",
-        demoLink: "./model/loadGltf.html"
+        demoLink: "./page/model/loadGltf.html"
       },
       {
         title: "加载 fbx",
-        demoLink: "./model/loadFbx.html"
+        demoLink: "./page/model/loadFbx.html"
       }
     ]
   },
@@ -40,15 +40,15 @@ export default [
     children: [
       {
         title: "Poi",
-        demoLink: "./poi/createPoi.html"
+        demoLink: "./page/poi/createPoi.html"
       },
       {
         title: "PoiNode",
-        demoLink: "./poi/createPoiNode.html"
+        demoLink: "./page/poi/createPoiNode.html"
       },
       {
         title: "PoiNode 空间视频",
-        demoLink: "./poi/createPoiNodeForVideo.html"
+        demoLink: "./page/poi/createPoiNodeForVideo.html"
       }
     ]
   },
@@ -59,15 +59,15 @@ export default [
     children: [
       {
         title: "全局事件",
-        demoLink: "./event/globalEvent.html"
+        demoLink: "./page/event/globalEvent.html"
       },
       {
         title: "模型事件",
-        demoLink: "./event/modelEvent.html"
+        demoLink: "./page/event/modelEvent.html"
       },
       {
         title: "poi事件",
-        demoLink: "./event/poiEvent.html"
+        demoLink: "./page/event/poiEvent.html"
       }
     ]
   },
@@ -78,7 +78,7 @@ export default [
     children: [
       {
         title: "点线面",
-        demoLink: "./canvas3D/pointLinePolygon.html"
+        demoLink: "./page/canvas3D/pointLinePolygon.html"
       }
     ]
   },
@@ -89,15 +89,15 @@ export default [
     children: [
       {
         title: "加载路径",
-        demoLink: "./topology/loadGml.html"
+        demoLink: "./page/topology/loadGml.html"
       },
       {
         title: "最短路径计算",
-        demoLink: "./topology/getShortestPath.html"
+        demoLink: "./page/topology/getShortestPath.html"
       },
       {
         title: "操控路径",
-        demoLink: "./topology/transformTopology.html"
+        demoLink: "./page/topology/transformTopology.html"
       }
     ]
   },
@@ -108,7 +108,7 @@ export default [
     children: [
       {
         title: "选中模型",
-        demoLink: "./modelTool/selectModel.html"
+        demoLink: "./page/modelTool/selectModel.html"
       }
     ]
   },
@@ -119,23 +119,23 @@ export default [
     children: [
       {
         title: "背景色",
-        demoLink: "./sceneTool/backgroundColor.html"
+        demoLink: "./page/sceneTool/backgroundColor.html"
       },
       {
         title: "背景图",
-        demoLink: "./sceneTool/backgroundImage.html"
+        demoLink: "./page/sceneTool/backgroundImage.html"
       },
       {
         title: "天空盒",
-        demoLink: "./sceneTool/skyBox.html"
+        demoLink: "./page/sceneTool/skyBox.html"
       },
       {
         title: "球体天空盒",
-        demoLink: "./sceneTool/sphereSkyBox.html"
+        demoLink: "./page/sceneTool/sphereSkyBox.html"
       },
       {
         title: "场景雾化",
-        demoLink: "./sceneTool/fog.html"
+        demoLink: "./page/sceneTool/fog.html"
       },
     ]
   },
@@ -146,23 +146,23 @@ export default [
     children: [
       {
         title: "控制器配置",
-        demoLink: "./camera/controlsOptions.html"
+        demoLink: "./page/camera/controlsOptions.html"
       },
       {
         title: "视角枚举",
-        demoLink: "./camera/viewpointEnum.html"
+        demoLink: "./page/camera/viewpointEnum.html"
       },
       {
         title: "飞向",
-        demoLink: "./camera/flyTo.html"
+        demoLink: "./page/camera/flyTo.html"
       },
       {
         title: "始终飞向正面",
-        demoLink: "./camera/autoFrontViewpoint.html"
+        demoLink: "./page/camera/autoFrontViewpoint.html"
       },
       {
         title: "环绕",
-        demoLink: "./camera/surround.html"
+        demoLink: "./page/camera/surround.html"
       }
     ]
   },
@@ -173,11 +173,11 @@ export default [
     children: [
       {
         title: "自定义灯光",
-        demoLink: "./light/customCreateLight.html"
+        demoLink: "./page/light/customCreateLight.html"
       },
       {
         title: "动态设置灯光",
-        demoLink: "./light/setLight.html"
+        demoLink: "./page/light/setLight.html"
       },
     ]
   },
@@ -188,11 +188,11 @@ export default [
     children: [
       {
         title: "创建地面",
-        demoLink: "./helper/createGround.html"
+        demoLink: "./page/helper/createGround.html"
       },
       {
         title: "添加辅助器",
-        demoLink: "./helper/addHelper.html"
+        demoLink: "./page/helper/addHelper.html"
       },
     ]
   },
@@ -203,15 +203,15 @@ export default [
     children: [
       {
         title: "创建动画",
-        demoLink: "./animation/createAnimation.html"
+        demoLink: "./page/animation/createAnimation.html"
       },
       {
         title: "动画模式枚举",
-        demoLink: "./animation/animationModeEnum.html"
+        demoLink: "./page/animation/animationModeEnum.html"
       },
       {
         title: "卷帘门模拟",
-        demoLink: "./animation/juanlianmen.html"
+        demoLink: "./page/animation/juanlianmen.html"
       }
     ]
   },
@@ -222,43 +222,43 @@ export default [
     children: [
       {
         title: "SoonManager 协同",
-        demoLink: "./plugin/soonmanagerSync.html"
+        demoLink: "./page/plugin/soonmanagerSync.html"
       },
       {
         title: "热力图",
-        demoLink: "./plugin/heatMap.html"
+        demoLink: "./page/plugin/heatMap.html"
       },
       {
         title: "模型操作控制器",
-        demoLink: "./plugin/transformControls.html"
+        demoLink: "./page/plugin/transformControls.html"
       },
       {
         title: "跟随鼠标控制器",
-        demoLink: "./plugin/followMouse.html"
+        demoLink: "./page/plugin/followMouse.html"
       },
       {
         title: "路径巡检控制器",
-        demoLink: "./plugin/patrolControls.html"
+        demoLink: "./page/plugin/patrolControls.html"
       },
       {
         title: "绘制拓扑路径",
-        demoLink: "./plugin/drawTopology.html"
+        demoLink: "./page/plugin/drawTopology.html"
       },
       {
         title: "第一人称漫游控制器",
-        demoLink: "./plugin/firstPersonControls.html"
+        demoLink: "./page/plugin/firstPersonControls.html"
       },
       {
         title: "相机跟随模型",
-        demoLink: "./plugin/cameraFollower.html"
+        demoLink: "./page/plugin/cameraFollower.html"
       },
       {
         title: "切割控制器 - 模型切割",
-        demoLink: "./plugin/modelClipping.html"
+        demoLink: "./page/plugin/modelClipping.html"
       },
       {
         title: "切割控制器 - 场景切割",
-        demoLink: "./plugin/sceneClipping.html"
+        demoLink: "./page/plugin/sceneClipping.html"
       },
     ]
   },
@@ -269,11 +269,11 @@ export default [
     children: [
       {
         title: "多场景",
-        demoLink: "./featrue/moreScene.html"
+        demoLink: "./page/featrue/moreScene.html"
       },
       {
         title: "方向辅助器",
-        demoLink: "./featrue/directionHelper.html"
+        demoLink: "./page/featrue/directionHelper.html"
       }
     ]
   }

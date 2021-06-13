@@ -6,11 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>SoonSpace Example</title>
-  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="../asstes/css/base.css">
-  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@1.7.4/dist/antd.min.css">
-  <script src="https://unpkg.com/vue@2.6.12/dist/vue.min.js"></script>
-  <script src="https://unpkg.com/ant-design-vue@1.7.4/dist/antd.min.js"></script>
+  <link rel="shortcut icon" href="./asstes/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./lib/antdv/antd.min.css">
+  <link rel="stylesheet" href="./asstes/css/base.css">
 
   <style>
     #layout-custom-trigger {
@@ -27,14 +25,6 @@
       color: #1890ff;
       text-align: center;
     }
-
-    /* #layout-custom-trigger .ant-menu-submenu-title {
-      padding-left: 48px !important;
-    }
-
-    #layout-custom-trigger .ant-menu-item {
-      padding-left: 72px !important;
-    } */
 
     .thank {
       display: inline-block;
@@ -61,6 +51,9 @@
 
 <body>
   <div id="app"></div>
+
+  <script src="./lib/vue/vue.min.js"></script>
+  <script src="./lib/antdv/antd.min.js"></script>
 
   <script type="module">
     import demoList from './demoList.js'
@@ -122,7 +115,7 @@
           :src="iframeLink"
           allowfullscreen allowvr onmousewheel=""
         ></iframe>
-        <a id="code-button" target="_blank" :href="codeBtnHref"><img src="./close_black.svg"></a>
+        <a id="code-button" target="_blank" :href="codeBtnHref"><img src="./asstes/close_black.svg"></a>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -147,7 +140,7 @@
           if (winHash) hash = winHash.split('#')[1]
 
           const hashArr = hash.split('_')
-          const iframeLink = `./${hashArr.join('/')}.html`
+          const iframeLink = `./page/${hashArr.join('/')}.html`
 
           this.selectedKeys = [iframeLink]
           this.openKeys = [hashArr[0]]
@@ -164,7 +157,8 @@
           this.$nextTick(() => {
 
             const keyArr = key.split('/');
-            const hash = `${keyArr[1]}_${keyArr[2]}`.split('.')[0];
+            console.log(keyArr)
+            const hash = `${keyArr[2]}_${keyArr[3]}`.split('.')[0];
 
             window.location.hash = hash;
 
