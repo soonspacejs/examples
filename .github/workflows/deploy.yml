@@ -31,5 +31,5 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
-          source: "asstes,lib,page"
+          source: "asstes,lib,page,demoList.js,index.html"
           target: "/mnt/soonspacejs/examples/"
