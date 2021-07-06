@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+    <div id="view"></div>
+
+    <script type="module">
+        import SoonSpace from '../../lib/soonspacejs/index.js'
+        import { GUI } from '../../lib/gui.js'
+
+        const ssp = window.ssp = new SoonSpace({
+            el: '#view',
+            options: {
+                showGrid: true
+            },
+            events: {}
+        })
+
+        const canvas3D = ssp.createCanvas3D({
+            id: 'test_canvas',
+            polygons: [{
+                id: 'polygons_1',
+                points: [
+                    {
+                        x: 0,
+                        y: 0,
+                        z: 300,
+                    },
+                    {
+                        x: 100,
+                        y: 0,
+                        z: 300,
+                    },
+                    {
+                        x: 100,
+                        y: 0,
+                        z: 400,
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        z: 400,
+                    }
+                ],
+                color: '#ffff00',
+                opacity: .8
+            }],
+        })
+
+        const polygons_1 = canvas3D.getObjectByProperty('sid', 'polygons_1')
+
+        const paramFn = {
+            '飞向面': () => {
+                ssp.flyToObj(polygons_1)
+                console.log(polygons_1)
+            },
+        }
+
+        const gui = new GUI();
+        for (let i in paramFn) gui.add(paramFn, i)
+
+        var palette = { '修改颜色': '#ffff00' };
+
+        gui.addColor(palette, '修改颜色').onChange((v) => {
+
+            ssp.render(() => {
+                polygons_1.material.color = new ssp.THREE.Color(v)
+            })
+            
+        })
+    </script>
+</body>
+
+</html>
