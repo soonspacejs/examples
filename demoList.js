@@ -264,6 +264,10 @@ export default [
         title: "切割控制器 - 场景切割",
         demoLink: "./page/plugin/sceneClipping.html"
       },
+      {
+        title: "模型爆炸拆分",
+        demoLink: "./page/plugin/modelBlast.html"
+      },
     ]
   },
   // featrue
