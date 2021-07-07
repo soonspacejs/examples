@@ -79,6 +79,10 @@ export default [
       {
         title: "点线面",
         demoLink: "./page/canvas3D/pointLinePolygon.html"
+      },
+      {
+        title: "空间画布对象",
+        demoLink: "./page/canvas3D/manipulatePolygon.html"
       }
     ]
   },
