@@ -34,6 +34,17 @@
       }
     })
 
+    ssp.loadSbm({
+      id: 'room_01',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+    })
+      .then(models => {
+        ssp.flyMainViewpoint()
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
     ssp.addAxesHelper({ id: 'hm_axesHelper' })
 
     const heatMap = ssp.registerPlugin(HeatMapPlugin, 'heatMap')

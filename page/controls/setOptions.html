@@ -66,6 +66,7 @@
       enablePanAxisX: true,
       enablePanAxisY: true,
       enablePanAxisZ: true,
+      panSpeed: 2,
 
       enableAutoRotate: false,
       autoRotateSpeed: 1,
@@ -200,6 +201,12 @@
     pan
       .add(options, 'enablePanAxisZ')
       .name('空间Z轴平移')
+      .onChange(() => {
+        ssp.setControlsOptions(options)
+      })
+    pan
+      .add(options, 'panSpeed', 0.1, 5)
+      .name('平移速度')
       .onChange(() => {
         ssp.setControlsOptions(options)
       })

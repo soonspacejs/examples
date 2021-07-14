@@ -143,15 +143,22 @@ export default [
       },
     ]
   },
+  // controls
+  {
+    title: "控制器",
+    key: "controls",
+    children: [
+      {
+        title: "控制器配置",
+        demoLink: "./page/controls/setOptions.html"
+      },
+    ]
+  },
   // camera
   {
     title: "相机",
     key: "camera",
     children: [
-      {
-        title: "控制器配置",
-        demoLink: "./page/camera/controlsOptions.html"
-      },
       {
         title: "视角枚举",
         demoLink: "./page/camera/viewpointEnum.html"
