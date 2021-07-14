@@ -289,6 +289,10 @@ export default [
       {
         title: "方向辅助器",
         demoLink: "./page/featrue/directionHelper.html"
+      },
+      {
+        title: "扶梯运行",
+        demoLink: "./page/featrue/escalatorOperation.html"
       }
     ]
   }
