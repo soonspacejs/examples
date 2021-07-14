@@ -18,7 +18,7 @@
   <script type="module">
 
     import SoonSpace from '../../lib/soonspacejs/index.js'
-    import HeatMapPlugin from 'https://unpkg.com/@soonspacejs/plugin-heat-map/dist/index.esm.js'
+    import HeatMapPlugin from '../../lib/soonspacejs/plugins/heat-map.js'
     import { GUI } from '../../lib/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
@@ -43,41 +43,101 @@
       yAxisHeight: 100,
       max: 100,
       min: 1,
+      minPosition: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      maxPosition: {
+        x: 200,
+        y: 0,
+        z: 200
+      },
       data: [
         {
-          position: { x: 200, y: 10000, z: 100 },
+          x: 100,
+          y: 100,
           radius: 100,
-          value: 100
+          value: 80
         },
         {
-          position: { x: 100, y: 20000, z: 100 },
-          radius: 20,
-          value: 50
+          x: 200,
+          y: 50,
+          radius: 50,
+          value: 80
+        },
+        {
+          x: 100,
+          y: 50,
+          radius: 50,
+          value: 80
         },
       ]
     })
 
-
     const gui = new GUI()
     const fns = {
+      重置数据: function () {
+        heatMap.setData(
+          'hm1',
+          [
+            {
+              x: 100,
+              y: 100,
+              radius: 100,
+              value: Math.floor(Math.random() * 100)
+            },
+            {
+              x: 200,
+              y: 50,
+              radius: 50,
+              value: Math.floor(Math.random() * 100)
+            },
+            {
+              x: 100,
+              y: 50,
+              radius: 50,
+              value: Math.floor(Math.random() * 100)
+            },
+          ]
+        )
+      },
       第二个热力图: function () {
         heatMap.create({
           id: 'hm2',
           name: 'hm_name',
           yAxisHeight: 100,
-          max: 250,
+          max: 50,
           min: 1,
+          minPosition: {
+            x: 400,
+            y: 0,
+            z: 0
+          },
+          maxPosition: {
+            x: 800,
+            y: 0,
+            z: 600
+          },
           data: [
             {
-              position: { x: 500, y: 10000, z: 200 },
-              radius: 10,
-              value: 100
+              x: 400,
+              y: 100,
+              radius: 100,
+              value: Math.floor(Math.random() * 100)
             },
             {
-              position: { x: 500, y: 20000, z: 100 },
+              x: 500,
+              y: 50,
               radius: 50,
-              value: 100
-            }
+              value: Math.floor(Math.random() * 100)
+            },
+            {
+              x: 400,
+              y: 50,
+              radius: 50,
+              value: Math.floor(Math.random() * 100)
+            },
           ]
         })
       },
