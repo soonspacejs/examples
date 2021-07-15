@@ -7,6 +7,18 @@ export default [
       {
         title: "Hello World",
         demoLink: "./page/start/helloWorld.html"
+      },
+      {
+        title: "全局事件",
+        demoLink: "./page/start/globalEvent.html"
+      },
+      {
+        title: "模型独立事件",
+        demoLink: "./page/start/modelEvent.html"
+      },
+      {
+        title: "Poi 独立事件",
+        demoLink: "./page/start/poiEvent.html"
       }
     ]
   },
@@ -49,25 +61,6 @@ export default [
       {
         title: "PoiNode 空间视频",
         demoLink: "./page/poi/createPoiNodeForVideo.html"
-      }
-    ]
-  },
-  // event
-  {
-    title: "事件",
-    key: "event",
-    children: [
-      {
-        title: "全局事件",
-        demoLink: "./page/event/globalEvent.html"
-      },
-      {
-        title: "模型事件",
-        demoLink: "./page/event/modelEvent.html"
-      },
-      {
-        title: "poi事件",
-        demoLink: "./page/event/poiEvent.html"
       }
     ]
   },
