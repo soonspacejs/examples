@@ -59,6 +59,10 @@ export default [
         demoLink: "./page/poi/createPoiNode.html"
       },
       {
+        title: "PoiNode 位置",
+        demoLink: "./page/poi/poiNodePosition.html"
+      },
+      {
         title: "PoiNode 空间视频",
         demoLink: "./page/poi/createPoiNodeForVideo.html"
       }
