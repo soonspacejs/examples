@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+    import DrawingShapePlugin from '../../lib/soonspacejs/plugins/drawing-shape.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.createGround({
+      id: 'ground',
+      imgUrl: '../../asstes/img/ground/001.jpg',
+      width: 10000,
+      height: 10000
+    })
+    ssp.flyMainViewpoint()
+
+    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
+
+    const gui = new GUI()
+
+    const fns = {
+      绘制点: function () {
+        drawingShapePlugin.drawingPoint({
+          color: 'red',
+          opacity: 0.5
+        })
+          .then(res => console.log('drawPoint done', res))
+      },
+      绘制线: function () {
+        drawingShapePlugin.drawingLine({
+          color: 'red',
+          opacity: 0.5
+        })
+          .then(res => console.log('drawLine done', res))
+      },
+      绘制面: function () {
+        drawingShapePlugin.drawingPolygon({
+          yHeight: 200,
+          color: 'blue',
+          opacity: 0.1
+        })
+          .then(res => console.log('drawPolygon done', res))
+      }
+    }
+
+    for (let i in fns) gui.add(fns, i)
+
+  </script>
+</body>
+
+</html>

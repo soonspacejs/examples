@@ -2,81 +2,84 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../asstes/css/base.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
 </head>
 
 <body>
-    <div id="view"></div>
+  <div id="view"></div>
 
-    <script type="module">
-        import SoonSpace from '../../lib/soonspacejs/index.js'
-        import { GUI } from '../../lib/gui.js'
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+    import { GUI } from '../../lib/gui.js'
 
-        const ssp = window.ssp = new SoonSpace({
-            el: '#view',
-            options: {
-                showGrid: true
-            },
-            events: {}
-        })
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true
+      },
+      events: {}
+    })
 
-        const canvas3D = ssp.createCanvas3D({
-            id: 'test_canvas',
-            polygons: [{
-                id: 'polygons_1',
-                points: [
-                    {
-                        x: 0,
-                        y: 0,
-                        z: 300,
-                    },
-                    {
-                        x: 100,
-                        y: 0,
-                        z: 300,
-                    },
-                    {
-                        x: 100,
-                        y: 0,
-                        z: 400,
-                    },
-                    {
-                        x: 0,
-                        y: 0,
-                        z: 400,
-                    }
-                ],
-                color: '#ffff00',
-                opacity: .8
-            }],
-        })
+    const canvas3D = ssp.createCanvas3D({
+      id: 'test_canvas',
+      polygons: [{
+        id: 'polygons_1',
+        yHeight: 100,
+        points: [
+          {
+            x: 0,
+            z: 300,
+          },
+          {
+            x: 100,
+            z: 300,
+          },
+          {
+            x: 100,
+            z: 400,
+          },
+          {
+            x: 0,
+            z: 400,
+          }
+        ],
+        color: '#ffff00',
+        opacity: 0.8
+      }],
+    })
 
-        const polygons_1 = canvas3D.getObjectByProperty('sid', 'polygons_1')
+    const polygons = canvas3D.getPolygon('polygons_1')
 
-        const paramFn = {
-            '飞向面': () => {
-                ssp.flyToObj(polygons_1)
-                console.log(polygons_1)
-            },
-        }
+    const paramFn = {
+      '飞向面': () => {
+        ssp.flyToObj(polygons)
+      },
+    }
 
-        const gui = new GUI();
-        for (let i in paramFn) gui.add(paramFn, i)
+    const gui = new GUI();
+    for (let i in paramFn) gui.add(paramFn, i)
 
-        var palette = { '修改颜色': '#ffff00' };
+    var palette = {
+      颜色: '#ffff00',
+      不透明度: 0.8
+    };
 
-        gui.addColor(palette, '修改颜色').onChange((v) => {
+    gui
+      .addColor(palette, '颜色')
+      .onChange(color => polygons.setOptions({
+        color
+      }))
+    gui
+      .add(palette, '不透明度', 0.1, 1)
+      .onChange(opacity => polygons.setOptions({
+        opacity
+      }))
 
-            ssp.render(() => {
-                polygons_1.material.color = new ssp.THREE.Color(v)
-            })
-            
-        })
-    </script>
+  </script>
 </body>
 
 </html>

@@ -237,6 +237,10 @@ export default [
         demoLink: "./page/plugin/heatMap.html"
       },
       {
+        title: "绘制基础图形",
+        demoLink: "./page/plugin/drawingShape.html"
+      },
+      {
         title: "模型操作控制器",
         demoLink: "./page/plugin/transformControls.html"
       },
@@ -250,7 +254,7 @@ export default [
       },
       {
         title: "绘制拓扑路径",
-        demoLink: "./page/plugin/drawTopology.html"
+        demoLink: "./page/plugin/drawingTopology.html"
       },
       {
         title: "第一人称漫游控制器",
