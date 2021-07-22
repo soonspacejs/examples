@@ -17,7 +17,7 @@
     import SoonSpace from '../../lib/soonspacejs/index.js'
     import { GUI } from '../../lib/gui.js'
 
-    const ssp = new SoonSpace({
+    const ssp = window.ssp = new SoonSpace({
       el: '#view',
       options: {
         hoverEnabled: false
