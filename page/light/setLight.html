@@ -21,6 +21,7 @@
     })
 
     ssp.clearLight()
+    ssp.clearHelper()
 
     ssp.loadSbm({
       id: 'room_01',
@@ -54,11 +55,11 @@
       {
         创建环境光: function () {
           ssp.clearLight()
+          ssp.clearHelper()
 
-          const light = ssp.getLightById(ambientLighttOptions.id)
-          if (light) return
+          let light = ssp.getLightById(ambientLighttOptions.id)
+          if (!light) light = ssp.createAmbientLight(ambientLighttOptions)
 
-          ssp.createAmbientLight(ambientLighttOptions)
         },
       },
       '创建环境光'
@@ -89,93 +90,72 @@
       position: { x: 0, y: 500, z: 0 },
       target: { x: 0, y: 0, z: 0 },
       openShadow: false,
-      // openHelper: false
+      helperId: 'directionalLightHelper'
     }
 
     gui.add(
       {
         创建平行光: function () {
           ssp.clearLight()
+          ssp.clearHelper()
 
-          const light = ssp.getLightById(directionalLightOptions.id)
-          if (light) return
+          let light = ssp.getLightById(directionalLightOptions.id)
+          if (!light) light = ssp.createDirectionalLight(directionalLightOptions)
 
-          ssp.createDirectionalLight(directionalLightOptions)
+          ssp.addDirectionalLightHelper({
+            id: directionalLightOptions.helperId,
+            light,
+            color: 'yellow'
+          })
         }
       },
       '创建平行光'
     )
 
+    function setDirectionalLight() {
+      ssp.setDirectionalLight(directionalLightOptions)
+      ssp.render(() => {
+        ssp.getHelperById(directionalLightOptions.helperId)?.update()
+      })
+    }
+
     const directionalLightFolder = gui.addFolder('平行光参数设置')
     directionalLightFolder
       .addColor(directionalLightOptions, 'color')
       .name('颜色')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions, 'intensity', 0, 2)
       .name('光强度')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.position, 'x', 0, 5000)
       .name('x 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.position, 'y', 0, 5000)
       .name('y 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.position, 'z', 0, 5000)
       .name('z 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.target, 'x', -500, 0)
       .name('照向 x 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.target, 'y', -500, 0)
       .name('照向 y 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions.target, 'z', -500, 0)
       .name('照向 z 坐标')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
+      .onChange(setDirectionalLight)
     directionalLightFolder
       .add(directionalLightOptions, 'openShadow')
       .name('开启阴影')
-      .onChange(value => {
-        ssp.setDirectionalLight(directionalLightOptions)
-      })
-    // directionalLightFolder
-    //   .add(directionalLightOptions, 'openHelper')
-    //   .name('开启辅助器')
-    //   .onChange(value => {
-    //     const light = ssp.getLightById(directionalLightOptions.id)
-
-    //     if (value && light) {
-    //       ssp.addDirectionalLightHelper({
-    //         id: 'directionalLightHelper',
-    //         light
-    //       })
-    //     } else {
-    //       ssp.removeHelperById('directionalLightHelper')
-    //     }
-    //   })
+      .onChange(setDirectionalLight)
 
     /**
      * hemisphereLight
@@ -186,42 +166,49 @@
       skyColor: '#ffff00',
       groundColor: '#00ff00',
       intensity: 0.3,
-      position: { x: 0, y: 500, z: 0 }
+      position: { x: 0, y: 500, z: 0 },
+      helperId: 'hemisphereLightHelper'
     }
 
     gui.add(
       {
         创建半球光: function () {
           ssp.clearLight()
+          ssp.clearHelper()
 
-          const light = ssp.getLightById(hemisphereLightOptions.id)
-          if (light) return
+          let light = ssp.getLightById(hemisphereLightOptions.id)
+          if (!light) light = ssp.createHemisphereLight(hemisphereLightOptions)
 
-          ssp.createDirectionalLight(hemisphereLightOptions)
+          ssp.addHemisphereLightHelper({
+            id: hemisphereLightOptions.helperId,
+            light,
+            color: 'yellow'
+          })
         }
       },
       '创建半球光'
     )
 
+    function setHemisphereLight() {
+      ssp.setHemisphereLight(hemisphereLightOptions)
+      ssp.render(() => {
+        ssp.getHelperById(hemisphereLightOptions.helperId)?.update()
+      })
+    }
+
     const hemisphereLightFolder = gui.addFolder('半球光参数设置')
     hemisphereLightFolder
       .addColor(hemisphereLightOptions, 'skyColor')
       .name('天空颜色')
-      .onChange(value => {
-        ssp.setHemisphereLight(hemisphereLightOptions)
-      })
+      .onChange(setHemisphereLight)
     hemisphereLightFolder
       .addColor(hemisphereLightOptions, 'groundColor')
       .name('地面颜色')
-      .onChange(value => {
-        ssp.setHemisphereLight(hemisphereLightOptions)
-      })
+      .onChange(setHemisphereLight)
     hemisphereLightFolder
       .add(hemisphereLightOptions, 'intensity', 0, 2)
       .name('光强度')
-      .onChange(value => {
-        ssp.setHemisphereLight(hemisphereLightOptions)
-      })
+      .onChange(setHemisphereLight)
 
     /**
      * spotLight
@@ -234,136 +221,134 @@
       intensity: 1,
       position: { x: 500, y: 200, z: 0 },
       target: { x: -1000, y: 200, z: 0 },
-      openShadow: false
+      openShadow: false,
+      helperId: 'spotLightHelper'
     }
 
     gui.add(
       {
         创建聚光灯: function () {
           ssp.clearLight()
+          ssp.clearHelper()
 
-          const light = ssp.getLightById(spotLightOptions.id)
-          if (light) return
+          let light = ssp.getLightById(spotLightOptions.id)
+          if (!light) light = ssp.createSpotLight(spotLightOptions)
 
-          ssp.createSpotLight(spotLightOptions)
+          ssp.addSpotLightHelper({
+            id: spotLightOptions.helperId,
+            light,
+            color: 'yellow'
+          })
         }
       },
       '创建聚光灯'
     )
 
+    function setSpotLight() {
+      ssp.setSpotLight(spotLightOptions)
+      ssp.render(() => {
+        ssp.getHelperById(spotLightOptions.helperId)?.update()
+      })
+    }
+
     const spotLightFolder = gui.addFolder('聚光灯参数设置')
     spotLightFolder
       .addColor(spotLightOptions, 'color')
       .name('颜色')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions, 'intensity', 0, 2)
       .name('光强度')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.position, 'x', -500, 500)
       .name('x 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.position, 'y', 0, 500)
       .name('y 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.position, 'z', -200, 200)
       .name('z 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.target, 'x', -1500, -500)
       .name('照向 x 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.target, 'y', -500, 500)
       .name('照向 y 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
     spotLightFolder
       .add(spotLightOptions.target, 'z', -200, 200)
       .name('照向 z 坐标')
-      .onChange(value => {
-        ssp.setSpotLight(spotLightOptions)
-      })
+      .onChange(setSpotLight)
 
     /**
      * poinntLight
      */
 
-    const poinntLightOptions = {
+    const pointLightOptions = {
       id: lightIds.poinntLight,
       color: '#00ff00',
       intensity: 2,
       distance: 5000,
-      position: { x: 0, y: 200, z: 0 }
+      position: { x: 0, y: 200, z: 0 },
+      helperId: 'pointLightHelper'
     }
 
     gui.add(
       {
         创建点光源: function () {
           ssp.clearLight()
+          ssp.clearHelper()
 
-          const light = ssp.getLightById(poinntLightOptions.id)
-          if (light) return
+          let light = ssp.getLightById(pointLightOptions.id)
+          if (!light) light = ssp.createPointLight(pointLightOptions)
 
-          ssp.createPointLight(poinntLightOptions)
+          ssp.addPointLightHelper({
+            id: pointLightOptions.helperId,
+            light,
+            color: 'yellow'
+          })
         }
       },
       '创建点光源'
     )
 
+    function setPointLight() {
+      ssp.setPointLight(pointLightOptions)
+      ssp.render(() => {
+        ssp.getHelperById(pointLightOptions.helperId)?.update()
+      })
+    }
+
     const poinntLightFolder = gui.addFolder('点光源参数设置')
     poinntLightFolder
-      .addColor(poinntLightOptions, 'color')
+      .addColor(pointLightOptions, 'color')
       .name('颜色')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
     poinntLightFolder
-      .add(poinntLightOptions, 'intensity', 0, 2)
+      .add(pointLightOptions, 'intensity', 0, 2)
       .name('光强度')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
     poinntLightFolder
-      .add(poinntLightOptions, 'distance', 100, 10000)
+      .add(pointLightOptions, 'distance', 100, 10000)
       .name('光照最大距离')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
     poinntLightFolder
-      .add(poinntLightOptions.position, 'x', -200, 200)
+      .add(pointLightOptions.position, 'x', -200, 200)
       .name('x 坐标')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
     poinntLightFolder
-      .add(poinntLightOptions.position, 'y', 0, 500)
+      .add(pointLightOptions.position, 'y', 0, 500)
       .name('y 坐标')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
     const i = poinntLightFolder
-      .add(poinntLightOptions.position, 'z', -200, 200)
+      .add(pointLightOptions.position, 'z', -200, 200)
       .name('z 坐标')
-      .onChange(value => {
-        ssp.setPointLight(poinntLightOptions)
-      })
+      .onChange(setPointLight)
 
   </script>
 </body>

@@ -180,8 +180,8 @@ export default [
     key: "light",
     children: [
       {
-        title: "自定义灯光",
-        demoLink: "./page/light/customCreateLight.html"
+        title: "创建灯光",
+        demoLink: "./page/light/createLight.html"
       },
       {
         title: "动态设置灯光",
