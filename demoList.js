@@ -108,6 +108,10 @@ export default [
     key: "modelTool",
     children: [
       {
+        title: "模型漫反射",
+        demoLink: "./page/modelTool/modelEnvMap.html"
+      },
+      {
         title: "选中模型",
         demoLink: "./page/modelTool/selectModel.html"
       }
