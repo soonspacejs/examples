@@ -241,6 +241,10 @@ export default [
         demoLink: "./page/plugin/heatMap.html"
       },
       {
+        title: "特效",
+        demoLink: "./page/plugin/effect.html"
+      },
+      {
         title: "绘制基础图形",
         demoLink: "./page/plugin/drawingShape.html"
       },

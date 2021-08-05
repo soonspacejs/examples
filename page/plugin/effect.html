@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh;"></div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+    import EffectPlugin from '../../lib/soonspacejs/plugins/effect.js'
+    import { GUI } from '../../lib/gui.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false
+      },
+      events: {
+        selectPosition(pos) {
+          console.log(pos)
+        }
+      }
+    })
+
+    const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin')
+
+    ssp.loadSbm({
+      id: 'room',
+      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+    })
+      .then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+    const gui = new GUI
+    const fns = {
+      创建火焰: function () {
+        const flame = effectPlugin.createFlame({
+          id: 'testFlame',
+          position: {
+            x: 0,
+            y: 50,
+            z: 0
+          }
+        })
+      },
+      删除火焰: function () {
+        effectPlugin.removeFlame('testFlame')
+      }
+    }
+
+    for (let i in fns) gui.add(fns, i)
+
+  </script>
+</body>
+
+</html>
