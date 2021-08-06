@@ -14,7 +14,7 @@
 
   <script type="module">
     import SoonSpace from '../../lib/soonspacejs/index.js'
-    import PatrolControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-patrol-controls/dist/index.esm.js'
+    import PatrolControlsPlugin from '../../lib/soonspacejs/plugins/patrol-controls.js'
     import { GUI } from '../../lib/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
@@ -70,7 +70,7 @@
           start: { x: -2276.699237322046, y: 299.9999999999998, z: -2981.9710830239715, isVector3: true },
           end: { x: 2118.35618722643, y: -650.0000000000001, z: -17893.889427365742, isVector3: true },
           id: 'shortestPath',
-          // linkColor: 'red',
+          renderNode: false,
           linkWidth: 100,
           nodeColor: 'orange',
           imgUrl: '../../asstes/img/topology/arrow.png',
