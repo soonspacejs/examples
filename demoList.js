@@ -31,10 +31,10 @@ export default [
         title: "加载 sbm",
         demoLink: "./page/model/loadSbm.html"
       },
-      {
-        title: "加载 sbm 01",
-        demoLink: "./page/model/loadSbm01.html"
-      },
+      // {
+      //   title: "加载 sbm 01",
+      //   demoLink: "./page/model/loadSbm01.html"
+      // },
       {
         title: "加载 gltf",
         demoLink: "./page/model/loadGltf.html"
@@ -51,20 +51,35 @@ export default [
     key: "poi",
     children: [
       {
-        title: "Poi",
+        title: "创建 Poi",
         demoLink: "./page/poi/createPoi.html"
       },
       {
-        title: "PoiNode",
-        demoLink: "./page/poi/createPoiNode.html"
+        title: "Poi 多图层",
+        demoLink: "./page/poi/poiLevel.html"
+      },
+    ]
+  },
+  // poiNode
+  {
+    title: "PoiNode",
+    key: "poiNode",
+    children: [
+      {
+        title: "创建 PoiNode",
+        demoLink: "./page/poiNode/createPoiNode.html"
       },
       {
-        title: "PoiNode 位置",
-        demoLink: "./page/poi/poiNodePosition.html"
+        title: "PoiNode 多图层",
+        demoLink: "./page/poiNode/poiNodeLevel.html"
       },
       {
-        title: "PoiNode 空间视频",
-        demoLink: "./page/poi/createPoiNodeForVideo.html"
+        title: "PoiNode 位置计算",
+        demoLink: "./page/poiNode/poiNodePosition.html"
+      },
+      {
+        title: "空间视频",
+        demoLink: "./page/poiNode/createPoiNodeForVideo.html"
       }
     ]
   },

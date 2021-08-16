@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../asstes/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <div id="poiTemplate"
+    style="display: none; width: 160px; height: auto; padding: 8px; background-color: #ccc; color: #000;">
+    <h3 style="text-align: center;">标题</h3>
+    <div>
+      <label>数据一：</label>
+      <span>10</span>
+    </div>
+    <div>
+      <label>数据二：</label>
+      <span>20</span>
+    </div>
+    <div>
+      <label>数据三：</label>
+      <span>30</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true,
+        showInfo: true
+      },
+      events: {}
+    })
+
+    ssp.flyMainViewpoint()
+
+    const levelSplitValue = 3000
+
+    const el = document.getElementById('poiTemplate')
+
+    const poiNodeEl = el.cloneNode(true)
+    poiNodeEl.style.display = 'block'
+
+    ssp.createPoiNode({
+      type: '2D',
+      id: '2DPoiNode_1',
+      position: {
+        x: -500,
+        y: 0,
+        z: 0
+      },
+      element: poiNodeEl,
+      level: {
+        min: null,
+        max: levelSplitValue
+      }
+    })
+
+    ssp.createPoiNode({
+      type: '2D',
+      id: '2DPoiNode_2',
+      position: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      element: poiNodeEl.cloneNode(true),
+      level: {
+        min: null,
+        max: levelSplitValue
+      }
+    })
+
+    ssp.createPoiNode({
+      type: '2D',
+      id: '2DPoiNode_3',
+      position: {
+        x: 500,
+        y: 0,
+        z: 0
+      },
+      element: poiNodeEl.cloneNode(true),
+      level: {
+        min: null,
+        max: levelSplitValue
+      }
+    })
+
+    ssp.createPoiNode({
+      type: '2D',
+      id: '2DPoiNode_4',
+      position: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      element: poiNodeEl.cloneNode(true),
+      level: {
+        min: levelSplitValue,
+        max: null
+      }
+    })
+
+  </script>
+</body>
+
+</html>
