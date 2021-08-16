@@ -224,6 +224,10 @@ export default [
       {
         title: "卷帘门模拟",
         demoLink: "./page/animation/juanlianmen.html"
+      },
+      {
+        title: "区域闪烁",
+        demoLink: "./page/animation/polygonOpacity.html"
       }
     ]
   },
