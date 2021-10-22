@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {
+          modelClick(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      // 角度转弧度
+      const deg2rad = (deg) => {
+        return deg * (Math.PI / 180);
+      };
+
+      // 设置资源路径，可以使用本地资源或者平台发布的资源链接
+      const baseUrl = '../../asstes/sceneData/scene1/';
+
+      (async () => {
+        // 模型数据
+        const modelData = await fetch(baseUrl + 'db/poiInfo.json').then((res) =>
+          res.json()
+        );
+
+        // 加载所有模型
+        Promise.allSettled(
+          modelData.map((data) => {
+            return ssp.loadSbm({
+              id: data.id,
+              name: data.modelname,
+              url: baseUrl + data.filepath,
+              position: {
+                x: data.x,
+                y: data.y,
+                z: data.z,
+              },
+              rotation: {
+                x: deg2rad(data.rotation_x),
+                y: deg2rad(data.rotation_y),
+                z: deg2rad(data.rotation_z),
+              },
+              scale: { x: data.scale_x, y: data.scale_y, z: data.scale_z },
+            });
+          })
+        ).then((res) => {
+          console.log('所有模型加载完成');
+          ssp.flyMainViewpoint();
+        });
+      })();
+    </script>
+  </body>
+</html>
