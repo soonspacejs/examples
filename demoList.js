@@ -256,10 +256,6 @@ export default [
         demoLink: "./page/plugin/soonmanagerSync.html"
       },
       {
-        title: "手动加载 SoonManager",
-        demoLink: "./page/plugin/soonmanagerMaunal.html"
-      },
-      {
         title: "热力图",
         demoLink: "./page/plugin/heatMap.html"
       },
