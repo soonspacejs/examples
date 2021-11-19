@@ -35,9 +35,35 @@
         .then((topology) => {
           ssp.flyToObj(topology);
 
+          console.log(topology);
+
+          const allNodes = topology.nodes;
+
+          // 位置调整
+          const nodePosList = [
+            { id: '1640895516', position: { x: -5819, y: 0, z: -170.79 } },
+            { id: '143906972', position: { x: 1767, y: 0, z: -689 } },
+            {
+              id: '1848205095',
+              position: { x: -6815.99, y: -505, z: -543.81 },
+            },
+            { id: '2002677125', position: { x: -6821, y: -624, z: -505 } },
+          ];
+
+          allNodes.forEach((node) => {
+            const foundNode = nodePosList.find(({ id }) => id === node.sid);
+            if (foundNode) {
+              // const { position } = foundNode;
+
+              // node.position.add({ x: 0, y: 0, z: 249 });
+
+              // console.log(node);
+            }
+          });
+
           ssp.viewport.interactiveContainer.addEventListener('click', (e) => {
-            const allNodes = topology.nodes;
             const intersectsList = ssp.viewport.getIntersects(e, allNodes);
+
             if (intersectsList.length) {
               const [{ object }] = intersectsList;
               console.table({

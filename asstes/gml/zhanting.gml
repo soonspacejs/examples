@@ -93,7 +93,7 @@
                                 <node_name>node4</node_name>
                                 <type type="int">0</type>
                                 <xcoord type="int">1761</xcoord>
-                                <ycoord type="int">872</ycoord>
+                                <ycoord type="int">623</ycoord>
                                 <zcoord type="int">0</zcoord>
                                 <link_cnt type="int">2</link_cnt>
                                 <adjacency_link type="string">3,11</adjacency_link>
@@ -159,7 +159,7 @@
                                 <node_name>node3</node_name>
                                 <type type="int">0</type>
                                 <xcoord type="int">-5819</xcoord>
-                                <ycoord type="int">884</ycoord>
+                                <ycoord type="int">635</ycoord>
                                 <zcoord type="int">0</zcoord>
                                 <link_cnt type="int">2</link_cnt>
                                 <adjacency_link type="string">5,3</adjacency_link>
@@ -181,7 +181,7 @@
                                 <node_name>node18</node_name>
                                 <type type="int">0</type>
                                 <xcoord type="int">-6821</xcoord>
-                                <ycoord type="int">624</ycoord>
+                                <ycoord type="int">375</ycoord>
                                 <zcoord type="int">-505</zcoord>
                                 <link_cnt type="int">2</link_cnt>
                                 <adjacency_link type="string">0,4</adjacency_link>
@@ -247,7 +247,7 @@
                                 <node_name>node17</node_name>
                                 <type type="int">0</type>
                                 <xcoord type="int">2136</xcoord>
-                                <ycoord type="int">618</ycoord>
+                                <ycoord type="int">369</ycoord>
                                 <zcoord type="int">-505</zcoord>
                                 <link_cnt type="int">2</link_cnt>
                                 <adjacency_link type="string">12,4</adjacency_link>
