@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+      }));
+
+      ssp
+        .createTopologyFromGml({
+          url: '../../asstes/gml/tuobutujinzui.gml',
+          id: 'gml_for_topology',
+          name: 'gml_for_topology_name',
+          linkWidth: 100,
+          linkColor: ['green', 'yellow', 'orange'],
+          renderNode: true,
+          nodeColor: 0x0000ff,
+        })
+        .then((topology) => {
+          ssp.flyToObj(topology);
+
+          ssp.viewport.interactiveContainer.addEventListener('click', (e) => {
+            const allNodes = topology.nodes;
+            const intersectsList = ssp.viewport.getIntersects(e, allNodes);
+            if (intersectsList.length) {
+              const [{ object }] = intersectsList;
+              console.table({
+                节点名称: object.name,
+                节点id: object.sid,
+                节点坐标: JSON.stringify(object.position),
+              });
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
