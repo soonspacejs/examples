@@ -135,7 +135,7 @@
     }
 
     ssp.signals.cameraChange.add(position => {
-      const direction = ssp.viewport.camera.getWorldDirection();
+      const direction = ssp.viewport.camera.getWorldDirection(new ssp.THREE.Vector3);
 
       const rad = new ssp.THREE.Vector2(direction.x, direction.z).angle();
       const angle = ssp.THREE.Math.radToDeg(rad) - 90;
