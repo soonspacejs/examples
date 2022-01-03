@@ -1,72 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js?t=0103';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0103';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js'
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          useIndexedDB: true,
+        },
+        events: {
+          modelClick(pos) {
+            console.log(pos);
+          },
+        },
+      }));
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true
-      },
-      events: {
-        modelClick(pos) {
-          console.log(pos)
-        }
-      }
-    })
+      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      ));
+      // 设置资源路径，可以使用本地资源或者平台发布的资源链接
+      soonmanagerSync.setBaseUrl('../../asstes/sceneData/scene1/');
 
-    const soonmanagerSync = ssp.registerPlugin(SoonmanagerSyncPlugin, 'soonmanagerSync')
-    // 设置资源路径，可以使用本地资源或者平台发布的资源链接
-    soonmanagerSync.setBaseUrl('../../asstes/sceneData/scene1/')
+      soonmanagerSync.setGlobalSetting();
 
-    soonmanagerSync.setGlobalSetting()
+      console.time('全部加载完成！');
 
-    soonmanagerSync.loadScene(
-      // options
-      {
-        /**
-         * 指定开始加载的树节点 ID
-         *   未指定或指定为空，从根节点开始加载场景
-         *   指定的 ID 无法命中节点，不会加载任何模型
-         */
-        // targetId: 'xxxxx',
+      soonmanagerSync
+        .loadScene(
+          // options
+          {
+            /**
+             * 指定开始加载的树节点 ID
+             *   未指定或指定为空，从根节点开始加载场景
+             *   指定的 ID 无法命中节点，不会加载任何模型
+             */
+            // targetId: 'xxxxx',
 
-        /**
-         * 从指定节点开始，设置广度遍历加载多少层子集模型
-         *   不设置时加载全部层级子集
-         */
-        // targetLevel: 2,
+            /**
+             * 从指定节点开始，设置广度遍历加载多少层子集模型
+             *   不设置时加载全部层级子集
+             */
+            // targetLevel: 2,
 
-        /**
-         * 是否利用页面交互空闲时间去加载剩余模型
-         */
-        isIdleRest: true,
+            /**
+             * 是否利用页面交互空闲时间去加载剩余模型
+             */
+            isIdleRest: true,
 
-        // 全部加载完成回调
-        loadSceneAllSuccess: () => {
-          console.log('全部加载完成！')
-        }
-      }
-    )
-      .then(() => {
-        console.log("主层级加载完成！");
-        ssp.flyMainViewpoint()
-      })
+            // 全部加载完成回调
+            loadSceneAllSuccess: () => {
+              console.timeEnd('全部加载完成！');
+            },
+          }
+        )
+        .then(() => {
+          ssp.flyMainViewpoint();
+        });
 
-  </script>
-</body>
+      const gui = new GUI();
 
+      const paramFn = {
+        clearIdb() {
+          ssp.clearIdb();
+        },
+      };
+
+      gui.add(paramFn, 'clearIdb').name('清除缓存');
+    </script>
+  </body>
 </html>
