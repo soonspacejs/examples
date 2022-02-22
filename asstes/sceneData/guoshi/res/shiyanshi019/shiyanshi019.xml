@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>shiyanshi019</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false" />
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR,FACILITY</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\shiyanshi019_1F_0.sbm" type="SBM" />
+                <BoundingBox minimum="-891.658203, -3.000000, -2320.000488" maximum="7261.000000, 907.905640, 1251.551270" />
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="1928352443" baseFloor="1" level="0" />
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="1928352443">
+                <Entity id="81" name="MERGED_0_ChairOffice_02/ChairOffice_02Fabric_CH_0" longname="" type="MERGED" visible="True" />
+                <Entity id="82" name="MERGED_0_ChairOffice_02/ChairOffice_02Metal_HLCh_0" longname="" type="MERGED" visible="True" />
+                <Entity id="83" name="MERGED_0_ChairOffice_02/ChairOffice_02Metal_HLCh_1" longname="" type="MERGED" visible="True" />
+                <Entity id="84" name="MERGED_0_ChairOffice_02/ChairOffice_02Metalic_BK_0" longname="" type="MERGED" visible="True" />
+                <Entity id="89" name="MERGED_0_DeskOffice_04/DeskOffice_04GrayW_0" longname="" type="MERGED" visible="True" />
+                <Entity id="88" name="MERGED_0_DeskOffice_04/DeskOffice_04Gray_0" longname="" type="MERGED" visible="True" />
+                <Entity id="87" name="MERGED_0_DeskOffice_04/DeskOffice_04Green_0" longname="" type="MERGED" visible="True" />
+                <Entity id="12" name="MERGED_0_LIBENT0_0" longname="" type="MERGED" visible="True" />
+                <Entity id="80" name="MERGED_0_LIBENT100_0" longname="" type="MERGED" visible="True" />
+                <Entity id="75" name="MERGED_0_LIBENT101_0" longname="" type="MERGED" visible="True" />
+                <Entity id="79" name="MERGED_0_LIBENT102_0" longname="" type="MERGED" visible="True" />
+                <Entity id="77" name="MERGED_0_LIBENT103_0" longname="" type="MERGED" visible="True" />
+                <Entity id="78" name="MERGED_0_LIBENT104_0" longname="" type="MERGED" visible="True" />
+                <Entity id="76" name="MERGED_0_LIBENT105_0" longname="" type="MERGED" visible="True" />
+                <Entity id="13" name="MERGED_0_LIBENT106_0" longname="" type="MERGED" visible="True" />
+                <Entity id="15" name="MERGED_0_LIBENT10_0" longname="" type="MERGED" visible="True" />
+                <Entity id="11" name="MERGED_0_LIBENT11_0" longname="" type="MERGED" visible="True" />
+                <Entity id="14" name="MERGED_0_LIBENT15_0" longname="" type="MERGED" visible="True" />
+                <Entity id="18" name="MERGED_0_LIBENT19_0" longname="" type="MERGED" visible="True" />
+                <Entity id="1" name="MERGED_0_LIBENT1_0" longname="" type="MERGED" visible="True" />
+                <Entity id="9" name="MERGED_0_LIBENT20_0" longname="" type="MERGED" visible="True" />
+                <Entity id="16" name="MERGED_0_LIBENT21_0" longname="" type="MERGED" visible="True" />
+                <Entity id="17" name="MERGED_0_LIBENT22_0" longname="" type="MERGED" visible="True" />
+                <Entity id="26" name="MERGED_0_LIBENT23_0" longname="" type="MERGED" visible="True" />
+                <Entity id="19" name="MERGED_0_LIBENT25_0" longname="" type="MERGED" visible="True" />
+                <Entity id="33" name="MERGED_0_LIBENT26_0" longname="" type="MERGED" visible="True" />
+                <Entity id="20" name="MERGED_0_LIBENT27_0" longname="" type="MERGED" visible="True" />
+                <Entity id="21" name="MERGED_0_LIBENT28_0" longname="" type="MERGED" visible="True" />
+                <Entity id="22" name="MERGED_0_LIBENT29_0" longname="" type="MERGED" visible="True" />
+                <Entity id="3" name="MERGED_0_LIBENT2_0" longname="" type="MERGED" visible="True" />
+                <Entity id="23" name="MERGED_0_LIBENT30_0" longname="" type="MERGED" visible="True" />
+                <Entity id="25" name="MERGED_0_LIBENT32_0" longname="" type="MERGED" visible="True" />
+                <Entity id="29" name="MERGED_0_LIBENT33_0" longname="" type="MERGED" visible="True" />
+                <Entity id="10" name="MERGED_0_LIBENT34_0" longname="" type="MERGED" visible="True" />
+                <Entity id="28" name="MERGED_0_LIBENT35_0" longname="" type="MERGED" visible="True" />
+                <Entity id="7" name="MERGED_0_LIBENT36_0" longname="" type="MERGED" visible="True" />
+                <Entity id="27" name="MERGED_0_LIBENT38_0" longname="" type="MERGED" visible="True" />
+                <Entity id="2" name="MERGED_0_LIBENT3_0" longname="" type="MERGED" visible="True" />
+                <Entity id="4" name="MERGED_0_LIBENT47_0" longname="" type="MERGED" visible="True" />
+                <Entity id="31" name="MERGED_0_LIBENT48_0" longname="" type="MERGED" visible="True" />
+                <Entity id="32" name="MERGED_0_LIBENT49_0" longname="" type="MERGED" visible="True" />
+                <Entity id="30" name="MERGED_0_LIBENT50_0" longname="" type="MERGED" visible="True" />
+                <Entity id="5" name="MERGED_0_LIBENT52_0" longname="" type="MERGED" visible="True" />
+                <Entity id="34" name="MERGED_0_LIBENT55_0" longname="" type="MERGED" visible="True" />
+                <Entity id="36" name="MERGED_0_LIBENT56_0" longname="" type="MERGED" visible="True" />
+                <Entity id="35" name="MERGED_0_LIBENT57_0" longname="" type="MERGED" visible="True" />
+                <Entity id="37" name="MERGED_0_LIBENT58_0" longname="" type="MERGED" visible="True" />
+                <Entity id="38" name="MERGED_0_LIBENT59_0" longname="" type="MERGED" visible="True" />
+                <Entity id="6" name="MERGED_0_LIBENT5_0" longname="" type="MERGED" visible="True" />
+                <Entity id="40" name="MERGED_0_LIBENT60_0" longname="" type="MERGED" visible="True" />
+                <Entity id="39" name="MERGED_0_LIBENT61_0" longname="" type="MERGED" visible="True" />
+                <Entity id="41" name="MERGED_0_LIBENT62_0" longname="" type="MERGED" visible="True" />
+                <Entity id="43" name="MERGED_0_LIBENT63_0" longname="" type="MERGED" visible="True" />
+                <Entity id="42" name="MERGED_0_LIBENT64_0" longname="" type="MERGED" visible="True" />
+                <Entity id="8" name="MERGED_0_LIBENT65_0" longname="" type="MERGED" visible="True" />
+                <Entity id="44" name="MERGED_0_LIBENT66_0" longname="" type="MERGED" visible="True" />
+                <Entity id="45" name="MERGED_0_LIBENT67_0" longname="" type="MERGED" visible="True" />
+                <Entity id="46" name="MERGED_0_LIBENT69_0" longname="" type="MERGED" visible="True" />
+                <Entity id="47" name="MERGED_0_LIBENT70_0" longname="" type="MERGED" visible="True" />
+                <Entity id="48" name="MERGED_0_LIBENT71_0" longname="" type="MERGED" visible="True" />
+                <Entity id="49" name="MERGED_0_LIBENT72_0" longname="" type="MERGED" visible="True" />
+                <Entity id="56" name="MERGED_0_LIBENT73_0" longname="" type="MERGED" visible="True" />
+                <Entity id="50" name="MERGED_0_LIBENT74_0" longname="" type="MERGED" visible="True" />
+                <Entity id="51" name="MERGED_0_LIBENT75_0" longname="" type="MERGED" visible="True" />
+                <Entity id="52" name="MERGED_0_LIBENT76_0" longname="" type="MERGED" visible="True" />
+                <Entity id="53" name="MERGED_0_LIBENT77_0" longname="" type="MERGED" visible="True" />
+                <Entity id="54" name="MERGED_0_LIBENT78_0" longname="" type="MERGED" visible="True" />
+                <Entity id="55" name="MERGED_0_LIBENT79_0" longname="" type="MERGED" visible="True" />
+                <Entity id="24" name="MERGED_0_LIBENT7_0" longname="" type="MERGED" visible="True" />
+                <Entity id="57" name="MERGED_0_LIBENT80_0" longname="" type="MERGED" visible="True" />
+                <Entity id="60" name="MERGED_0_LIBENT81_0" longname="" type="MERGED" visible="True" />
+                <Entity id="58" name="MERGED_0_LIBENT82_0" longname="" type="MERGED" visible="True" />
+                <Entity id="59" name="MERGED_0_LIBENT83_0" longname="" type="MERGED" visible="True" />
+                <Entity id="71" name="MERGED_0_LIBENT85_0" longname="" type="MERGED" visible="True" />
+                <Entity id="72" name="MERGED_0_LIBENT86_0" longname="" type="MERGED" visible="True" />
+                <Entity id="70" name="MERGED_0_LIBENT87_0" longname="" type="MERGED" visible="True" />
+                <Entity id="69" name="MERGED_0_LIBENT88_0" longname="" type="MERGED" visible="True" />
+                <Entity id="61" name="MERGED_0_LIBENT89_0" longname="" type="MERGED" visible="True" />
+                <Entity id="62" name="MERGED_0_LIBENT90_0" longname="" type="MERGED" visible="True" />
+                <Entity id="74" name="MERGED_0_LIBENT91_0" longname="" type="MERGED" visible="True" />
+                <Entity id="73" name="MERGED_0_LIBENT92_0" longname="" type="MERGED" visible="True" />
+                <Entity id="63" name="MERGED_0_LIBENT94_0" longname="" type="MERGED" visible="True" />
+                <Entity id="64" name="MERGED_0_LIBENT95_0" longname="" type="MERGED" visible="True" />
+                <Entity id="65" name="MERGED_0_LIBENT96_0" longname="" type="MERGED" visible="True" />
+                <Entity id="68" name="MERGED_0_LIBENT97_0" longname="" type="MERGED" visible="True" />
+                <Entity id="66" name="MERGED_0_LIBENT98_0" longname="" type="MERGED" visible="True" />
+                <Entity id="67" name="MERGED_0_LIBENT99_0" longname="" type="MERGED" visible="True" />
+                <Entity id="85" name="MERGED_0_dining1/dining1_01_0" longname="" type="MERGED" visible="True" />
+                <Entity id="86" name="MERGED_0_dining1/dining1_02_0" longname="" type="MERGED" visible="True" />
+            </Entity>
+        </ObjectHierarchy>
+    </Building>
+</Project>

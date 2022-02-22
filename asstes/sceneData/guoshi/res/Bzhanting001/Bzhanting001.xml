@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>Bzhanting001</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false" />
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR,FACILITY</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\Bzhanting001_1F_0.sbm" type="SBM" />
+                <BoundingBox minimum="-599.999939, -461.937927, -301.393066" maximum="1706.846436, 900.001587, 870.431580" />
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="1985477458" baseFloor="1" level="0" />
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="1985477458">
+                <Entity id="18" name="MERGED_0_Ch_FB002/3-Default_0" longname="" type="MERGED" visible="True" />
+                <Entity id="19" name="MERGED_0_Ch_FB002/BENE_Chrome_0" longname="" type="MERGED" visible="True" />
+                <Entity id="20" name="MERGED_0_Ch_FB002/FABRIC_noise_0" longname="" type="MERGED" visible="True" />
+                <Entity id="8" name="MERGED_0_LIBENT0_0" longname="" type="MERGED" visible="True" />
+                <Entity id="7" name="MERGED_0_LIBENT11_0" longname="" type="MERGED" visible="True" />
+                <Entity id="1" name="MERGED_0_LIBENT1_0" longname="" type="MERGED" visible="True" />
+                <Entity id="11" name="MERGED_0_LIBENT20_0" longname="" type="MERGED" visible="True" />
+                <Entity id="6" name="MERGED_0_LIBENT21_0" longname="" type="MERGED" visible="True" />
+                <Entity id="5" name="MERGED_0_LIBENT22_0" longname="" type="MERGED" visible="True" />
+                <Entity id="12" name="MERGED_0_LIBENT26_0" longname="" type="MERGED" visible="True" />
+                <Entity id="13" name="MERGED_0_LIBENT27_0" longname="" type="MERGED" visible="True" />
+                <Entity id="14" name="MERGED_0_LIBENT28_0" longname="" type="MERGED" visible="True" />
+                <Entity id="4" name="MERGED_0_LIBENT2_0" longname="" type="MERGED" visible="True" />
+                <Entity id="9" name="MERGED_0_LIBENT30_0" longname="" type="MERGED" visible="True" />
+                <Entity id="3" name="MERGED_0_LIBENT3_0" longname="" type="MERGED" visible="True" />
+                <Entity id="2" name="MERGED_0_LIBENT5_0" longname="" type="MERGED" visible="True" />
+                <Entity id="10" name="MERGED_0_LIBENT7_0" longname="" type="MERGED" visible="True" />
+                <Entity id="21" name="MERGED_0_PDP_003/Material#122_0" longname="" type="MERGED" visible="True" />
+                <Entity id="15" name="MERGED_0_Student_table_high/Student_table_high11_0" longname="" type="MERGED" visible="True" />
+                <Entity id="16" name="MERGED_0_Student_table_high/Student_table_high12_0" longname="" type="MERGED" visible="True" />
+                <Entity id="17" name="MERGED_0_Student_table_high/Student_table_high13_0" longname="" type="MERGED" visible="True" />
+            </Entity>
+        </ObjectHierarchy>
+    </Building>
+</Project>

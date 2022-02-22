@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>AJM</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0.000000">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false"/>
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR,FACILITY</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\AJM_1F_0.sbm" type="SBM"/>
+                <BoundingBox minimum="-25.177380, 0.000000, -60.164848" maximum="24.684757, 220.000000, 19.466730"/>
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="138130916" baseFloor="1" level="0.000000"/>
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="138130916">
+                <Entity id="1" name="MERGED_0_LIBENT15_0" longname="" type="MERGED" visible="True"/>
+                <Entity id="2" name="MERGED_0_LIBENT17_0" longname="" type="MERGED" visible="True"/>
+            </Entity>
+        </ObjectHierarchy>
+    <GLBFShells><GLBFShell><FileSource name=".\AJM_1F_0.json" type="GLBF"/><BoundingBox/></GLBFShell></GLBFShells></Building>
+</Project>

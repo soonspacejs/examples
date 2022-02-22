@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js?t=0122';
+      import FirstPersonControlsPlugin from '../../lib/soonspacejs/plugins/first-person-controls.js?t=0122';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0122';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {
+          modelClick(p) {
+            console.log(p);
+          },
+          selectPosition(p) {
+            console.log(p);
+          },
+        },
+      }));
+
+      const firstPersonControls = (window.firstPersonControls =
+        ssp.registerPlugin(FirstPersonControlsPlugin, 'firstPersonControls'));
+
+      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      ));
+
+      soonmanagerSync.setBaseUrl('../../asstes/sceneData/guoshi/');
+
+      console.time('全部加载完成！');
+
+      soonmanagerSync
+        .loadScene({
+          isIdleRest: true,
+        })
+        .then(() => {
+          ssp.flyMainViewpoint();
+        });
+
+      const startOptions = {
+        moveSpeed: 10,
+        jumpHeight: 110,
+        enableClash: false,
+        enableGravity: false,
+      };
+
+      const gui = new GUI();
+
+      const paramFn = {
+        start() {
+          firstPersonControls.start({
+            position: { x: 17849, y: 12, z: 12328 },
+            rotation: { x: 0, y: 0, z: 0 },
+            eyeHeight: 500,
+            ...startOptions,
+          });
+        },
+        stop() {
+          firstPersonControls.stop();
+        },
+      };
+
+      gui.add(paramFn, 'start').name('开启第一人称控制');
+
+      const startControls = gui.addFolder('第一人称控制');
+
+      startControls
+        .add(startOptions, 'moveSpeed', 1, 200)
+        .name('移动速度')
+        .onChange((v) => (firstPersonControls.moveSpeed = v));
+      startControls
+        .add(startOptions, 'jumpHeight', 1, 2000)
+        .name('跳跃高度')
+        .onChange((v) => (firstPersonControls.jumpHeight = v));
+      startControls
+        .add(startOptions, 'enableClash')
+        .name('碰撞检测')
+        .onChange((v) => (firstPersonControls.enableClash = v));
+      startControls
+        .add(startOptions, 'enableGravity')
+        .name('重力检测')
+        .onChange((v) => (firstPersonControls.enableGravity = v));
+
+      gui.add(paramFn, 'stop').name('结束第一人称控制');
+    </script>
+  </body>
+</html>

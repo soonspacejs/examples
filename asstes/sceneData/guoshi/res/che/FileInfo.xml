@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="yes"?>
+<folder name="che">
+<file name="che.xml" Extension=".xml" />
+<file name="che.sbm" Extension=".sbm" />
+</folder>
