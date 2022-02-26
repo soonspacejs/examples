@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+      }));
+
+      ssp.clearLight();
+
+      ssp.setEnvironment();
+
+      ssp
+        .loadModel({
+          id: 'room',
+          name: 'room',
+          url: '../../asstes/model/gltf/Hospital_Room.gltf',
+        })
+        .then((model) => {
+          ssp.flyToObj(model);
+        });
+
+      const light = ssp.createRectAreaLight({
+        id: 'rectAreaLight',
+        name: 'rectAreaLight',
+        color: '#f00',
+        intensity: 5,
+        position: {
+          x: -78,
+          y: 25,
+          z: -33,
+        },
+        width: 20,
+        height: 50,
+      });
+
+      const helper = ssp.addRectAreaLightHelper({
+        id: 'rectAreaLightHelper',
+        light,
+      });
+
+      light.rotation.set(0, -Math.PI / 2, 0);
+
+      const gui = new GUI();
+
+      const params = {
+        rectAreaLightHelper: true,
+      };
+
+      gui
+        .add(params, 'rectAreaLightHelper')
+        .name('矩形区域光辅助器')
+        .onChange((value) => {
+          helper.visible = value;
+          ssp.render();
+        });
+    </script>
+  </body>
+</html>
