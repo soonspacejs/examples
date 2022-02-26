@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+      }));
+
+      ssp.hideAllLight();
+
+      ssp.setEnvironment();
+
+      Promise.all([
+        ssp.loadSbm({
+          id: 'sbm_room',
+          name: 'sbm_room',
+          url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+          position: {
+            x: -200,
+            y: 0,
+            z: 0,
+          },
+          scale: {
+            x: 0.1,
+            y: 0.1,
+            z: 0.1,
+          },
+        }),
+        ssp.loadModel({
+          id: 'gltf_room',
+          name: 'gltf_room',
+          url: '../../asstes/model/gltf/Hospital_Room.gltf',
+        }),
+      ]).then(() => {
+        ssp.flyMainViewpoint();
+      });
+
+      const gui = new GUI();
+
+      const params = {
+        light: false,
+        environment: true,
+      };
+
+      gui
+        .add(params, 'light')
+        .name('开启灯光')
+        .onChange((value) => {
+          if (value) {
+            ssp.showAllLight();
+          } else {
+            ssp.hideAllLight();
+          }
+        });
+
+      gui
+        .add(params, 'environment')
+        .name('开启场景环境反射')
+        .onChange((value) => {
+          if (value) {
+            ssp.setEnvironment();
+          } else {
+            ssp.viewport.scene.environment = null;
+            ssp.render();
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -24,8 +24,6 @@
 
       ssp.clearLight();
 
-      ssp.setEnvironment();
-
       ssp
         .loadModel({
           id: 'room',
@@ -60,8 +58,17 @@
       const gui = new GUI();
 
       const params = {
+        rectAreaLight: true,
         rectAreaLightHelper: true,
       };
+
+      gui
+        .add(params, 'rectAreaLight')
+        .name('矩形区域光')
+        .onChange((value) => {
+          light.visible = value;
+          ssp.render();
+        });
 
       gui
         .add(params, 'rectAreaLightHelper')

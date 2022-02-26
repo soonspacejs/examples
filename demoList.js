@@ -157,6 +157,10 @@ export default [
         title: '场景雾化',
         demoLink: './page/sceneTool/fog.html',
       },
+      {
+        title: '环境反射',
+        demoLink: './page/sceneTool/environment.html',
+      },
     ],
   },
   // controls
