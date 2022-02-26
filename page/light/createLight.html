@@ -1,116 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+      }));
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-    })
+      ssp.clearLight();
 
-    ssp.clearLight()
-
-    ssp.loadSbm({
-      id: 'room_01',
-      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
-    })
-      .then(models => {
-        ssp.flyMainViewpoint()
-      })
-
-    const gui = new GUI()
-
-    const fns = {
-      创建环境光: function () {
-        const id = 'ambientLight'
-
-        const light = ssp.getLightById(id)
-        if (light) return
-
-        ssp.createAmbientLight({
-          id,
-          color: '#ccc',
-          intensity: 0.6
+      ssp
+        .loadSbm({
+          id: 'room_01',
+          url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
         })
-      },
-      创建平行光: function () {
-        const id = 'directionalLight'
+        .then((models) => {
+          ssp.flyMainViewpoint();
+        });
 
-        const light = ssp.getLightById(id)
-        if (light) return
+      const gui = new GUI();
 
-        ssp.createDirectionalLight({
-          id,
-          color: '#fff',
-          intensity: 1,
-          position: { x: 0, y: 500, z: 0 },
-          target: { x: 0, y: 0, z: 0 },
-          openShadow: false
-        })
-      },
-      创建半球光: function () {
-        const id = 'hemisphereLight'
+      const fns = {
+        创建环境光: function () {
+          const id = 'ambientLight';
 
-        const light = ssp.getLightById(id)
-        if (light) return
+          const light = ssp.getLightById(id);
+          if (light) return;
 
-        ssp.createHemisphereLight({
-          id,
-          skyColor: 'yellow',
-          groundColor: 'green',
-          intensity: 0.3,
-          position: { x: 0, y: 500, z: 0 }
-        })
-      },
-      创建聚光灯: function () {
-        const id = 'spotLight'
+          ssp.createAmbientLight({
+            id,
+            color: '#ccc',
+            intensity: 0.6,
+          });
+        },
+        创建平行光: function () {
+          const id = 'directionalLight';
 
-        const light = ssp.getLightById(id)
-        if (light) return
+          const light = ssp.getLightById(id);
+          if (light) return;
 
-        ssp.createSpotLight({
-          id,
-          color: 'red',
-          angle: 90,
-          position: { x: 500, y: 200, z: 0 },
-          target: { x: -1000, y: 200, z: 0 },
-          openShadow: false
-        })
-      },
-      创建点光源: function () {
-        const id = 'pointLight'
+          ssp.createDirectionalLight({
+            id,
+            color: '#fff',
+            intensity: 1,
+            position: { x: 0, y: 500, z: -100 },
+            target: { x: 0, y: 0, z: 0 },
+            openShadow: true,
+            mapSize: 4096,
+          });
+        },
+        创建半球光: function () {
+          const id = 'hemisphereLight';
 
-        const light = ssp.getLightById(id)
-        if (light) return
+          const light = ssp.getLightById(id);
+          if (light) return;
 
-        ssp.createPointLight({
-          id,
-          color: 'green',
-          intensity: 2,
-          distance: 10000,
-          position: { x: 0, y: 200, z: 0 }
-        })
-      },
-      清除光: function () {
-        ssp.clearLight()
-      }
-    }
+          ssp.createHemisphereLight({
+            id,
+            skyColor: 'yellow',
+            groundColor: 'green',
+            intensity: 0.3,
+            position: { x: 0, y: 500, z: 0 },
+          });
+        },
+        创建聚光灯: function () {
+          const id = 'spotLight';
 
-    for (let i in fns) gui.add(fns, i)
+          const light = ssp.getLightById(id);
+          if (light) return;
 
-  </script>
-</body>
+          ssp.createSpotLight({
+            id,
+            color: 'red',
+            angle: 90,
+            position: { x: 500, y: 200, z: 0 },
+            target: { x: -1000, y: 200, z: 0 },
+            openShadow: false,
+          });
+        },
+        创建点光源: function () {
+          const id = 'pointLight';
 
+          const light = ssp.getLightById(id);
+          if (light) return;
+
+          ssp.createPointLight({
+            id,
+            color: 'green',
+            intensity: 2,
+            distance: 10000,
+            position: { x: 0, y: 200, z: 0 },
+          });
+        },
+        清除光: function () {
+          ssp.clearLight();
+        },
+      };
+
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>
