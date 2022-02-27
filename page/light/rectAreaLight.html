@@ -34,19 +34,21 @@
           ssp.flyToObj(model);
         });
 
-      const light = ssp.createRectAreaLight({
+      const rectAreaLightParams = {
         id: 'rectAreaLight',
         name: 'rectAreaLight',
-        color: '#f00',
-        intensity: 5,
         position: {
-          x: -78,
-          y: 25,
-          z: -33,
+          x: -79,
+          y: 33,
+          z: -4,
         },
-        width: 20,
-        height: 50,
-      });
+        color: '#fff',
+        intensity: 5,
+        width: 70,
+        height: 38,
+      };
+
+      const light = ssp.createRectAreaLight(rectAreaLightParams);
 
       const helper = ssp.addRectAreaLightHelper({
         id: 'rectAreaLightHelper',
@@ -57,13 +59,13 @@
 
       const gui = new GUI();
 
-      const params = {
+      const switchParams = {
         rectAreaLight: true,
         rectAreaLightHelper: true,
       };
 
       gui
-        .add(params, 'rectAreaLight')
+        .add(switchParams, 'rectAreaLight')
         .name('矩形区域光')
         .onChange((value) => {
           light.visible = value;
@@ -71,12 +73,52 @@
         });
 
       gui
-        .add(params, 'rectAreaLightHelper')
+        .add(switchParams, 'rectAreaLightHelper')
         .name('矩形区域光辅助器')
         .onChange((value) => {
           helper.visible = value;
           ssp.render();
         });
+
+      const setRectAreaLight = gui.addFolder('设置矩形区域光');
+
+      const rectAreaLightChange = () =>
+        ssp.setRectAreaLight(rectAreaLightParams);
+
+      setRectAreaLight
+        .addColor(rectAreaLightParams, 'color')
+        .name('颜色')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams, 'intensity', 0, 10, 0.1)
+        .name('强度')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams, 'width', 0, 100, 1)
+        .name('宽度')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams, 'height', 0, 100, 1)
+        .name('高度')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams.position, 'x', -100, 100, 1)
+        .name('x')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams.position, 'y', -100, 100, 1)
+        .name('y')
+        .onChange(rectAreaLightChange);
+
+      setRectAreaLight
+        .add(rectAreaLightParams.position, 'z', -100, 100, 1)
+        .name('z')
+        .onChange(rectAreaLightChange);
     </script>
   </body>
 </html>
