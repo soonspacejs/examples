@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+        },
+        events: {
+          modelClick(param) {
+            console.log(param);
+          },
+        },
+      }));
+
+      ssp.setControlsOptions({
+        zoomMinDistance: 0,
+      });
+
+      const ambientLight = ssp.getLightById('defaultAmbientLight'),
+        hemisphereLight = ssp.getLightById('defaultHemisphereLight');
+      const directionalLight = ssp.getLightById('defaultDirectionalLight');
+
+      ambientLight.visible = false;
+      hemisphereLight.visible = false;
+
+      ssp.setDirectionalLight({
+        id: 'defaultDirectionalLight',
+        name: 'defaultDirectionalLight',
+        position: {
+          x: 24,
+          y: 20,
+          z: 25,
+        },
+        target: {
+          x: 0,
+          y: -20,
+          z: 0,
+        },
+        openShadow: true,
+        mapSize: 6000,
+      });
+
+      /**
+       * 平行光阴影的投射区域
+       */
+      const cameraHelper = new ssp.THREE.CameraHelper(
+        directionalLight.shadow.camera
+      );
+
+      ssp.viewport.scene.add(cameraHelper);
+
+      ssp.viewport.renderer.outputEncoding = ssp.THREE.sRGBEncoding;
+
+      ssp.setEnvironment();
+
+      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
+
+      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      ));
+
+      soonmanagerSync.setBaseUrl('../../asstes/sceneData/tsp-merge3/');
+
+      soonmanagerSync.loadScene({
+        isIdleRest: true,
+        loadSceneAllSuccess() {
+          ssp.flyTo(
+            {
+              x: 100,
+              y: 52,
+              z: -32,
+            },
+            {
+              x: -2.119246181324833,
+              y: 0.915883541043294,
+              z: 2.227201853353406,
+            }
+          );
+        },
+      });
+
+      const gui = new GUI();
+
+      const params = {
+        openShadow: true,
+        shadowArea: true,
+      };
+
+      gui
+        .add(params, 'openShadow')
+        .name('开启阴影')
+        .onChange((value) => {
+          directionalLight.castShadow = value;
+          ssp.render();
+        });
+
+      gui
+        .add(params, 'shadowArea')
+        .name('阴影投射区域辅助器')
+        .onChange((value) => {
+          cameraHelper.visible = value;
+          ssp.render();
+        });
+    </script>
+  </body>
+</html>

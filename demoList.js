@@ -214,6 +214,10 @@ export default [
         title: '矩形区域光',
         demoLink: './page/light/rectAreaLight.html',
       },
+      {
+        title: '场景阴影',
+        demoLink: './page/light/sceneShadow.html',
+      }
     ],
   },
   // 辅助器
