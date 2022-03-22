@@ -86,6 +86,8 @@
       soonmanagerSync.loadScene({
         isIdleRest: true,
         loadSceneAllSuccess() {
+          ssp.updateAllShadow();
+          
           ssp.flyTo(
             {
               x: 100,
