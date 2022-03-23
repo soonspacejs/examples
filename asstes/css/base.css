@@ -20,9 +20,12 @@ body,
   top: 24px;
   left: 0;
   right: 0;
+  margin: auto;
   text-align: center;
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   z-index: 1;
+  user-select: none;
+  pointer-events: none;
 }
 #tips a {
   color: bisque;
