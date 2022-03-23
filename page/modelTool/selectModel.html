@@ -1,109 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=outline" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=outline" />
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css" />
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+      let mode = 'opacity';
 
-    let mode = "opacity"
-
-    const ssp = window.ssp = new SoonSpace({
-      el: "#view",
-      options: {
-        showInfo: true,
-      },
-      events: {
-        modelClick(param) {
-          const model = param.target;
-
-          // opacity
-          if (mode === "opacity") {
-            ssp.opacityShow(model, { color: "#fff", opacity: 0.5 })
-          }
-          // highlight
-          else if (mode === "highlight") {
-            ssp.highlightShow(model, { color: "#f00", opacity: 0.5 });
-          }
-          // stroke
-          else if (mode === "stroke") {
-            ssp.strokeShow(model, {
-              isOpacityShow: true,
-              color: 0x46ebf7,
-              opacity: 0.2,
-              edgeColor: 0x00eeff,
-              edgeOpacity: 1,
-            });
-          }
-          // emissive
-          else if (mode === "emissive") {
-            ssp.emissiveShow(model);
-          }
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
         },
-      },
-    });
+        events: {
+          modelClick(param) {
+            const model = param.target;
 
-    ssp.loadSbmToGroup(
-      {
-        id: 'group'
-      },
-      [
-        {
-          id: 'room_01',
-          url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+            // opacity
+            if (mode === 'opacity') {
+              ssp.opacityShow(model, { color: '#fff', opacity: 0.5 });
+            }
+            // highlight
+            else if (mode === 'highlight') {
+              ssp.highlightShow(model, { color: '#f00', opacity: 0.5 });
+            }
+            // stroke
+            else if (mode === 'stroke') {
+              ssp.strokeShow(model, {
+                isOpacityShow: true,
+                color: 0x46ebf7,
+                opacity: 0.2,
+                edgeColor: 0x00eeff,
+                edgeOpacity: 1,
+              });
+            }
+            // edge
+            else if (mode === 'edge') {
+              ssp.edgeShow(model, {
+                isOpacityShow: true,
+                color: '#f00',
+                edgeThickness: 3,
+                edgeStrength: 10,
+              });
+            }
+            // emissive
+            else if (mode === 'emissive') {
+              ssp.emissiveShow(model);
+            }
+          },
         },
-        {
-          id: 'room_02',
-          url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
-          position: {
-            x: 1500,
-            y: 0,
-            z: 0
-          }
-        }
-      ]
-    )
-      .then(() => {
-        ssp.flyMainViewpoint()
-      })
+      }));
 
-    const gui = new GUI();
+      ssp
+        .loadSbmToGroup(
+          {
+            id: 'group',
+          },
+          [
+            {
+              id: 'room_01',
+              url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+            },
+            {
+              id: 'room_02',
+              url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm',
+              position: {
+                x: 1500,
+                y: 0,
+                z: 0,
+              },
+            },
+          ]
+        )
+        .then(() => {
+          ssp.flyMainViewpoint();
+        });
 
-    gui
-      .add({ '选中模式': mode }, '选中模式')
-      .options(['opacity', 'highlight', 'stroke', 'emissive'])
-      .onChange(val => {
-        mode = val
-      })
+      const gui = new GUI();
 
-    const fns = {
-      '清除透明': function () {
-        ssp.unOpacityShow()
-      },
-      '清除高亮': function () {
-        ssp.unHighlightShow()
-      },
-      '清除描边': function () {
-        ssp.unStrokeShow()
-      },
-      '清除自发光': function () {
-        ssp.unEmissiveShow()
-      },
-    }
+      gui
+        .add({ 选中模式: mode }, '选中模式')
+        .options(['opacity', 'highlight', 'stroke', 'edge', 'emissive'])
+        .onChange((val) => {
+          mode = val;
+        });
 
-    for (let i in fns) gui.add(fns, i)
+      const fns = {
+        清除透明: function () {
+          ssp.unOpacityShow();
+        },
+        清除高亮: function () {
+          ssp.unHighlightShow();
+        },
+        清除描边: function () {
+          ssp.unStrokeShow();
+        },
+        清除边缘: function () {
+          ssp.unEdgeShow();
+        },
+        清除自发光: function () {
+          ssp.unEmissiveShow();
+        },
+      };
 
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>

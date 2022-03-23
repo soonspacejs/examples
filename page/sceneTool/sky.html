@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../asstes/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+      }));
+
+      ssp.hideAllLight();
+
+      ssp.setEnvironment();
+
+      ssp.setColorSpace('sRGB');
+
+      ssp.loadModel({
+        id: 'gltf_room',
+        name: 'gltf_room',
+        url: '../../asstes/model/gltf/Hospital_Room.gltf',
+      });
+
+      const gui = new GUI();
+
+      const params = {
+        enable: true,
+        position: { x: 0, y: 0, z: 0 },
+        scalar: 450000,
+        turbidity: 10,
+        rayleigh: 3,
+        elevation: 2,
+        azimuth: 2,
+        exposure: 0.5,
+      };
+
+      ssp.setSky(params);
+
+      gui
+        .add(params, 'enable')
+        .name('开启天空')
+        .onChange(() => ssp.setSky(params));
+
+      gui
+        .add(params, 'turbidity', 0, 20)
+        .name('浑浊度')
+        .onChange(() => ssp.setSky(params));
+
+      gui
+        .add(params, 'rayleigh', 0, 4, 0.01)
+        .name('雷利')
+        .onChange(() => ssp.setSky(params));
+
+      gui
+        .add(params, 'elevation', 0, 90)
+        .name('海拔')
+        .onChange(() => ssp.setSky(params));
+
+      gui
+        .add(params, 'azimuth', -180, 180)
+        .name('方位')
+        .onChange(() => ssp.setSky(params));
+
+      gui
+        .add(params, 'exposure', 0, 1, 0.01)
+        .name('曝光')
+        .onChange(() => ssp.setSky(params));
+    </script>
+  </body>
+</html>

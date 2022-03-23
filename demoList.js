@@ -161,6 +161,14 @@ export default [
         title: '环境反射',
         demoLink: './page/sceneTool/environment.html',
       },
+      {
+        title: '颜色空间',
+        demoLink: './page/sceneTool/colorSpace.html',
+      },
+      {
+        title: '天空',
+        demoLink: './page/sceneTool/sky.html',
+      }
     ],
   },
   // controls
@@ -217,7 +225,7 @@ export default [
       {
         title: '场景阴影',
         demoLink: './page/light/sceneShadow.html',
-      }
+      },
     ],
   },
   // 辅助器
