@@ -28,6 +28,19 @@
 
       ssp.setColorSpace('sRGB');
 
+      ssp.flyTo(
+        {
+          x: 165,
+          y: 226,
+          z: -1174,
+        },
+        {
+          x: -Math.PI,
+          y: 0,
+          z: Math.PI,
+        }
+      );
+
       ssp.loadModel({
         id: 'gltf_room',
         name: 'gltf_room',
