@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
 </head>
 
 <body>
@@ -22,7 +22,7 @@
       events: {}
     })
 
-    ssp.setSkyBackground('../../asstes/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+    ssp.setSkyBackground('../../assets/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
 
     const gui = new GUI();
 
@@ -30,7 +30,7 @@
       .add({ 天空盒风格: 'sunny' }, '天空盒风格')
       .options(['sunny', 'blueSky', 'clouds', 'night', 'rainy', 'starry', 'sun'])
       .onChange(value => {
-        ssp.setSkyBackground(`../../asstes/img/skybox/${value}/`, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+        ssp.setSkyBackground(`../../assets/img/skybox/${value}/`, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
       })
 
   </script>

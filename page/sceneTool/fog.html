@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
 </head>
 
 <body>
@@ -30,12 +30,12 @@
 
     ssp.createGround({
       id: 'ground',
-      imgUrl: '../../asstes/img/ground/001.jpg',
+      imgUrl: '../../assets/img/ground/001.jpg',
       width: 50000,
       height: 50000,
       position: { x: 0, y: 0, z: 0 }
     })
-    ssp.setSkyBackground('../../asstes/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+    ssp.setSkyBackground('../../assets/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
     ssp.flyMainViewpoint()
 
     const gui = new GUI();

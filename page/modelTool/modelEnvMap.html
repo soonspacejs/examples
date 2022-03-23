@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=outline" />
   <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../asstes/css/base.css" />
+  <link rel="stylesheet" href="../../assets/css/base.css" />
 </head>
 
 <body>
@@ -16,7 +16,7 @@
     import SoonSpace from '../../lib/soonspacejs/index.js'
     import { GUI } from '../../lib/gui.js'
 
-    let mapPath = '../../asstes/img/skybox/sunny/'
+    let mapPath = '../../assets/img/skybox/sunny/'
     let model = null
 
     const options = { reflectivity: 0.5 }
@@ -31,7 +31,7 @@
 
     ssp.loadSbm({
       id: 'room_01',
-      url: '../../asstes/model/sbm/changjing02/changjing02_1F_0.sbm'
+      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
     })
       .then((sbm) => {
         ssp.flyMainViewpoint()
@@ -46,7 +46,7 @@
       .add({ 天空盒风格: 'sunny' }, '天空盒风格')
       .options(['sunny', 'blueSky', 'clouds', 'night', 'rainy', 'starry', 'sun'])
       .onChange(value => {
-        mapPath = `../../asstes/img/skybox/${value}/`
+        mapPath = `../../assets/img/skybox/${value}/`
         if (model) model.setEnvMap(mapPath, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'], options)
       })
 
