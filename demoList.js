@@ -162,7 +162,7 @@ export default [
         demoLink: './page/sceneTool/environment.html',
       },
       {
-        title: '颜色空间',
+        title: '色彩空间',
         demoLink: './page/sceneTool/colorSpace.html',
       },
       {
