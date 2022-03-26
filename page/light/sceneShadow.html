@@ -70,7 +70,7 @@
 
       ssp.viewport.scene.add(cameraHelper);
 
-      ssp.viewport.renderer.outputEncoding = ssp.THREE.sRGBEncoding;
+      ssp.setColorSpace('sRGB');
 
       ssp.setEnvironment();
 
@@ -87,7 +87,7 @@
         isIdleRest: true,
         loadSceneAllSuccess() {
           ssp.updateAllShadow();
-          
+
           ssp.flyTo(
             {
               x: 100,
