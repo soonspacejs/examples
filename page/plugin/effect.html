@@ -54,7 +54,7 @@
           });
         },
         删除火焰: function () {
-          effectPlugin.removeFlame('testFlame');
+          effectPlugin.removeEffect('testFlame');
         },
         创建烟雾: function () {
           const smoke = effectPlugin.createSmoke({
@@ -72,7 +72,21 @@
           console.log(smoke);
         },
         删除烟雾: function () {
-          effectPlugin.removeSmoke('testSmoke');
+          effectPlugin.removeEffect('testSmoke');
+        },
+        创建镜头光晕: function () {
+          const lensFlare = effectPlugin.createLensFlare({
+            id: 'testFlare',
+            position: {
+              x: -500,
+              y: 800,
+              z: 0,
+            },
+            size: 300,
+          });
+        },
+        删除镜头光晕: function () {
+          effectPlugin.removeEffect('testFlare');
         },
       };
 

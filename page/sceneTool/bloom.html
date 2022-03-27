@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showStats: true,
+          background: {
+            color: '#000',
+          },
+        },
+      }));
+
+      ssp
+        .loadSbm(
+          // sbmInfo
+          {
+            id: 'room_01',
+            url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          }
+        )
+        .then((models) => {
+          ssp.flyMainViewpoint();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      const gui = new GUI();
+
+      const params = {
+        enable: true,
+        strength: 1.2,
+        threshold: 0.9,
+        radius: 0.1,
+      };
+
+      const changeHandle = () => {
+        ssp.setBloom(params);
+      };
+
+      changeHandle();
+
+      gui.add(params, 'enable').name('开启泛光').onChange(changeHandle);
+
+      gui
+        .add(params, 'strength', 0, 3, 0.01)
+        .name('强度')
+        .onChange(changeHandle);
+
+      gui
+        .add(params, 'threshold', 0, 1, 0.01)
+        .name('阈值')
+        .onChange(changeHandle);
+
+      gui.add(params, 'radius', 0, 1, 0.01).name('半径').onChange(changeHandle);
+    </script>
+  </body>
+</html>

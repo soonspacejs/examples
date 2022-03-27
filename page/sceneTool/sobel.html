@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showStats: true,
+          showInfo: true,
+        },
+        events: {},
+      }));
+
+      ssp
+        .loadModel({
+          id: 'firsFbxGroup',
+          url: '../../assets/model/fbx/dt/DTdh.fbx',
+          position: { x: 0, y: 0, z: 40 },
+          scale: { x: 20, y: 20, z: 20 },
+          onClick() {
+            console.log('model self click', this);
+          },
+          onLoad() {
+            console.log('onLoad', this);
+          },
+        })
+        .then((fbx) => {
+          ssp.flyToObj(fbx, 'leftTop');
+
+          ssp.playModelAnimation(fbx, 0);
+        });
+
+      const param = {
+        enable: true,
+      };
+
+      const changeHandle = () => {
+        ssp.setSobel(param);
+      };
+
+      changeHandle();
+
+      const gui = new GUI();
+
+      gui.add(param, 'enable').name('边缘检测').onChange(changeHandle);
+    </script>
+  </body>
+</html>
