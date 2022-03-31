@@ -20,6 +20,10 @@ export default [
         title: 'Poi 独立事件',
         demoLink: './page/start/poiEvent.html',
       },
+      {
+        title: '多事件',
+        demoLink: './page/start/multiEvent.html'
+      }
     ],
   },
   // model

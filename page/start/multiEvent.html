@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+    <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showStats: true,
+          showInfo: false,
+          showGrid: true,
+        },
+      });
+
+      let sbm, poi;
+
+      poi = ssp.createPoi({
+        id: 'icon1',
+        name: 'icon1_name',
+        url: '../../assets/img/poi/icon1.png',
+        scale: {
+          x: 3,
+          y: 3,
+          z: 3,
+        },
+        nameScale: {
+          x: 32,
+          y: 32,
+          z: 1,
+        },
+      });
+
+      poi.addEventListener('click', ({ target }) => {
+        console.log('poi 单击1', target);
+      });
+
+      poi.addEventListener('click', ({ target }) => {
+        console.log('poi 单击2', target);
+      });
+
+      poi.addEventListener('dblClick', ({ target }) => {
+        console.log('poi 双击', target);
+      });
+
+      poi.addEventListener('rightClick', ({ target }) => {
+        console.log('poi 右击', target);
+      });
+
+      sbm = await ssp.loadSbm({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: -100,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      sbm.addEventListener('click', ({ target }) => {
+        console.log('sbm 单击1', target);
+      });
+
+      sbm.addEventListener('dblClick', ({ target }) => {
+        console.log('sbm 双击1', target);
+      });
+
+      sbm.addEventListener('dblClick', ({ target }) => {
+        console.log('sbm 双击2', target);
+      });
+
+      sbm.addEventListener('rightClick', ({ target }) => {
+        console.log('sbm 右击1', target);
+      });
+
+      sbm.addEventListener('rightClick', ({ target }) => {
+        console.log('sbm 右击2', target);
+      });
+
+      const sbmClickHandle = ({ target }) => {
+        console.log('sbmClickHandle', target);
+      };
+
+      const params = {
+        添加点击事件: () => {
+          sbm.addEventListener('click', sbmClickHandle);
+        },
+        派发点击事件: () => {
+          sbm.dispatchEvent({ type: 'click' });
+        },
+        检查点击事件: () => {
+          console.log(sbm.hasEventListener('click', sbmClickHandle));
+        },
+        移除点击事件: () => {
+          sbm.removeEventListener('click', sbmClickHandle);
+        },
+      };
+
+      const gui = new GUI();
+
+      for (let i in params) gui.add(params, i);
+    </script>
+  </body>
+</html>
