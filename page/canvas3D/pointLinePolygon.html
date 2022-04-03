@@ -17,17 +17,27 @@
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
-      options: {},
+      options: {
+        showGrid: true,
+        background: {
+
+        }
+      },
       events: {}
     })
 
-    ssp.addAxesHelper({ id: 'axesHelper' })
+    // ssp.addAxesHelper({ id: 'axesHelper' })
 
     const canvas3D = ssp.createCanvas3D({
       id: 'test_canvas',
+      position: {
+        x: 0,
+        y: 1,
+        z: 0
+      },
       points: [{
         id: 'point_1',
-        radius: 10,
+        radius: 30,
         color: 0xff0000,
         opacity: 1,
         position: {
@@ -65,7 +75,7 @@
             z: 500
           }
         ],
-        width: 2
+        width: 20
       }],
       polygons: [{
         id: 'polygons_1',
