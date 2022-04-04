@@ -1,90 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
+    <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
 
-<body>
-  <div id="view"></div>
-  <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
-
-    const ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showStats: true,
-        showInfo: true,
-        showGrid: true,
-        hoverEnabled: true
-      },
-      events: {
-        poiClick(poi) {
-          console.log('Global poiClick', poi)
+      const ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showStats: true,
+          showInfo: true,
+          showGrid: true,
+          hoverEnabled: true,
+          showViewHelper: true,
         },
-        poiRightClick(param) {
-          console.log('Global poiRightClick', param)
+        events: {
+          poiClick(poi) {
+            console.log('Global poiClick', poi);
+          },
+          poiRightClick(param) {
+            console.log('Global poiRightClick', param);
+          },
+          poiDblClick(poi) {
+            console.log('Global poiDblClick', poi);
+          },
+          poiHover(poi) {
+            console.log('Global poiHover', poi);
+          },
         },
-        poiDblClick(poi) {
-          console.log('Global poiDblClick', poi)
+      });
+
+      const param = {
+        点击冒泡: false,
+        右键冒泡: false,
+        双击冒泡: false,
+        悬浮冒泡: false,
+      };
+
+      const poi = ssp.createPoi({
+        id: 'icon1',
+        name: 'icon1_name',
+        url: '../../assets/img/poi/icon1.png',
+        nameScale: {
+          x: 32,
+          y: 32,
+          z: 1,
         },
-        poiHover(poi) {
-          console.log('Global poiHover', poi)
-        }
-      }
-    })
+        onClick() {
+          if (param.点击冒泡) this.eventPropagation();
+          console.log('Poi onClick', this);
+        },
+        onDblClick() {
+          if (param.双击冒泡) this.eventPropagation();
+          console.log('Poi onDblClick', this);
+        },
+        onRightClick() {
+          if (param.右键冒泡) this.eventPropagation();
+          console.log('Poi onRightClick', this);
+        },
+        onHover() {
+          if (param.悬浮冒泡) this.eventPropagation();
+          console.log('Poi onHover', this);
+        },
+        onUnHover() {
+          if (param.悬浮冒泡) this.eventPropagation();
+          console.log('Poi onUnHover', this);
+        },
+      });
 
-    const param = {
-      点击冒泡: false,
-      右键冒泡: false,
-      双击冒泡: false,
-      悬浮冒泡: false
-    }
+      ssp.flyToObj(poi);
 
-    const poi = ssp.createPoi({
-      id: "icon1",
-      name: "icon1_name",
-      url: "../../assets/img/poi/icon1.png",
-      nameScale: {
-        x: 32,
-        y: 32,
-        z: 1
-      },
-      onClick() {
-        if (param.点击冒泡) this.eventPropagation()
-        console.log('Poi onClick', this)
-      },
-      onDblClick() {
-        if (param.双击冒泡) this.eventPropagation()
-        console.log('Poi onDblClick', this)
-      },
-      onRightClick() {
-        if (param.右键冒泡) this.eventPropagation()
-        console.log('Poi onRightClick', this)
-      },
-      onHover(){
-        if (param.悬浮冒泡) this.eventPropagation()
-        console.log('Poi onHover', this)
-      },
-      onUnHover() {
-        if (param.悬浮冒泡) this.eventPropagation()
-        console.log('Poi onUnHover', this)
-      },
-    });
-
-    ssp.flyToObj(poi)
-
-    const gui = new GUI()
-    for (let i in param) gui.add(param, i)
-
-  </script>
-</body>
-
+      const gui = new GUI();
+      for (let i in param) gui.add(param, i);
+    </script>
+  </body>
 </html>

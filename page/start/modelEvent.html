@@ -1,87 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
+    <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
 
-<body>
-  <div id="view"></div>
-  <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
-
-    const ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showStats: true,
-        showInfo: false,
-        hoverEnabled: true
-      },
-      events: {
-        modelClick(param) {
-          console.log('Global modelClick', param)
+      const ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showStats: true,
+          showInfo: false,
+          hoverEnabled: true,
+          showViewHelper: true,
         },
-        modelRightClick(param) {
-          console.log('Global modelClick', param)
+        events: {
+          modelClick(param) {
+            console.log('Global modelClick', param);
+          },
+          modelRightClick(param) {
+            console.log('Global modelClick', param);
+          },
+          modelDblClick(param) {
+            console.log('Global modelDblClick', param);
+          },
+          modelHover(param) {
+            console.log('Global modelHover', param);
+          },
+          modelUnHover(param) {
+            console.log('Global modelUnHover', param);
+          },
         },
-        modelDblClick(param) {
-          console.log('Global modelDblClick', param)
+      });
+
+      const param = {
+        点击冒泡: false,
+        右键冒泡: false,
+        双击冒泡: false,
+        悬浮冒泡: false,
+      };
+
+      ssp.loadSbm({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        onClick() {
+          if (param.点击冒泡) this.eventPropagation();
+          console.log('Model onClick', this);
         },
-        modelHover(param) {
-          console.log('Global modelHover', param)
+        onDblClick() {
+          if (param.双击冒泡) this.eventPropagation();
+          console.log('Model onDblClick', this);
         },
-        modelUnHover(param) {
-          console.log('Global modelUnHover', param)
-        }
-      }
-    })
+        onRightClick() {
+          if (param.右键冒泡) this.eventPropagation();
+          console.log('Model onRightClick', this);
+        },
+        onHover() {
+          if (param.悬浮冒泡) this.eventPropagation();
+          console.log('Model onHover', this);
+        },
+        onUnHover() {
+          if (param.悬浮冒泡) this.eventPropagation();
+          console.log('Model onUnHover', this);
+        },
+        onLoad() {
+          console.log('Model loaded!', this);
+        },
+      });
 
-    const param = {
-      点击冒泡: false,
-      右键冒泡: false,
-      双击冒泡: false,
-      悬浮冒泡: false
-    }
-
-    ssp.loadSbm({
-      id: 'room_01',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-      onClick() {
-        if (param.点击冒泡) this.eventPropagation()
-        console.log('Model onClick', this)
-      },
-      onDblClick() {
-        if (param.双击冒泡) this.eventPropagation()
-        console.log('Model onDblClick', this)
-      },
-      onRightClick() {
-        if (param.右键冒泡) this.eventPropagation()
-        console.log('Model onRightClick', this)
-      },
-      onHover() {
-        if (param.悬浮冒泡) this.eventPropagation()
-        console.log('Model onHover', this)
-      },
-      onUnHover() {
-        if (param.悬浮冒泡) this.eventPropagation()
-        console.log('Model onUnHover', this)
-      },
-      onLoad() {
-        console.log('Model loaded!', this)
-      }
-    })
-
-    const gui = new GUI()
-    for (let i in param) gui.add(param, i)
-
-  </script>
-</body>
-
+      const gui = new GUI();
+      for (let i in param) gui.add(param, i);
+    </script>
+  </body>
 </html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body style="margin: 0">
+    <div
+      id="view"
+      style="position: absolute; width: 100vw; height: 100vh"
+    ></div>
+  </body>
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        background: { color: '#ccc' },
+        showGrid: true,
+        showInfo: true,
+        showViewHelper: true,
+      },
+    }));
+
+    const canvas3D = ssp.createCanvas3D({
+      id: 'test_canvas',
+      name: 'test_canvas',
+      position: {
+        x: 0,
+        y: 1,
+        z: 0,
+      },
+      points: [
+        {
+          id: 'point_1',
+          name: 'point_1',
+          radius: 30,
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          gradient: {
+            colors: ['aquamarine', 'hotpink'],
+          },
+        },
+        {
+          id: 'point_2',
+          name: 'point_2',
+          radius: 10,
+          opacity: 1,
+          position: {
+            x: 100,
+            y: 0,
+            z: 0,
+          },
+          gradient: {
+            colors: ['aquamarine', 'blue'],
+          },
+        },
+      ],
+      lines: [
+        {
+          id: 'line_1',
+          points: [
+            {
+              x: 0,
+              y: 0,
+              z: 100,
+            },
+            {
+              x: 200,
+              y: 0,
+              z: 100,
+            },
+            {
+              x: 200,
+              y: 0,
+              z: 500,
+            },
+          ],
+          width: 20,
+          gradient: {
+            colors: ['cyan', 'hotpink', 'red', 'aquamarine'],
+            stops: [0, 0.5, 0.8, 1],
+            size: 1024,
+          },
+        },
+      ],
+      polygons: [
+        {
+          id: 'polygons_1',
+          yHeight: 0,
+          points: [
+            {
+              x: 0,
+              z: 300,
+            },
+            {
+              x: 100,
+              z: 300,
+            },
+            {
+              x: 100,
+              z: 400,
+            },
+            {
+              x: 0,
+              z: 400,
+            },
+            {
+              x: 0,
+              z: 500,
+            },
+            {
+              x: -100,
+              z: 500,
+            },
+          ],
+          gradient: {
+            colors: ['aquamarine', 'hotpink'],
+          },
+        },
+      ],
+      circles: [
+        {
+          id: 'circle_1',
+          radius: 50,
+          position: {
+            x: 0,
+            y: 0,
+            z: 200,
+          },
+          rotation: {
+            x: Math.PI / 2,
+            y: 0,
+            z: 0,
+          },
+          gradient: {
+            colors: ['indigo', 'hotpink'],
+          },
+        },
+      ],
+    });
+  </script>
+</html>

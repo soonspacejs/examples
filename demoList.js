@@ -97,6 +97,10 @@ export default [
         demoLink: './page/canvas3D/pointLinePolygon.html',
       },
       {
+        title: '渐变',
+        demoLink: './page/canvas3D/gradient.html',
+      },
+      {
         title: '空间画布对象',
         demoLink: './page/canvas3D/manipulatePolygon.html',
       },
