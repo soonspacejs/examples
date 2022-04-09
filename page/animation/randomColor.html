@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body style="margin: 0">
+    <div
+      id="view"
+      style="position: absolute; width: 100vw; height: 100vh"
+    ></div>
+  </body>
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js';
+
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        background: { color: '#ccc' },
+        showGrid: true,
+        showInfo: true,
+        showViewHelper: true,
+      },
+    }));
+
+    const { THREE } = SoonSpace;
+
+    const getRandomColor = () => new THREE.Color(Math.random() * 0xffffff);
+
+    const points = [];
+
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        const _id = `point_${i}_${j}`;
+
+        const _point = {
+          id: _id,
+          name: _id,
+          radius: 30,
+          position: {
+            x: 124 - 62 * i,
+            y: 0,
+            z: 124 - 62 * j,
+          },
+        };
+
+        points.push(_point);
+      }
+    }
+
+    const canvas3D = ssp.createCanvas3D({
+      id: 'test_canvas',
+      name: 'test_canvas',
+      position: {
+        x: 0,
+        y: 1,
+        z: 0,
+      },
+      points,
+    });
+
+    const allPoints = canvas3D.children.filter((c) => c.stype === 'Point');
+
+    console.log(allPoints);
+
+    allPoints.forEach((point) => {
+      const pointGradient = [new THREE.Color(), new THREE.Color()];
+
+      const sourceGradient = [getRandomColor(), getRandomColor()],
+        targetGradient = [getRandomColor(), getRandomColor()];
+
+      ssp.animation(
+        { t: 0 },
+        { t: 1 },
+        { repeat: true, yoyo: true, duration: 500 },
+        ({ t }) => {
+          pointGradient.forEach((c, i) =>
+            c.lerpColors(sourceGradient[i], targetGradient[i], t)
+          );
+
+          point.setOptions({
+            gradient: {
+              colors: pointGradient,
+            },
+          });
+        }
+      );
+    });
+  </script>
+</html>

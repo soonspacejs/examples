@@ -280,6 +280,10 @@ export default [
         title: '区域闪烁',
         demoLink: './page/animation/polygonOpacity.html',
       },
+      {
+        title: '渐变色过渡',
+        demoLink: './page/animation/randomColor.html',
+      }
     ],
   },
   // plugin
