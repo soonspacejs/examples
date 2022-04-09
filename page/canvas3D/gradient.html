@@ -14,7 +14,7 @@
     ></div>
   </body>
   <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
+    import SoonSpace from '../../lib/soonspacejs/index.js';
 
     const ssp = (window.ssp = new SoonSpace({
       el: '#view',
@@ -25,6 +25,8 @@
         showViewHelper: true,
       },
     }));
+
+    const getRandomColor = () => Math.random() * 0xffffff;
 
     const canvas3D = ssp.createCanvas3D({
       id: 'test_canvas',
@@ -45,7 +47,7 @@
             z: 0,
           },
           gradient: {
-            colors: ['aquamarine', 'hotpink'],
+            colors: [getRandomColor(), getRandomColor()],
           },
         },
         {
@@ -59,7 +61,7 @@
             z: 0,
           },
           gradient: {
-            colors: ['aquamarine', 'blue'],
+            colors: [getRandomColor(), getRandomColor()],
           },
         },
       ],
@@ -85,7 +87,12 @@
           ],
           width: 20,
           gradient: {
-            colors: ['cyan', 'hotpink', 'red', 'aquamarine'],
+            colors: [
+              getRandomColor(),
+              getRandomColor(),
+              getRandomColor(),
+              getRandomColor(),
+            ],
             stops: [0, 0.5, 0.8, 1],
             size: 1024,
           },
@@ -122,7 +129,7 @@
             },
           ],
           gradient: {
-            colors: ['aquamarine', 'hotpink'],
+            colors: [getRandomColor(), getRandomColor()],
           },
         },
       ],
@@ -141,7 +148,7 @@
             z: 0,
           },
           gradient: {
-            colors: ['indigo', 'hotpink'],
+            colors: [getRandomColor(), getRandomColor()],
           },
         },
       ],
