@@ -75,7 +75,7 @@
       ssp.animation(
         { t: 0 },
         { t: 1 },
-        { repeat: true, yoyo: true, duration: 500 },
+        { repeat: true, yoyo: true, duration: 1000 },
         ({ t }) => {
           pointGradient.forEach((c, i) =>
             c.lerpColors(sourceGradient[i], targetGradient[i], t)
