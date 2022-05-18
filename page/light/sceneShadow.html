@@ -37,14 +37,7 @@
         zoomMinDistance: 0,
       });
 
-      const ambientLight = ssp.getLightById('defaultAmbientLight'),
-        hemisphereLight = ssp.getLightById('defaultHemisphereLight');
-      const directionalLight = ssp.getLightById('defaultDirectionalLight');
-
-      ambientLight.visible = false;
-      hemisphereLight.visible = false;
-
-      ssp.setDirectionalLight({
+      const directionalLight = ssp.createDirectionalLight({
         id: 'defaultDirectionalLight',
         name: 'defaultDirectionalLight',
         position: {

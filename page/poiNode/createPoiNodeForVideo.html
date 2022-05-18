@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <video
+      id="myVideo"
+      width="400"
+      height="300"
+      src="../../assets/video/poi3D.mp4"
+      autoplay
+    ></video>
 
-<body>
+    <div id="view"></div>
 
-  <video id="myVideo" width="400" height="300" src="../../assets/video/poi3D.mp4" autoplay></video>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <div id="view"></div>
+      const ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          levelEnabled: true,
+        },
+        events: {},
+      });
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+      // 创建一个元素
+      let el = document.querySelector('#myVideo');
 
-    const ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true
-      },
-      events: {}
-    })
-
-    // 创建一个元素
-    let el = document.querySelector('#myVideo')
-
-    /**
-     * createPoiNode
-     */
-    const poi3D = ssp.createPoiNode({
-      type: '3D',
-      id: 'second3DPoi',
-      level: 1000,
-      position: {
-        x: 100,
-        y: 40,
-        z: 0
-      },
-      scale: {
-        x: 1,
-        y: 1,
-        z: 1
-      },
-      rotation: {
-        x: 0,
-        y: Math.PI / 2,
-        z: 0
-      },
-      element: el
-    })
-
-  </script>
-</body>
-
+      /**
+       * createPoiNode
+       */
+      const poi3D = ssp.createPoiNode({
+        type: '3D',
+        id: 'second3DPoi',
+        level: 1000,
+        position: {
+          x: 100,
+          y: 40,
+          z: 0,
+        },
+        scale: {
+          x: 1,
+          y: 1,
+          z: 1,
+        },
+        rotation: {
+          x: 0,
+          y: Math.PI / 2,
+          z: 0,
+        },
+        element: el,
+      });
+    </script>
+  </body>
 </html>

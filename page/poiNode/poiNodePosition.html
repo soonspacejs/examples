@@ -1,106 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-  <div id="poiTemplate"
-    style="display: none; width: 160px; height: auto; padding: 8px; background-color: #ccc; color: #000;">
-    <h3 style="text-align: center;">标题</h3>
-    <div>
-      <label>数据一：</label>
-      <span>10</span>
+    <div
+      id="poiTemplate"
+      style="
+        display: none;
+        width: 160px;
+        height: auto;
+        padding: 8px;
+        background-color: #ccc;
+        color: #000;
+      "
+    >
+      <h3 style="text-align: center">标题</h3>
+      <div>
+        <label>数据一：</label>
+        <span>10</span>
+      </div>
+      <div>
+        <label>数据二：</label>
+        <span>20</span>
+      </div>
+      <div>
+        <label>数据三：</label>
+        <span>30</span>
+      </div>
     </div>
-    <div>
-      <label>数据二：</label>
-      <span>20</span>
-    </div>
-    <div>
-      <label>数据三：</label>
-      <span>30</span>
-    </div>
-  </div>
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    // import { GUI } from '../../lib/gui.js'
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      // import { GUI } from '../../lib/gui.js'
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true,
-        showInfo: true
-      },
-      events: {}
-    })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          showInfo: true,
+        },
+        events: {},
+      }));
 
-    function cloneNode(node) {
-      const cloneEl = node.cloneNode(true)
-      cloneEl.style.display = 'block'
-      return cloneEl
-    }
+      function cloneNode(node) {
+        const cloneEl = node.cloneNode(true);
+        cloneEl.style.display = 'block';
+        return cloneEl;
+      }
 
-    ssp.loadSbm(
-      {
-        id: 'room_01',
-        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
-      },
-    )
-      .then((model) => {
-        ssp.flyMainViewpoint()
-
-        const poiTemplateEl = document.getElementById('poiTemplate')
-
-        // 顶部居中
-        ssp.createPoiNode({
-          type: '2.5D',
-          id: '2.5DPoiNode',
-          position: ssp.getObjectLabelPos(model, 'top', { extendScale: 0.8 }),
-          element: cloneNode(poiTemplateEl)
+      ssp
+        .loadSbm({
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
         })
+        .then((model) => {
+          ssp.flyMainViewpoint();
 
-        // 左上
-        ssp.createPoiNode({
-          type: '2.5D',
-          id: '2.5DPoiNode',
-          position: ssp.getObjectLabelPos(model, 'leftTop', { extendScale: 1.2 }),
-          element: cloneNode(poiTemplateEl)
-        })
+          const poiTemplateEl = document.getElementById('poiTemplate');
 
-        // 右上
-        ssp.createPoiNode({
-          type: '2.5D',
-          id: '2.5DPoiNode',
-          position: ssp.getObjectLabelPos(model, 'rightTop', { extendScale: 1.2 }),
-          element: cloneNode(poiTemplateEl)
-        })
+          // 顶部居中
+          ssp.createPoiNode({
+            type: '2.5D',
+            id: '2.5DPoiNode',
+            position: ssp.getObjectLabelPos(model, 'top', { extendScale: 0.8 }),
+            element: cloneNode(poiTemplateEl),
+          });
 
-        // 前上
-        ssp.createPoiNode({
-          type: '2.5D',
-          id: '2.5DPoiNode',
-          position: ssp.getObjectLabelPos(model, 'frontTop', { extendScale: 1.2 }),
-          element: cloneNode(poiTemplateEl)
-        })
+          // 左上
+          ssp.createPoiNode({
+            type: '2.5D',
+            id: '2.5DPoiNode',
+            position: ssp.getObjectLabelPos(model, 'leftTop', {
+              extendScale: 1.2,
+            }),
+            element: cloneNode(poiTemplateEl),
+          });
 
-        // 后上
-        ssp.createPoiNode({
-          type: '2.5D',
-          id: '2.5DPoiNode',
-          position: ssp.getObjectLabelPos(model, 'backTop', { extendScale: 1.2 }),
-          element: cloneNode(poiTemplateEl)
-        })
-      })
+          // 右上
+          ssp.createPoiNode({
+            type: '2.5D',
+            id: '2.5DPoiNode',
+            position: ssp.getObjectLabelPos(model, 'rightTop', {
+              extendScale: 1.2,
+            }),
+            element: cloneNode(poiTemplateEl),
+          });
 
-  </script>
-</body>
+          // 前上
+          ssp.createPoiNode({
+            type: '2.5D',
+            id: '2.5DPoiNode',
+            position: ssp.getObjectLabelPos(model, 'frontTop', {
+              extendScale: 1.2,
+            }),
+            element: cloneNode(poiTemplateEl),
+          });
 
+          // 后上
+          ssp.createPoiNode({
+            type: '2.5D',
+            id: '2.5DPoiNode',
+            position: ssp.getObjectLabelPos(model, 'backTop', {
+              extendScale: 1.2,
+            }),
+            element: cloneNode(poiTemplateEl),
+          });
+        });
+    </script>
+  </body>
 </html>
