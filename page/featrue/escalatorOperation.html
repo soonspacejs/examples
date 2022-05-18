@@ -1,95 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-      },
-      events: {
-        selectPosition(pos) {
-          console.log(pos)
-        }
-      }
-    })
-
-    const upPoint = { x: 2780, y: 0, z: -43 }
-    const downPoint = { x: 2573, y: -100, z: -43 }
-
-    ssp.loadModel({
-      id: 'firsFbxGroup',
-      url: '../../assets/model/fbx/dt/DTdh.fbx',
-      scale: { x: 20, y: 20, z: 20 },
-    })
-      .then(fbx => {
-        ssp.flyToObj(fbx)
-
-        const gui = new GUI();
-        const fns = {
-          上行: function () {
-            ssp.removeTopologyById('ddownRun')
-
-            ssp.createTopology({
-              id: 'upRun',
-              type: 'line',
-              nodes: [
-                {
-                  id: 'node1',
-                  position: downPoint
-                },
-                {
-                  id: 'node2',
-                  position: upPoint
-                },
-              ],
-              renderNode: false,
-              imgUrl: '../../assets/img/topology/arrow.png',
-              animation: true
-            })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
           },
-          下行: function () {
-            ssp.removeTopologyById('upRun')
+        },
+      }));
 
-            ssp.createTopology({
-              id: 'ddownRun',
-              type: 'line',
-              nodes: [
-                {
-                  id: 'node1',
-                  position: upPoint
-                },
-                {
-                  id: 'node2',
-                  position: downPoint
-                },
-              ],
-              renderNode: false,
-              imgUrl: '../../assets/img/topology/arrow.png',
-              animation: true
-            })
-          }
-        }
+      ssp.createAmbientLight({
+        id: 'ambientLight',
+        name: 'ambientLight',
+      });
 
-        for (let i in fns) gui.add(fns, i)
+      const upPoint = { x: 2780, y: 0, z: -43 };
+      const downPoint = { x: 2573, y: -100, z: -43 };
 
-      })
+      ssp
+        .loadModel({
+          id: 'firsFbxGroup',
+          url: '../../assets/model/fbx/dt/DTdh.fbx',
+          scale: { x: 20, y: 20, z: 20 },
+        })
+        .then((fbx) => {
+          ssp.flyToObj(fbx);
 
-  </script>
-</body>
+          const gui = new GUI();
+          const fns = {
+            上行: function () {
+              ssp.removeTopologyById('ddownRun');
 
+              ssp.createTopology({
+                id: 'upRun',
+                type: 'line',
+                nodes: [
+                  {
+                    id: 'node1',
+                    position: downPoint,
+                  },
+                  {
+                    id: 'node2',
+                    position: upPoint,
+                  },
+                ],
+                renderNode: false,
+                imgUrl: '../../assets/img/topology/arrow.png',
+                animation: true,
+              });
+            },
+            下行: function () {
+              ssp.removeTopologyById('upRun');
+
+              ssp.createTopology({
+                id: 'ddownRun',
+                type: 'line',
+                nodes: [
+                  {
+                    id: 'node1',
+                    position: upPoint,
+                  },
+                  {
+                    id: 'node2',
+                    position: downPoint,
+                  },
+                ],
+                renderNode: false,
+                imgUrl: '../../assets/img/topology/arrow.png',
+                animation: true,
+              });
+            },
+          };
+
+          for (let i in fns) gui.add(fns, i);
+        });
+    </script>
+  </body>
 </html>
