@@ -24,14 +24,8 @@
           background: {
             color: 'black',
           },
-          // 是否显示渲染状态
-          showStats: true,
           // 是否显示网格
           showGrid: true,
-          // 是否显示左下角的加载数量信息
-          showInfo: true,
-          // 是否显示视图辅助器
-          showViewHelper: true,
         },
         // 场景交互事件
         events: {},
@@ -39,19 +33,36 @@
 
       const group = ssp.createGroup({
         id: 'group',
+        name: 'group',
       });
 
-      ssp.addSbmForGroup('group', [
-        {
-          id: 'room_01',
-          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-          scale: {
-            x: 0.1,
-            y: 0.1,
-            z: 0.1,
-          },
+      const sbm = await ssp.loadSbm({
+        id: 'room_01',
+        name: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
         },
-      ]);
+      });
+
+      ssp.addObject(sbm, group);
+
+      /**
+       * 或者
+       */
+      // ssp.addSbmForGroup('group', [
+      //   {
+      //     id: 'room_01',
+      //     url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+      //     scale: {
+      //       x: 0.1,
+      //       y: 0.1,
+      //       z: 0.1,
+      //     },
+      //   },
+      // ]);
 
       ssp.addPoiForGroup('group', [
         {
