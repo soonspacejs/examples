@@ -22,8 +22,12 @@ export default [
       },
       {
         title: '多事件',
-        demoLink: './page/start/multiEvent.html'
-      }
+        demoLink: './page/start/multiEvent.html',
+      },
+      {
+        title: '对象分组',
+        demoLink: './page/start/objectGroup.html',
+      },
     ],
   },
   // model
@@ -283,7 +287,7 @@ export default [
       {
         title: '渐变色过渡',
         demoLink: './page/animation/randomColor.html',
-      }
+      },
     ],
   },
   // plugin

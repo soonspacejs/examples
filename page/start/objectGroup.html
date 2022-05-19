@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        // 绑定场景的元素选择器
+        el: '#view',
+        // 初始配置项
+        options: {
+          // 背景色
+          background: {
+            color: 'black',
+          },
+          // 是否显示渲染状态
+          showStats: true,
+          // 是否显示网格
+          showGrid: true,
+          // 是否显示左下角的加载数量信息
+          showInfo: true,
+          // 是否显示视图辅助器
+          showViewHelper: true,
+        },
+        // 场景交互事件
+        events: {},
+      }));
+
+      const group = ssp.createGroup({
+        id: 'group',
+      });
+
+      ssp.addSbmForGroup('group', [
+        {
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          scale: {
+            x: 0.1,
+            y: 0.1,
+            z: 0.1,
+          },
+        },
+      ]);
+
+      ssp.addPoiForGroup('group', [
+        {
+          id: 'icon1',
+          name: 'icon1',
+          url: '../../assets/img/poi/WechatIMG709.png',
+          position: {
+            x: 100,
+            y: 10,
+            z: 0,
+          },
+          scale: {
+            x: 2,
+            y: 2,
+            z: 2,
+          },
+        },
+      ]);
+
+      const gui = new GUI();
+
+      const params = {
+        x: 0,
+        y: 0,
+        z: 0,
+      };
+
+      const changeHandle = () => {
+        group.setMove(params, { duration: 0 });
+      };
+
+      gui.add(params, 'x', -1000, 1000).name('group x').onChange(changeHandle);
+      gui.add(params, 'y', -1000, 1000).name('group y').onChange(changeHandle);
+      gui.add(params, 'z', -1000, 1000).name('group z').onChange(changeHandle);
+    </script>
+  </body>
+</html>
