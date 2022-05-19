@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          background: {},
+        },
+      }));
+
+      await ssp.loadSbm({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+      });
+
+      ssp.flyMainViewpoint();
+
+      const gui = new GUI();
+
+      const params = {
+        type: 'Linear',
+        exposure: 0.8,
+      };
+
+      const changeHandle = () => {
+        ssp.setToneMapping(params);
+      };
+
+      gui
+        .add(params, 'type')
+        .options(['None', 'Linear', 'Reinhard', 'Cineon', 'ACESFilmic'])
+        .onChange(changeHandle);
+
+      gui.add(params, 'exposure', 0, 2).onChange(changeHandle);
+    </script>
+  </body>
+</html>

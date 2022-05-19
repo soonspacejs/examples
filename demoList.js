@@ -178,6 +178,10 @@ export default [
         demoLink: './page/sceneTool/colorSpace.html',
       },
       {
+        title: '色调映射',
+        demoLink: './page/sceneTool/toneMapping.html',
+      },
+      {
         title: '天空',
         demoLink: './page/sceneTool/sky.html',
       },
