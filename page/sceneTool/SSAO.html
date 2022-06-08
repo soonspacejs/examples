@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+
+      #operate {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 10px;
+        z-index: 1;
+        padding: 2rem;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="view"
+      style="width: 100vw; height: 100vh; background-color: #2b3d37"
+    ></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js?t=0608';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0608';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+          controls: {
+            enabledMousePointInteractive: true,
+          },
+          background: {
+            // color: '#f0f',
+            alpha: true,
+          },
+          showViewHelper: true,
+          logarithmicDepthBuffer: false,
+          // useIndexedDB: false,
+        },
+        events: {
+          modelClick(param) {
+            const { target } = param;
+
+            // ssp.addBoxHelper({
+            //   id: target.sid,
+            //   box: target.getBoundingBox()
+            // })
+
+            console.log(param);
+          },
+          selectPosition(p) {
+            console.log(p);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('/lib/soonspacejs/draco/');
+
+      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      ));
+
+      soonmanagerSync.setBaseUrl('/assets/sceneData/tsp-0602/');
+
+      // gui
+      const gui = new GUI();
+
+      const ssaoParams = {
+        enabled: true,
+        distanceScaling: true,
+        depthAwareUpsampling: true,
+        samples: 16,
+        rings: 7,
+        distanceThreshold: 0.02, // Render up to a distance of ~20 world units
+        distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
+        rangeThreshold: 0.0003, // Occlusion proximity of ~0.3 world units
+        rangeFalloff: 0.0001, // with ~0.1 units of falloff.
+        luminanceInfluence: 0.7,
+        minRadiusScale: 0.33,
+        radius: 0.1,
+        intensity: 6,
+        bias: 0.004,
+        fade: 0.05,
+        color: 0x0,
+        resolutionScale: 0.5,
+      };
+
+      const ssaoChanges = () => {
+        ssp.setSSAO(ssaoParams);
+      };
+
+      ssaoChanges();
+
+      gui.add(ssaoParams, 'enabled').onChange(ssaoChanges);
+      gui.add(ssaoParams, 'distanceScaling').onChange(ssaoChanges);
+      gui.add(ssaoParams, 'depthAwareUpsampling').onChange(ssaoChanges);
+      gui.add(ssaoParams, 'samples', 1, 32).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'rings', 1, 16).onChange(ssaoChanges);
+      gui
+        .add(ssaoParams, 'distanceThreshold', 0, 1, 0.0001)
+        .onChange(ssaoChanges);
+      gui
+        .add(ssaoParams, 'distanceFalloff', 0, 1, 0.0001)
+        .onChange(ssaoChanges);
+      gui.add(ssaoParams, 'rangeThreshold', 0, 1, 0.0001).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'rangeFalloff', 0, 1, 0.0001).onChange(ssaoChanges);
+      gui
+        .add(ssaoParams, 'luminanceInfluence', 0, 1, 0.1)
+        .onChange(ssaoChanges);
+      gui.add(ssaoParams, 'minRadiusScale', 0, 1, 0.1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'radius', 0, 1, 0.1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'intensity', 0, 10, 0.1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'bias', 0, 1, 0.001).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'fade', 0, 1, 0.001).onChange(ssaoChanges);
+      gui.addColor(ssaoParams, 'color').onChange(ssaoChanges);
+      gui.add(ssaoParams, 'resolutionScale', 0, 1, 0.1).onChange(ssaoChanges);
+
+      const directionalLight = ssp.createDirectionalLight({
+        id: 'defaultDirectionalLight',
+        name: 'defaultDirectionalLight',
+        position: {
+          x: 24,
+          y: 40,
+          z: 25,
+        },
+        target: {
+          x: -20,
+          y: -20,
+          z: 0,
+        },
+        openShadow: true,
+        mapSize: 6000,
+      });
+
+      const loadloadScene = () => {
+        console.time('all');
+        console.time('main');
+
+        soonmanagerSync
+          .loadScene({
+            isIdleRest: true,
+            loadSceneAllSuccess() {
+              ssp.updateAllShadow();
+
+              console.log('all success');
+
+              console.timeEnd('all');
+            },
+          })
+          .then(() => {
+            console.timeEnd('main');
+            // ssp.flyMainViewpoint();
+          });
+      };
+
+      loadloadScene();
+    </script>
+  </body>
+</html>

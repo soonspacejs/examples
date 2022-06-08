@@ -185,6 +185,10 @@ export default [
         title: '天空',
         demoLink: './page/sceneTool/sky.html',
       },
+      {
+        title: '环境光遮蔽',
+        demoLink: './page/sceneTool/SSAO.html',
+      }
       // {
       //   title: '泛光',
       //   demoLink: './page/sceneTool/bloom.html',
