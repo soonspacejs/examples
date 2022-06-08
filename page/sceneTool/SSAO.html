@@ -68,14 +68,14 @@
         },
       }));
 
-      ssp.setModelDracoDecoderPath('/lib/soonspacejs/draco/');
+      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
 
       const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
         SoonmanagerSyncPlugin,
         'soonmanagerSync'
       ));
 
-      soonmanagerSync.setBaseUrl('/assets/sceneData/tsp-0602/');
+      soonmanagerSync.setBaseUrl('../../assets/sceneData/tsp-0602/');
 
       // gui
       const gui = new GUI();
