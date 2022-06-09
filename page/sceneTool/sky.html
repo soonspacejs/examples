@@ -50,7 +50,7 @@
       const gui = new GUI();
 
       const params = {
-        enable: true,
+        enabled: true,
         position: { x: 0, y: 0, z: 0 },
         scalar: 450000,
         turbidity: 10,
@@ -63,7 +63,7 @@
       ssp.setSky(params);
 
       gui
-        .add(params, 'enable')
+        .add(params, 'enabled')
         .name('开启天空')
         .onChange(() => ssp.setSky(params));
 
