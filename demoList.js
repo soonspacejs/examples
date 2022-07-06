@@ -378,7 +378,7 @@ export default [
   },
   {
     title: '其他',
-    key: 'other',
+    key: 'misc',
     children: [
       {
         title: 'manager 分层加载',
