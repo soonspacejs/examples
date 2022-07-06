@@ -138,7 +138,7 @@
       const direction = ssp.viewport.camera.getWorldDirection(new ssp.THREE.Vector3);
 
       const rad = new ssp.THREE.Vector2(direction.x, direction.z).angle();
-      const angle = ssp.THREE.Math.radToDeg(rad) - 90;
+      const angle = ssp.utils.euler2Deg(rad) - 90;
       document.getElementById('compass').style.transform = `rotateZ(${angle}deg)`;
 
       document.getElementById('box_helper').style.transform = getCameraCSSMatrix(ssp.viewport.camera.matrixWorldInverse)
