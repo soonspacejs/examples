@@ -376,4 +376,14 @@ export default [
       },
     ],
   },
+  {
+    title: '其他',
+    key: 'other',
+    children: [
+      {
+        title: 'manager 分层加载',
+        demoLink: './page/misc/managerLayer.html',
+      }
+    ]
+  }
 ];

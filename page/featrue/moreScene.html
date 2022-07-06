@@ -1,64 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
-
-<body>
-  <div id="view1" style="position: absolute; width: 50vw; height: 100vh;"></div>
-  <div id="view2" style="position: absolute; width: 50vw; height: 100vh; right: 0;"></div>
-
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js'
-    import { GUI } from '../../lib/gui.js'
-
-
-    const ssp1 = window.ssp1 = new SoonSpace({
-      el: '#view1',
-      options: {
-        showGrid: true,
-        showInfo: true
-      },
-      events: {
-        modelClick(param) {
-          ssp2.clearSbm()
-          ssp2
-            .cloneSbm(param.target, { id: 'clone_sbm', position: { x: 0, y: 0, z: 0 } })
-            .then(sbm => ssp2.flyToObj(sbm))
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <style>
+      #wrap {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
       }
-    })
+    </style>
+  </head>
 
-    const soonmanagerSync = ssp1.registerPlugin(SoonmanagerSyncPlugin, 'soonmanagerSync')
-    soonmanagerSync.setBaseUrl('../../assets/sceneData/scene1/')
-    soonmanagerSync.loadScene({
-      isIdleRest: true,
-      loadSceneAllSuccess: () => {
-        console.log('全部加载完成！')
-        // ssp1.viewport.controls.enableAutoRotate = true
-      }
-    })
-      .then(() => {
-        console.log("主层级加载完成！");
-        ssp1.flyMainViewpoint()
-      })
+  <body>
+    <div id="wrap">
+      <div id="view1"></div>
+      <div id="view2"></div>
+    </div>
 
-    const ssp2 = window.ssp2 = new SoonSpace({
-      el: '#view2',
-      options: {
-        showGrid: true,
-        showInfo: true
-      },
-      events: {}
-    })
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js';
+      import { GUI } from '../../lib/gui.js';
 
-  </script>
-</body>
+      const ssp1 = (window.ssp1 = new SoonSpace({
+        el: '#view1',
+        options: {
+          showGrid: true,
+          showInfo: true,
+        },
+        events: {
+          modelClick(param) {
+            ssp2.clearSbm();
+            ssp2
+              .cloneSbm(param.target, {
+                id: 'clone_sbm',
+                position: { x: 0, y: 0, z: 0 },
+              })
+              .then((sbm) => ssp2.flyToObj(sbm));
+          },
+        },
+      }));
 
+      const soonmanagerSync = ssp1.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      );
+      soonmanagerSync.setBaseUrl('../../assets/sceneData/scene1/');
+      soonmanagerSync
+        .loadScene({
+          isIdleRest: true,
+          loadSceneAllSuccess: () => {
+            console.log('全部加载完成！');
+            // ssp1.viewport.controls.enableAutoRotate = true
+          },
+        })
+        .then(() => {
+          console.log('主层级加载完成！');
+          ssp1.flyMainViewpoint();
+        });
+
+      const ssp2 = (window.ssp2 = new SoonSpace({
+        el: '#view2',
+        options: {
+          showGrid: true,
+          showInfo: true,
+          background: {
+            color: '#000',
+          }
+        },
+        events: {},
+      }));
+    </script>
+  </body>
 </html>

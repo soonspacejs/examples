@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js?t=0103';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0103';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          background: {},
+        },
+        events: {
+          modelClick(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
+        SoonmanagerSyncPlugin,
+        'soonmanagerSync'
+      ));
+
+      const baseUrl = '../../assets/sceneData/zheneng/';
+
+      // 设置资源路径，可以使用本地资源或者平台发布的资源链接
+      soonmanagerSync.setBaseUrl(baseUrl);
+
+      await soonmanagerSync.poiInfoData2Tree();
+
+      // 场景树
+      const tree = soonmanagerSync.treeData;
+
+      const gui = new GUI();
+
+      const floors = tree.map((c) => c.modelname);
+
+      const params = {
+        floors: floors[0],
+      };
+
+      const isSbm = (url) => url.endsWith('.sbm');
+
+      /**
+       * 加载楼层
+       * @param {Object} node 楼层节点
+       */
+      const loadFloorModel = async (node) => {
+        const { id } = node;
+
+        // 创建楼层 group 包裹
+        const group = ssp.createGroup({
+          id: `${id}_group`,
+        });
+
+        const innerLoader = async (node) => {
+          const {
+            filepath,
+            id,
+            x,
+            y,
+            z,
+            rotation_x,
+            rotation_y,
+            rotation_z,
+            scale_x,
+            scale_y,
+            scale_z,
+            children,
+          } = node;
+
+          if (filepath) {
+            /**
+             * 加载模型
+             */
+
+            const deg2Euler = ssp.utils.deg2Euler;
+
+            const info = {
+              id,
+              url: `${baseUrl}${filepath}`,
+              position: { x, y, z },
+              rotation: {
+                x: deg2Euler(rotation_x),
+                y: deg2Euler(rotation_y),
+                z: deg2Euler(rotation_z),
+              },
+              scale: { x: scale_x, y: scale_y, z: scale_z },
+            };
+
+            if (isSbm(filepath)) {
+              await ssp.loadSbm(info).then((sbm) => ssp.addObject(sbm, group));
+            } else {
+              await ssp
+                .loadModel(info)
+                .then((model) => ssp.addObject(model, group));
+            }
+          }
+
+          if (children.length) {
+            await Promise.allSettled(children.map(innerLoader));
+          }
+        };
+
+        await innerLoader(node);
+
+        return group;
+      };
+
+      /**
+       * 显示隐藏对应楼层
+       * @param {string} modelname 楼层名称
+       */
+      const toggleFloorModel = (modelname) => {
+        const node = tree.find((c) => c.modelname === modelname);
+
+        console.log(node);
+
+        /**
+         * 隐藏所有 group
+         */
+        ssp.getAllGroup().forEach((g) => g.hide());
+
+        /**
+         * 显示对应楼层
+         */
+        const floorObject = ssp.getObjectById(`${node.id}_group`);
+
+        /**
+         * 有则显示，无则加载
+         */
+        if (floorObject) {
+          floorObject.show();
+
+          ssp.flyToObj(floorObject);
+        } else {
+          loadFloorModel(node).then((group) => {
+            ssp.flyToObj(group);
+          });
+        }
+      };
+
+      /**
+       * 初始化加载楼层
+       */
+      toggleFloorModel(params.floors);
+
+      gui
+        .add(params, 'floors')
+        .options(floors)
+        .onChange((value) => {
+          toggleFloorModel(value);
+        });
+    </script>
+  </body>
+</html>
