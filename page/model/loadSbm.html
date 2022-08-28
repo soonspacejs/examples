@@ -19,14 +19,14 @@
       el: '#view',
     })
 
-    ssp.loadSbm(
+    ssp.loadModel(
       // sbmInfo
       {
         id: 'room_01',
         url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
       },
       // onProgress
-      progress => console.log(progress)
+      // progress => console.log(progress)
     )
       .then(models => {
         ssp.flyMainViewpoint()
