@@ -205,7 +205,7 @@ export default [
     key: 'controls',
     children: [
       {
-        title: '控制器配置',
+        title: '控制器配置（free）',
         demoLink: './page/controls/setOptions.html',
       },
     ],

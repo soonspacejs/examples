@@ -102,7 +102,7 @@
             };
 
             if (isSbm(filepath)) {
-              await ssp.loadSbm(info).then((sbm) => ssp.addObject(sbm, group));
+              await ssp.loadModel(info).then((sbm) => ssp.addObject(sbm, group));
             } else {
               await ssp
                 .loadModel(info)

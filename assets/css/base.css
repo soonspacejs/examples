@@ -29,4 +29,5 @@ body,
 }
 #tips a {
   color: bisque;
+  pointer-events: auto;
 }

@@ -12,8 +12,8 @@
     <div id="view"></div>
 
     <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js?t=0731';
-      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0103';
+      import SoonSpace from '../../lib/soonspacejs/index.js?t=0908';
+      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0908';
       import { GUI } from '../../lib/gui.js';
 
       const ssp = (window.ssp = new SoonSpace({
@@ -21,6 +21,10 @@
         options: {
           showInfo: true,
           useIndexedDB: true,
+          controls: {
+            type: 'orbit',
+            enableDamping: true,
+          },
         },
         events: {
           modelClick(pos) {
