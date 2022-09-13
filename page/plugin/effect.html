@@ -74,20 +74,6 @@
         删除烟雾: function () {
           effectPlugin.removeEffect('testSmoke');
         },
-        创建镜头光晕: function () {
-          const lensFlare = effectPlugin.createLensFlare({
-            id: 'testFlare',
-            position: {
-              x: -500,
-              y: 800,
-              z: 0,
-            },
-            size: 300,
-          });
-        },
-        删除镜头光晕: function () {
-          effectPlugin.removeEffect('testFlare');
-        },
       };
 
       for (let i in fns) gui.add(fns, i);
