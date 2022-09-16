@@ -62,14 +62,14 @@
           url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
         })
         .then((model) => {
-          ssp.flyMainViewpoint();
+          ssp.flyMainViewpoint('current');
 
           const poiTemplateEl = document.getElementById('poiTemplate');
 
           // 顶部居中
           ssp.createPoiNode({
             type: '2.5D',
-            id: '2.5DPoiNode',
+            id: '2.5DPoiNode_1',
             position: ssp.getObjectLabelPos(model, 'top', { extendScale: 0.8 }),
             element: cloneNode(poiTemplateEl),
           });
@@ -77,7 +77,7 @@
           // 左上
           ssp.createPoiNode({
             type: '2.5D',
-            id: '2.5DPoiNode',
+            id: '2.5DPoiNode_2',
             position: ssp.getObjectLabelPos(model, 'leftTop', {
               extendScale: 1.2,
             }),
@@ -87,7 +87,7 @@
           // 右上
           ssp.createPoiNode({
             type: '2.5D',
-            id: '2.5DPoiNode',
+            id: '2.5DPoiNode_3',
             position: ssp.getObjectLabelPos(model, 'rightTop', {
               extendScale: 1.2,
             }),
@@ -97,7 +97,7 @@
           // 前上
           ssp.createPoiNode({
             type: '2.5D',
-            id: '2.5DPoiNode',
+            id: '2.5DPoiNode_4',
             position: ssp.getObjectLabelPos(model, 'frontTop', {
               extendScale: 1.2,
             }),
@@ -107,7 +107,7 @@
           // 后上
           ssp.createPoiNode({
             type: '2.5D',
-            id: '2.5DPoiNode',
+            id: '2.5DPoiNode_5',
             position: ssp.getObjectLabelPos(model, 'backTop', {
               extendScale: 1.2,
             }),
