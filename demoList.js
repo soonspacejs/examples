@@ -308,6 +308,10 @@ export default [
         demoLink: './page/plugin/soonmanagerSync.html',
       },
       {
+        title: 'SoonManager2.0 协同',
+        demoLink: './page/plugin/soonmanager2Sync.html',
+      },
+      {
         title: '热力图',
         demoLink: './page/plugin/heatMap.html',
       },

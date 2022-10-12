@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>摄像头</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0.000000">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false"/>
+            <Item name="wallMerge" value="false"/>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\摄像头_1F_0.sbm" type="SBM"/>
+                <BoundingBox minimum="-81.815735, -2.555888, -82.213196" maximum="81.815712, 156.144684, 82.213196"/>
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="677420397" baseFloor="1" level="0.000000"/>
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="677420397">
+                <Entity id="1" name="FACILITY_0_1810349551_0" longname="CCTV_04" type="FACILITY" visible="True"/>
+            </Entity>
+        </ObjectHierarchy>
+    <GLBFShells><GLBFShell><FileSource name=".\摄像头_1F_0.json" type="GLBF"/><BoundingBox/></GLBFShell></GLBFShells></Building>
+</Project>

@@ -1,0 +1,338 @@
+(function() { return { model: {ready(node) {
+    const {
+      modelInfos
+    } = JSON.parse(node.config);
+    node.outputs.forEach((_, index, arr) => {
+      arr[index].data = {
+        type: "model",
+        data: modelInfos
+      };
+    });
+  }, parse({
+    node
+  }) {
+    node.outputs.forEach((output) => {
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },material: {ready(node) {
+    const config = JSON.parse(node.config);
+    const {
+      materialId
+    } = config;
+    node.outputs.forEach((_, index, arr) => {
+      arr[index].data = {
+        type: "material",
+        data: materialId
+      };
+    });
+  }, parse({
+    node
+  }) {
+    node.outputs.forEach((output) => {
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },flow: {ready(node) {
+    const config = JSON.parse(node.config);
+    node.outputs.forEach((_, index, arr) => {
+      arr[index].data = config;
+    });
+  }, parse({
+    node
+  }) {
+    this.parseFlowNode(node, node.outputs[0]);
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },staticData: {ready(node) {
+    const config = JSON.parse(node.config);
+    const outputData = JSON.parse(config.codeString);
+    node.outputs.forEach((_, index, arr) => {
+      arr[index].data = outputData;
+    });
+  }, parse({
+    node
+  }) {
+    node.outputs.forEach((output) => {
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },interfaceData: {ready() {
+  }, parse({
+    node
+  }) {
+    const config = JSON.parse(node.config);
+    const {
+      address,
+      bodies,
+      bodyType,
+      headers,
+      params,
+      type
+    } = config.requestInfo;
+    let _params = void 0;
+    if (params.length > 0) {
+      _params = formKeyValuesObj(params);
+    }
+    let data = void 0;
+    if (bodies.length > 0) {
+      if (bodyType === "multipart/form-data") {
+        const formData = new FormData();
+        bodies.map((field) => {
+          formData.set(field.key, field.value);
+        });
+        data = formData;
+      } else if (bodyType === "application/x-www-form-urlencoded") {
+        data = new URLSearchParams(bodies.map((field) => [field.key, field.value]));
+      } else {
+        data = formKeyValuesObj(bodies);
+      }
+    }
+    let _headers = void 0;
+    if (headers.length > 0) {
+      _headers = formKeyValuesObj(headers);
+    }
+    axios({
+      method: type,
+      url: address,
+      params: _params,
+      data,
+      headers: _headers
+    }).then((res) => {
+      const {
+        data: {
+          data: data2
+        }
+      } = res;
+      node.outputs[0].data = data2;
+      this.parseFlowNode(node, node.outputs[0]);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },condition: {parse({
+    node,
+    inputData
+  }) {
+    if (!inputData)
+      return;
+    node.outputs.some((output) => {
+      const {
+        config
+      } = output;
+      const {
+        codeString
+      } = JSON.parse(config);
+      const fn = new Function("sourceData", codeString);
+      const res = fn(inputData);
+      if (res) {
+        output.data = res;
+        this.parseFlowNode(node, output);
+        return true;
+      }
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },filter: {ready(node) {
+    const config = JSON.parse(node.config);
+    const {
+      filterCode
+    } = config;
+    node.outputs.forEach((_, index, arr) => {
+      arr[index].data = filterCode;
+    });
+  }, parse({
+    node,
+    inputData
+  }) {
+    const {
+      filterCode
+    } = JSON.parse(node.config);
+    const fn = new Function("sourceData", filterCode);
+    const res = fn(inputData);
+    const output = node.outputs[0];
+    output.data = res;
+    this.parseFlowNode(node, output);
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },interaction: {parse({
+    node,
+    inputData
+  }) {
+    const ssp = this.getOutInstance("ssp");
+    if (!ssp)
+      return;
+    const {
+      type,
+      data
+    } = inputData;
+    const {
+      eventKey
+    } = JSON.parse(node.config);
+    const setSceneObjectEvent = (object, eventKey2) => {
+      if (!object)
+        return;
+      let oldEvent = null;
+      switch (eventKey2) {
+        case "click":
+          oldEvent = object.onClick;
+          object.onClick = () => {
+            oldEvent?.();
+            this.dispatchSignal(`${node.id}_${object.sid}_${eventKey2}`);
+          };
+          break;
+        case "dblClick":
+          oldEvent = object.onDblClick;
+          object.onDblClick = () => {
+            oldEvent?.();
+            this.dispatchSignal(`${node.id}_${object.sid}_${eventKey2}`);
+          };
+          break;
+        case "rightClick":
+          oldEvent = object.onRightClick;
+          object.onRightClick = () => {
+            oldEvent?.();
+            this.dispatchSignal(`${node.id}_${object.sid}_${eventKey2}`);
+          };
+          break;
+      }
+    };
+    switch (type) {
+      case "model":
+        data.forEach(({
+          sid
+        }) => {
+          setSceneObjectEvent(ssp.getObjectById(sid), eventKey);
+        });
+        break;
+      case "material":
+        ssp.getObjectByUserDataProperty("familyId", data)?.forEach((model) => setSceneObjectEvent(model, eventKey));
+        break;
+    }
+    node.outputs.forEach((output) => {
+      output.data = {
+        ...inputData,
+        fromInteraction: true,
+        eventKey,
+        nodeId: node.id
+      };
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },action: {parse({
+    node,
+    inputData
+  }) {
+    const ssp = this.getOutInstance("ssp");
+    if (!ssp)
+      return;
+    const {
+      type,
+      data,
+      fromInteraction,
+      eventKey,
+      nodeId
+    } = inputData;
+    const {
+      actionType,
+      actionCode_1,
+      actionCode_2
+    } = JSON.parse(node.config);
+    let objects = [];
+    if (type === "model") {
+      objects = data.map(({
+        sid
+      }) => ssp.getObjectById(sid));
+    } else if (type === "material") {
+      objects = ssp.getObjectByUserDataProperty("familyId", data);
+    }
+    if (fromInteraction) {
+      if (actionType === "1") {
+        objects.forEach((object) => {
+          this.addSignal(`${nodeId}_${object.sid}_${eventKey}`, () => {
+            const fn = new Function("{ssp, _this}", actionCode_1);
+            fn({
+              ssp,
+              _this: object
+            });
+          });
+        });
+      } else if (actionType === "2") {
+        objects.forEach((object) => {
+          this.addSignal(`${nodeId}_${object.sid}_${eventKey}`, () => {
+            const fn = new Function("{ ssp, object, inputData }", actionCode_2);
+            fn({
+              ssp,
+              object,
+              inputData
+            });
+          });
+        });
+      }
+    } else {
+      if (actionType === "1") {
+        objects.forEach((object) => {
+          const fn = new Function("{ssp, _this}", actionCode_1);
+          fn({
+            ssp,
+            _this: object
+          });
+        });
+      } else if (actionType === "2") {
+        objects.forEach((object) => {
+          const fn = new Function("{ ssp, object, inputData }", actionCode_2);
+          fn({
+            ssp,
+            object,
+            inputData
+          });
+        });
+      }
+    }
+    node.outputs.forEach((output) => {
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },viewpoint: {parse({
+    node,
+    inputData
+  }) {
+    const ssp = this.getOutInstance("ssp");
+    if (!ssp)
+      return;
+    const {
+      viewpointData
+    } = JSON.parse(node.config);
+    const viewpoint = JSON.parse(viewpointData);
+    ssp.flyTo(viewpoint.position, viewpoint.rotation);
+    node.outputs.forEach((output) => {
+      output.data = inputData;
+      this.parseFlowNode(node, output);
+    });
+  }, unregister({
+    node
+  }) {
+    console.log("unregister", node);
+  }, },} } )()
