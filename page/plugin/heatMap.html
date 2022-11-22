@@ -15,7 +15,10 @@
   <script type="module">
     import SoonSpace from '../../lib/soonspacejs/index.js'
     import HeatMapPlugin from '../../lib/soonspacejs/plugins/heat-map.js'
+    // import HeatMapPlugin from 'https://unpkg.com/@soonspacejs/plugin-heat-map/dist/index.esm.js'
     import { GUI } from '../../lib/gui.js'
+    import DrawingShapePlugin from 'https://unpkg.com/@soonspacejs/plugin-drawing-shape/dist/index.esm.js'
+
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',
@@ -24,16 +27,16 @@
         showGrid: false
       },
       events: {
-        modelClick(p) {
-          console.log(p)
-        },
         selectPosition(pos) {
           console.log(pos)
         }
       }
     })
 
-    ssp.loadModel({
+    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
+
+
+    ssp.loadSbm({
       id: 'room_01',
       url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
     })
@@ -46,8 +49,8 @@
 
     ssp.addAxesHelper({ id: 'hm_axesHelper' })
 
-    const heatMap = ssp.registerPlugin(HeatMapPlugin, 'heatMap')
-    heatMap.create({
+    const heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMap')
+    heatMapPlugin.create({
       id: 'hm1',
       name: 'hm_name',
       yAxisHeight: 100,
@@ -85,10 +88,14 @@
       ]
     })
 
+
+  
+    let polygonHeatMapData = [];
+    let polygonHeatObj = null
     const gui = new GUI()
     const fns = {
       重置数据: function () {
-        heatMap.setData(
+        heatMapPlugin.setData(
           'hm1',
           [
             {
@@ -113,7 +120,7 @@
         )
       },
       第二个热力图: function () {
-        heatMap.create({
+        heatMapPlugin.create({
           id: 'hm2',
           name: 'hm_name',
           yAxisHeight: 100,
@@ -152,13 +159,13 @@
         })
       },
       通过id获取: function () {
-        console.log(heatMap.getById('hm1'))
+        console.log(heatMapPlugin.getById('hm1'))
       },
       通过名称获取: function () {
-        console.log(heatMap.getByName('hm_name'))
+        console.log(heatMapPlugin.getByName('hm_name'))
       },
       通过id移除: function () {
-        heatMap.removeById('hm1')
+        heatMapPlugin.removeById('hm1')
       },
     }
 

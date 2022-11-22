@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+</head>
+
+<body>
+  <div id="view"></div>
+
+  <video id="video"   loop hidden>
+    <source src="../../assets/video/poi3D.mp4"
+            type="video/mp4">
+</video>
+
+  <script type="module">
+    import SoonSpace from '../../lib/soonspacejs/index.js'
+    import { GUI } from '../../lib/gui.js'
+    import DrawingShapePlugin from 'https://unpkg.com/@soonspacejs/plugin-drawing-shape/dist/index.esm.js'
+
+    const ssp = window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true,
+        showInfo: true
+      },
+      events: {}
+    })
+
+    const gui = new GUI();
+
+
+    const videoDom = document.getElementById('video')
+
+    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
+
+
+    // 多边形顶点
+    const points = [];
+
+    const paramFn = {
+      '创建PoiMesh': async function () {
+       const res = await  drawingShapePlugin.drawingPoint(
+          {
+            color: 'red',
+            opacity: 0.5
+          }
+        );
+        drawingShapePlugin.clearDrawingCanvas3D();
+        
+        const poiMesh = ssp.createPoiMesh({
+          id: "poiMesh1",
+          image: "../../assets/img/poi/WechatIMG709.png",
+          // image: videoDom,
+          position: res.position,
+          width:100, 
+          height:100
+        });
+      },
+      '多边形PoiMesh':  async function () {
+       const res = await  drawingShapePlugin.drawingLine(
+          {
+            color: 'red',
+            opacity: 0.5
+          }
+        );
+        const points = res.points;
+        console.log("顶点坐标：",points)
+        const poiMesh = ssp.createPolygonPoiMesh({
+          id: "poiMesh2",
+          image: videoDom,
+          points:points
+        })
+
+        videoDom.play();
+      },
+    }
+
+    for (let i in paramFn) gui.add(paramFn, i)
+
+    function cloneNode(node) {
+      const cloneEl = node.cloneNode(true)
+      cloneEl.style.display = 'block'
+      return cloneEl
+    }
+
+    ssp.loadSbm(
+      {
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
+      },
+    )
+
+  </script>
+</body>
+
+</html>
