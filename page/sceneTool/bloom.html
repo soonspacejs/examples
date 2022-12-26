@@ -23,18 +23,55 @@
             color: '#000',
           },
         },
+        events: {
+          modelClick(p) {
+            console.log(p);
+          },
+        },
       }));
+
+      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: 297.3357816880956,
+          y: 100.17340258892642,
+          z: 511.2519617508467,
+        },
+        rotation: {
+          x: -0.15893055895332486,
+          y: 0.48599320932297635,
+          z: 0.07472636980024795,
+        },
+      });
 
       ssp
         .loadModel(
           // sbmInfo
           {
             id: 'room_01',
-            url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+            url: '../../assets/model/gltf/lambo.glb',
           }
         )
-        .then((models) => {
-          ssp.flyMainViewpoint();
+        .then((model) => {
+          // console.log(model);
+          model.traverse((child) => {
+            if (child.isMesh) {
+              child.material.roughness = 0.5;
+              child.material.metalness = 0.5;
+
+              // if (
+              //   child.name.toLowerCase().includes('emitbrake') ||
+              //   child.name.toLowerCase().includes('light')
+              // ) {
+              //   console.log(child);
+              //   child.material.emissiveIntensity = 3;
+              //   child.material.color.multiplyScalar(3);
+              //   child.material.toneMapped = false;
+              // }
+            }
+          });
+          // ssp.flyMainViewpoint();
         })
         .catch((err) => {
           console.error(err);
@@ -43,10 +80,14 @@
       const gui = new GUI();
 
       const params = {
-        enable: true,
-        strength: 1.2,
-        threshold: 0.9,
+        enabled: true,
+        intensity: 3,
+        threshold: 0.5,
         radius: 0.1,
+        smoothing: 0,
+        scalar: 2,
+        opacity: 1,
+        selection: [],
       };
 
       const changeHandle = () => {
@@ -55,10 +96,10 @@
 
       changeHandle();
 
-      gui.add(params, 'enable').name('开启泛光').onChange(changeHandle);
+      gui.add(params, 'enabled').name('开启泛光').onChange(changeHandle);
 
       gui
-        .add(params, 'strength', 0, 3, 0.01)
+        .add(params, 'intensity', 0, 3, 0.01)
         .name('强度')
         .onChange(changeHandle);
 
