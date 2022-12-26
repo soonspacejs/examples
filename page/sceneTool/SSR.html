@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../lib/soonspacejs/plugins/soonmanager2-sync.js",
+          "gui": "../../lib/gui.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+      import { GUI } from 'gui';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          controls: {},
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/展厅');
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: -11.29191942081734,
+          y: 0.8891953504754905,
+          z: 1.5740346172393134,
+        },
+        rotation: {
+          x: -0.11142291616988848,
+          y: -1.2468777541987062,
+          z: -0.1056726275449732,
+        },
+      });
+
+      /**
+       * 加载场景
+       */
+      soonmanager2Sync.loadScene().then(() => {
+        console.log('加载完成');
+
+        const ceil1 = ssp.getObjectById('4JO5FNVNZVN0'),
+          ceil2 = ssp.getObjectById('4JF718RCVWZO');
+
+        ceil1.hide();
+        ceil2.hide();
+
+        /**
+         * SSR material
+         */
+        const hall = ssp.getObjectById('4JEC51MKK2XP');
+
+        const hallMesh = hall.getObjectByName('30');
+        const groundMesh = hall.getObjectByName('12');
+
+        hallMesh.material.roughness = 0;
+        groundMesh.material.roughness = 0.03;
+      });
+
+      const params = {
+        enabled: true,
+        intensity: 1,
+        thickness: 5,
+        distance: 10,
+        steps: 10,
+        refineSteps: 8,
+        maxRoughness: 0.1,
+        blend: 1,
+        maxDepthDifference: 40,
+        blur: 1,
+        fade: 0.1,
+        jitter: 0,
+      };
+
+      const ssrChanges = () => {
+        ssp.setSSR(params);
+      };
+      ssrChanges();
+
+      const gui = new GUI();
+
+      gui.add(params, 'enabled').onChange(ssrChanges);
+    </script>
+  </body>
+</html>

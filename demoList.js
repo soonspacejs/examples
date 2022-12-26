@@ -91,15 +91,17 @@ export default [
       },
     ],
   },
-    // poiMesh
-    {
-      title: "PoiMesh",
-      key: "PoiMesh",
-      children:[{
-        title: "创建PoiMesh",
-        demoLink: "./page/poiMesh/createPoiMesh.html"
-      }]
-    },
+  // poiMesh
+  {
+    title: 'PoiMesh',
+    key: 'PoiMesh',
+    children: [
+      {
+        title: '创建PoiMesh',
+        demoLink: './page/poiMesh/createPoiMesh.html',
+      },
+    ],
+  },
   // canvas3D
   {
     title: '空间画布',
@@ -197,7 +199,11 @@ export default [
       {
         title: '环境光遮蔽',
         demoLink: './page/sceneTool/SSAO.html',
-      }
+      },
+      {
+        title: '空间反射',
+        demoLink: './page/sceneTool/SSR.html',
+      },
       // {
       //   title: '泛光',
       //   demoLink: './page/sceneTool/bloom.html',
@@ -325,8 +331,8 @@ export default [
         demoLink: './page/plugin/heatMap.html',
       },
       {
-        title: "多边形热力图",
-        demoLink: "./page/plugin/polygonHeatMap.html"
+        title: '多边形热力图',
+        demoLink: './page/plugin/polygonHeatMap.html',
       },
       {
         title: '特效',
@@ -400,7 +406,7 @@ export default [
       {
         title: 'manager 分层加载',
         demoLink: './page/misc/managerLayer.html',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
