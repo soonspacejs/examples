@@ -28,7 +28,11 @@
           showGrid: true,
         },
         // 场景交互事件
-        events: {},
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
       }));
 
       const group = ssp.createGroup({
