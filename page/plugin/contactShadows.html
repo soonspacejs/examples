@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../lib/soonspacejs/plugins/effect.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../lib/soonspacejs/plugins/soonmanager2-sync.js",
+          "gui": "../../lib/gui.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+      import { GUI } from 'gui';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          controls: {},
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+
+      soonmanager2Sync.setPath(
+        '../../assets/sceneData/2.0/卫生间防水样板1121s'
+      );
+
+      ssp.flyTo(
+        {
+          x: -4.608798421544587,
+          y: 2.9177787530871777,
+          z: 4.572776607113965,
+        },
+        {
+          x: -0.42684214109889485,
+          y: -0.6888066865359577,
+          z: -0.281409672062147,
+        }
+      );
+
+      /**
+       * 加载场景
+       */
+      await soonmanager2Sync.loadScene();
+      const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+
+      const size = new ssp.THREE.Vector3(),
+        center = new ssp.THREE.Vector3();
+
+      box.getSize(size);
+      box.getCenter(center);
+
+      console.log(size, center);
+
+      const shadows = effectPlugin.createContactShadows({
+        id: 'shadows',
+        position: { x: center.x, y: box.min.y, z: center.z },
+        opacity: 1,
+        scale: [size.x * 3, size.z * 3],
+        blur: 2,
+        far: 1,
+        resolution: 1024,
+        frames: 10,
+        darkness: 2,
+      });
+    </script>
+  </body>
+</html>

@@ -339,6 +339,10 @@ export default [
         demoLink: './page/plugin/effect.html',
       },
       {
+        title: '地面阴影',
+        demoLink: './page/plugin/contactShadows.html',
+      },
+      {
         title: '绘制基础图形',
         demoLink: './page/plugin/drawingShape.html',
       },
