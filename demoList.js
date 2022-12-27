@@ -208,6 +208,10 @@ export default [
         title: '泛光',
         demoLink: './page/sceneTool/bloom.html',
       },
+      {
+        title: '选择泛光',
+        demoLink: './page/sceneTool/selection-bloom.html',
+      },
       // {
       //   title: '边缘检测',
       //   demoLink: './page/sceneTool/sobel.html',

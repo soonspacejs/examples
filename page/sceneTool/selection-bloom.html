@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../lib/soonspacejs/plugins/soonmanager2-sync.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: false,
+          showInfo: true,
+          // closeInfoLog: true,
+          showViewHelper: true,
+          background: {
+            color: '#ccc',
+          },
+          logarithmicDepthBuffer: false,
+        },
+        events: {
+          modelClick(param) {
+            console.log(param);
+          },
+          selectPosition(p) {
+            console.log(p);
+          },
+        },
+      }));
+
+      ssp.setToneMapping({ exposure: 0.6 });
+
+      const ssaoParams = {
+        enabled: true,
+        depthAwareUpsampling: true,
+        samples: 32,
+        rings: 7,
+        distanceThreshold: 0.02,
+        distanceFalloff: 0.0025,
+        rangeThreshold: 0.0003,
+        rangeFalloff: 0.0001,
+        luminanceInfluence: 0.7,
+        minRadiusScale: 0.33,
+        radius: 0.1,
+        intensity: 4,
+        bias: 0.004,
+        fade: 0.05,
+        color: 0x0,
+        resolutionScale: 0.5,
+      };
+
+      const ssaoChanges = () => {
+        ssp.setSSAO(ssaoParams);
+      };
+
+      ssaoChanges();
+
+      ssp.setSSR({
+        enabled: true,
+        intensity: 1,
+        thickness: 5,
+        distance: 10,
+        steps: 10,
+        refineSteps: 8,
+        maxRoughness: 0.1,
+        blend: 1,
+        maxDepthDifference: 40,
+        blur: 1,
+        fade: 0,
+        jitter: 0,
+      });
+
+      // light
+      // const directionalLight = ssp.createDirectionalLight({
+      //   id: 'directionalLight',
+      //   intensity: 1,
+      //   position: {
+      //     x: 18,
+      //     y: 30,
+      //     z: 3,
+      //   },
+      //   target: {
+      //     x: -13,
+      //     y: 0,
+      //     z: -5,
+      //   },
+      //   openShadow: true,
+      //   mapSize: 6000,
+      // });
+
+      // directionalLight.shadow.bias = -0.001;
+
+      const pointLight = ssp.createPointLight({
+        id: 'pointLight',
+        position: {
+          x: 3,
+          y: 2.5,
+          z: 0,
+        },
+        intensity: 1.2,
+        color: 'white',
+        distance: 5,
+      });
+
+      // set camera
+      ssp.setCameraViewpoint({
+        position: {
+          x: -11.603277254342721,
+          y: 1.308403958906574,
+          z: 2.2445075154150667,
+        },
+        rotation: {
+          x: -0.15324037837364174,
+          y: -1.2603375206335805,
+          z: -0.14602072674407124,
+        },
+      });
+
+      const soonmanager2SyncPlugin = (window.soonmanager2SyncPlugin =
+        ssp.registerPlugin(Soonmanager2SyncPlugin, 'soonmanager2SyncPlugin'));
+
+      soonmanager2SyncPlugin.setPath('../../assets/sceneData/2.0/展厅');
+
+      soonmanager2SyncPlugin.loadScene({ syncProperties: true }).then(() => {
+        console.log('load scene success');
+
+        // update shadow
+        ssp.updateAllShadow();
+
+        const { THREE, viewport } = ssp;
+
+        /**
+         * bloom
+         */
+        const selection = [];
+
+        const stripe1 = ssp.getObjectById('4JBE24VLP38M').getObjectByName('0');
+        selection.push(stripe1);
+
+        /**
+         * 大厅灯带
+         */
+        ssp.getObjectById('4JBE14W2L3WL').traverse((child) => {
+          if (child.isMesh) {
+            selection.push(child);
+          }
+        });
+
+        /**
+         * 天花板
+         */
+        const ceilLight = ssp.getObjectById('4JF718RCVWZO');
+        const lightMeshNames = ['8', '10'];
+        ceilLight.traverse((child) => {
+          if (child.isMesh && lightMeshNames.includes(child.name)) {
+            selection.push(child);
+          }
+        });
+
+        /**
+         * 矩形大灯特殊处理
+         */
+        const rectLight = ssp.getObjectById('4JO5FNVNZVN0');
+        rectLight.traverse((child) => {
+          if (child.isMesh) {
+            child.visible = false;
+
+            const box = ssp.utils.getBoundingBox(child);
+            const center = new THREE.Vector3();
+            const size = new THREE.Vector3();
+
+            box.getCenter(center);
+            box.getSize(size);
+
+            const geometry = new THREE.PlaneGeometry(size.x, size.z);
+            const material = new THREE.MeshStandardMaterial({
+              // color: '#fff',
+            });
+
+            material.side = THREE.BackSide;
+            // material.emissive.set('#fff');
+
+            const plane = new THREE.Mesh(geometry, material);
+
+            plane.castShadow = true;
+            plane.position.copy(center);
+            plane.rotation.x -= Math.PI / 2;
+
+            child.parent.attach(plane);
+
+            // intersects
+            ssp.viewport.scener.intersectsList.otherObjList.push(plane);
+
+            selection.push(plane);
+          }
+        });
+
+        ssp.setBloom({
+          enabled: true,
+          intensity: 1,
+          threshold: 1,
+          radius: 0.5,
+          opacity: 1,
+          scalar: 5,
+          selection,
+        });
+
+        /**
+         * SSR material
+         */
+        const hall = ssp.getObjectById('4JEC51MKK2XP');
+
+        const hallMesh = hall.getObjectByName('30');
+        const groundMesh = hall.getObjectByName('12');
+
+        hallMesh.material.roughness = 0;
+        groundMesh.material.roughness = 0.03;
+
+        /**
+         * 根据 camera 位置隐藏天花板
+         */
+
+        /**
+         * 防抖
+         */
+        const debounce = (fn, timeout = 100) => {
+          let timer;
+          let firstExec = false;
+
+          return () => {
+            if (!firstExec) {
+              fn();
+
+              firstExec = true;
+            }
+
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+              fn();
+            }, timeout);
+          };
+        };
+        const ceil = ssp.getObjectById('4JF718RCVWZO');
+
+        const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+
+        let prevCameraAtRoom = null;
+        const debounceFn = debounce(() => {
+          const cameraAtRoom = box.containsPoint(ssp.viewport.camera.position);
+
+          if (cameraAtRoom === prevCameraAtRoom) {
+            return;
+          }
+
+          prevCameraAtRoom = cameraAtRoom;
+
+          if (cameraAtRoom) {
+            ceil.show();
+            rectLight.show();
+
+            ssp.updateAllShadow();
+          } else {
+            ceil.hide();
+            rectLight.hide();
+
+            ssp.updateAllShadow();
+          }
+        });
+
+        ssp.signals.cameraChange.add(debounceFn);
+
+        /**
+         * video plane
+         */
+
+        const createVideoTexture = (path) => {
+          const video = document.createElement('video');
+
+          video.src = path;
+          video.crossOrigin = 'Anonymous';
+          video.loop = true;
+          video.muted = true;
+
+          video.play();
+
+          const texture = new THREE.VideoTexture(video);
+          texture.encoding = viewport.renderer.outputEncoding;
+          texture.flipY = false;
+
+          return { texture, video };
+        };
+
+        // mock render loop
+        ssp.signals.sceneRendered.add(() => {
+          ssp.render();
+        });
+
+        // 大屏
+        {
+          const { texture, video } = createVideoTexture(
+            '../../assets/video/screen-001.mp4'
+          );
+
+          video.addEventListener('play', () => {
+            const bigScreenMesh = ssp
+              .getObjectById('4JEKW051OAZ0')
+              .getObjectByName('屏幕');
+
+            const material = bigScreenMesh.material.clone();
+
+            material.color.set(0xffffff);
+            material.map = texture;
+
+            bigScreenMesh.material = material;
+          });
+        }
+
+        // 智慧港口
+        {
+          const { texture, video } = createVideoTexture(
+            '../../assets/video/screen-002.mp4'
+          );
+
+          video.addEventListener('play', () => {
+            const portScreenMesh = ssp
+              .getObjectById('4JEJUZO009HH')
+              .getObjectByName('屏幕');
+
+            const material = portScreenMesh.material.clone();
+
+            material.color.set(0xffffff);
+            material.map = texture;
+
+            portScreenMesh.material = material;
+          });
+        }
+
+        /**
+         * 移动大屏
+         */
+        {
+          const { texture, video } = createVideoTexture(
+            '../../assets/video/screen-003.mp4'
+          );
+
+          video.addEventListener('play', () => {
+            // 大门
+            const door = ssp.getObjectById('4JFB1DMJVU9C');
+            const doorScreenMesh1 = door.getObjectByName('6');
+
+            const doorScreenMesh2 = ssp
+              .getObjectById('4JJS4PF0OC11')
+              .getObjectByName('3');
+
+            doorScreenMesh1.material.color.set(0xffffff);
+            doorScreenMesh1.material.map = texture;
+            doorScreenMesh1.material.needsUpdate = true;
+
+            doorScreenMesh2.material.color.set(0xffffff);
+            doorScreenMesh2.material.map = texture;
+            doorScreenMesh2.material.needsUpdate = true;
+
+            /**
+             * click
+             */
+            const tweens = new Set();
+            let originRotation = door.rotation.clone(),
+              targetRotation = door.rotation.clone();
+            targetRotation.z += Math.PI / 2 / 2;
+
+            let count = 0;
+
+            const doorClickHandle = () => {
+              count++;
+
+              tweens.forEach((t) => t.stop());
+              tweens.clear();
+
+              ssp
+                .animation(
+                  door.rotation,
+                  count & 1 ? targetRotation : originRotation,
+                  { duration: 2000 },
+                  undefined,
+                  (tween) => {
+                    tweens.add(tween);
+                  }
+                )
+                .then(() => {
+                  ssp.updateAllShadow();
+                });
+            };
+
+            doorClickHandle();
+
+            door.addEventListener('click', doorClickHandle);
+          });
+        }
+
+        /**
+         * 其他大屏
+         */
+        {
+          const screenMesh = ssp
+            .getObjectById('4JEJB0HWHN61')
+            .getObjectByName('屏幕');
+
+          const texture = new THREE.TextureLoader().load(
+            '../../assets/img/map/001.jpg'
+          );
+
+          texture.flipY = false;
+          texture.encoding = viewport.renderer.outputEncoding;
+
+          screenMesh.material.color.set(0xffffff);
+          screenMesh.material.map = texture;
+          screenMesh.material.needsUpdate = true;
+        }
+      });
+    </script>
+  </body>
+</html>
