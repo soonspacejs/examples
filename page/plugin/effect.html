@@ -11,10 +11,19 @@
   <body>
     <div id="view" style="width: 100vw; height: 100vh"></div>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../lib/soonspacejs/plugins/effect.js",
+          "gui": "../../lib/gui.js"
+        }
+      }
+    </script>
     <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js';
-      import EffectPlugin from '../../lib/soonspacejs/plugins/effect.js';
-      import { GUI } from '../../lib/gui.js';
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import { GUI } from 'gui';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
