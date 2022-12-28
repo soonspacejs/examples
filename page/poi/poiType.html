@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          showInfo: false,
+        },
+        events: {},
+      }));
+
+      /**
+       * createPoi
+       */
+      const poi = ssp.createPoi({
+        id: 'icon1',
+        name: '2d poi',
+        url: '../../assets/img/poi/poi_test.png',
+        type: '2d',
+        position: {
+          x: 0,
+          y: 10,
+          z: 0,
+        },
+        level: {
+          max: 5000,
+          min: 10,
+        },
+        scale: {
+          x: 0.02,
+          y: 0.02,
+          z: 0.02,
+        },
+      });
+
+      console.log('createPoi', poi);
+
+      /**
+       * createPoiToGroup
+       */
+      const group = ssp.createPoiToGroup(
+        {
+          id: 'firstPoiGroup',
+        },
+        [
+          {
+            id: 'icon2',
+            name: 'icon2',
+            url: '../../assets/img/poi/camera_poi_512.png',
+            position: {
+              x: 100,
+              y: 20,
+              z: 0,
+            },
+            scale: {
+              x: 2,
+              y: 2,
+              z: 2,
+            },
+          },
+        ]
+      );
+
+      console.log('createPoiToGroup', group);
+    </script>
+  </body>
+</html>
