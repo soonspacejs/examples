@@ -98,7 +98,14 @@
               return;
             }
 
-            topology = ssp.createTopology(t1);
+            topology = ssp.createTopology({
+              ...t1,
+              /**
+               * 覆盖平台导出的配置
+               */
+              linkWidth: 10,
+              nodeRadius: 5,
+            });
           });
         },
         clearTopology() {
