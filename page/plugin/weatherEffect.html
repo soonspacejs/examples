@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view" style="background-color: white"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../lib/soonspacejs/plugins/effect.js",
+          "gui": "../../lib/gui.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import { GUI } from 'gui';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          background: {
+            alpha: true,
+          },
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      ssp.flyTo(
+        {
+          x: -8.683174718428429,
+          y: 4.093909757704123,
+          z: 7.594978471862318,
+        },
+        {
+          x: -0.42684214109889496,
+          y: -0.6888066865359578,
+          z: -0.2814096720621471,
+        },
+        {
+          duration: 0,
+        }
+      );
+
+      /**
+       * 加载场景
+       */
+      await ssp.loadModel({
+        id: 'cabin',
+        url: '../../assets/model/gltf/tiny_cabin_fantasy_textured_for_challenge.glb',
+      });
+
+      const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+
+      const size = new ssp.THREE.Vector3(),
+        center = new ssp.THREE.Vector3();
+
+      box.getSize(size);
+      box.getCenter(center);
+
+      console.log(size, center);
+
+      const shadows = effectPlugin.createContactShadows({
+        id: 'shadows',
+        position: { x: center.x, y: box.min.y, z: center.z },
+        opacity: 1,
+        scale: [size.x, size.z],
+        blur: 2,
+        far: 1,
+        resolution: 1024,
+        frames: 10,
+        darkness: 1,
+      });
+
+      /**
+       * gui
+       */
+
+      const weathers = ['rain', 'snow'];
+
+      const params = {
+        weather: weathers[0],
+        open: true,
+      };
+
+      const gui = new GUI();
+
+      const changeWeatherHandle = (weather) => {
+        if (!params.open) {
+          return;
+        }
+
+        switch (weather) {
+          case 'rain':
+            effectPlugin.openWeather({
+              imgUrl: effectPlugin.weatherPresetImgs.rain,
+              count: 500,
+              color: 0xffffff,
+              size: 0.8,
+              opacity: 0.8,
+              velocityX: [-0.02, 0.02],
+              velocityY: [0.8, 1],
+            });
+            break;
+          case 'snow':
+            effectPlugin.openWeather({
+              imgUrl: effectPlugin.weatherPresetImgs.snow,
+              count: 500,
+              color: 0xffffff,
+              size: 1.4,
+              opacity: 0.8,
+              velocityX: [-0.01, 0.01],
+              velocityY: [0.1, 0.3],
+            });
+            break;
+        }
+      };
+
+      changeWeatherHandle(params.weather);
+
+      gui
+        .add(params, 'weather')
+        .options(weathers)
+        .name('天气')
+        .onChange((value) => {
+          changeWeatherHandle(value);
+        });
+
+      const openWeatherHandle = (value) => {
+        if (value) {
+          /**
+           * 开启
+           */
+          changeWeatherHandle(params.weather);
+        } else {
+          /**
+           * 关闭
+           */
+          effectPlugin.closeWeather();
+        }
+      };
+
+      gui.add(params, 'open').name('开启').onChange(openWeatherHandle);
+
+      /**
+       * 默认开启
+       */
+      openWeatherHandle(params.open);
+    </script>
+  </body>
+</html>

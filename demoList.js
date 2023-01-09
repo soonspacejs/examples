@@ -347,6 +347,10 @@ export default [
         demoLink: './page/plugin/contactShadows.html',
       },
       {
+        title: '天气',
+        demoLink: './page/plugin/weatherEffect.html',
+      },
+      {
         title: '绘制基础图形',
         demoLink: './page/plugin/drawingShape.html',
       },

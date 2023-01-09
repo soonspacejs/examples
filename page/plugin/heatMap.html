@@ -12,12 +12,21 @@
 <body>
   <div id="view"></div>
 
+  <script type="importmap">
+    {
+      "imports": {
+        "soonspacejs": "../../lib/soonspacejs/index.js",
+        "@soonspacejs/plugin-heat-map": "../../lib/soonspacejs/plugins/heat-map.js",
+        "@soonspacejs/plugin-drawing-shape": "../../lib/soonspacejs/plugins/drawing-shape.js",
+        "gui": "../../lib/gui.js"
+      }
+    }
+  </script>
   <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import HeatMapPlugin from '../../lib/soonspacejs/plugins/heat-map.js'
-    // import HeatMapPlugin from 'https://unpkg.com/@soonspacejs/plugin-heat-map/dist/index.esm.js'
-    import { GUI } from '../../lib/gui.js'
-    import DrawingShapePlugin from 'https://unpkg.com/@soonspacejs/plugin-drawing-shape/dist/index.esm.js'
+    import SoonSpace from 'soonspacejs'
+    import HeatMapPlugin from '@soonspacejs/plugin-heat-map'
+    import DrawingShapePlugin from '@soonspacejs/plugin-drawing-shape'
+    import { GUI } from 'gui'
 
 
     const ssp = window.ssp = new SoonSpace({

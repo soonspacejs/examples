@@ -1,117 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import HeatMapPlugin from '../../lib/soonspacejs/plugins/heat-map.js'
-    // import HeatMapPlugin from 'https://unpkg.com/@soonspacejs/plugin-heat-map/dist/index.esm.js'
-    import { GUI } from '../../lib/gui.js'
-    import DrawingShapePlugin from 'https://unpkg.com/@soonspacejs/plugin-drawing-shape/dist/index.esm.js'
-
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-        showGrid: false
-      },
-      events: {
-        selectPosition(pos) {
-          console.log(pos)
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-heat-map": "../../lib/soonspacejs/plugins/heat-map.js",
+          "@soonspacejs/plugin-drawing-shape": "../../lib/soonspacejs/plugins/drawing-shape.js",
+          "gui": "../../lib/gui.js"
         }
       }
-    })
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import HeatMapPlugin from '@soonspacejs/plugin-heat-map';
+      import DrawingShapePlugin from '@soonspacejs/plugin-drawing-shape';
+      import { GUI } from 'gui';
 
-    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
-
-
-    ssp.loadSbm({
-      id: 'room_01',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
-    })
-      .then(models => {
-        ssp.flyMainViewpoint()
-      })
-      .catch(err => {
-        console.error(err)
-      })
-
-    ssp.addAxesHelper({ id: 'hm_axesHelper' })
-
-    const heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMap')
-  
-    let polygonHeatMapData = [];
-    let polygonHeatObj = null
-    const gui = new GUI()
-    const fns = {
-      绘制多边形热力图: async function () {
-        const res = await drawingShapePlugin.drawingLine(
-          {
-            color: 'green',
-            opacity: 0.8
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
           },
-        );
+        },
+      }));
 
-        console.log('drawLine done', res)
-            const { points } = res
-            points.forEach((p, index) => {
-              const i = index + 1
-              polygonHeatMapData.push({ ...p, radius: 50 * i, value: 100 * i })
-            })
+      const drawingShapePlugin = ssp.registerPlugin(
+        DrawingShapePlugin,
+        'drawingShapePlugin'
+      );
 
-            window.polygonHeatObj = polygonHeatObj = heatMapPlugin.createPolygon({
-              id: 'polygon',
-              name: 'polygon_name',
-              max: 100,
-              min: 1,
-              points: points,
-              data: polygonHeatMapData
-            })
-      },
-      添加热力点: async function () {
-        const res = await drawingShapePlugin.drawingPoint(
-          {
+      ssp
+        .loadSbm({
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        })
+        .then((models) => {
+          ssp.flyMainViewpoint();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      ssp.addAxesHelper({ id: 'hm_axesHelper' });
+
+      const heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMap');
+
+      let polygonHeatMapData = [];
+      let polygonHeatObj = null;
+      const gui = new GUI();
+      const fns = {
+        绘制多边形热力图: async function () {
+          const res = await drawingShapePlugin.drawingLine({
+            color: 'green',
+            opacity: 0.8,
+          });
+
+          console.log('drawLine done', res);
+          const { points } = res;
+          points.forEach((p, index) => {
+            const i = index + 1;
+            polygonHeatMapData.push({ ...p, radius: 50 * i, value: 100 * i });
+          });
+
+          window.polygonHeatObj = polygonHeatObj = heatMapPlugin.createPolygon({
+            id: 'polygon',
+            name: 'polygon_name',
+            max: 100,
+            min: 1,
+            points: points,
+            data: polygonHeatMapData,
+          });
+        },
+        添加热力点: async function () {
+          const res = await drawingShapePlugin.drawingPoint({
             color: 'blue',
-            opacity: 1
-          }
-        );
-        console.log('drawLine done', res)
-            const { position } = res
-            polygonHeatMapData.push({ ...position, radius: Math.random() * 100, value: Math.random() * 100 })
-            const heatObj = heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData)
-      },
-      移动多边形热力图: function(){
-        const heatObj = heatMapPlugin.getById("polygon");
-        if (!heatObj) return false
+            opacity: 1,
+          });
+          console.log('drawLine done', res);
+          const { position } = res;
+          polygonHeatMapData.push({
+            ...position,
+            radius: Math.random() * 100,
+            value: Math.random() * 100,
+          });
+          const heatObj = heatMapPlugin.setDataPolygon(
+            'polygon',
+            polygonHeatMapData
+          );
+        },
+        移动多边形热力图: function () {
+          const heatObj = heatMapPlugin.getById('polygon');
+          if (!heatObj) return false;
 
-        heatObj.position.x += 100;
-        heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData)
+          heatObj.position.x += 100;
+          heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData);
+        },
+        反向移动多边形热力图: function () {
+          const heatObj = heatMapPlugin.getById('polygon');
+          if (!heatObj) return false;
 
-      },
-      反向移动多边形热力图: function(){
-        const heatObj = heatMapPlugin.getById("polygon");
-        if (!heatObj) return false
+          heatObj.position.x -= 100;
+          heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData);
+        },
+      };
 
-        heatObj.position.x -= 100;
-        heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData)
-
-      },
-    }
-
-    for (let i in fns) gui.add(fns, i)
-
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>
