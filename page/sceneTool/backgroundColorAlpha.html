@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <style>
+      .background {
+        display: grid;
+        width: 100vw;
+        height: 100vh;
+        place-items: center;
+        font-size: 52px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="background">
+      <h2>底部文字</h2>
+    </div>
+    <div id="view" style="position: absolute; top: 0"></div>
+
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {},
+        events: {},
+      }));
+
+      const gui = new GUI();
+
+      const params = {
+        backgroundColor: '#619d61',
+        alpha: 0.5,
+      };
+
+      const backgroundChangeHandle = () => {
+        ssp.setBackgroundColorAlpha(params.backgroundColor, params.alpha);
+      };
+
+      backgroundChangeHandle();
+
+      gui
+        .addColor(params, 'backgroundColor')
+        .name('背景色')
+        .onChange(backgroundChangeHandle);
+
+      gui
+        .add(params, 'alpha', 0, 1, 0.01)
+        .name('不透明度')
+        .onChange(backgroundChangeHandle);
+    </script>
+  </body>
+</html>

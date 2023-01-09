@@ -169,6 +169,10 @@ export default [
         demoLink: './page/sceneTool/backgroundColor.html',
       },
       {
+        title: '背景色（不透明度）',
+        demoLink: './page/sceneTool/backgroundColorAlpha.html',
+      },
+      {
         title: '背景图',
         demoLink: './page/sceneTool/backgroundImage.html',
       },
