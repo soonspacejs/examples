@@ -11,9 +11,17 @@
   <body>
     <div id="view"></div>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-first-person-controls": "../../lib/soonspacejs/plugins/first-person-controls.js"
+        }
+      }
+    </script>
     <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js?t=0122';
-      import FirstPersonControlsPlugin from '../../lib/soonspacejs/plugins/first-person-controls.js?t=0122';
+      import SoonSpace from 'soonspacejs';
+      import FirstPersonControlsPlugin from '@soonspacejs/plugin-first-person-controls';
       import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0122';
       import { GUI } from '../../lib/gui.js';
 
@@ -53,7 +61,7 @@
         });
 
       const startOptions = {
-        moveSpeed: 10,
+        moveSpeed: 200,
         jumpHeight: 110,
         enableClash: false,
         enableGravity: false,

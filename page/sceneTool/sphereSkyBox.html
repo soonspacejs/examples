@@ -1,38 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
+    <script type="module">
+      import SoonSpace from '../../lib/soonspacejs/index.js';
+      import { GUI } from '../../lib/gui.js';
 
-  <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {},
+        events: {},
+      }));
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {},
-      events: {}
-    })
+      ssp.setSphereSkyBackground('../../assets/img/skybox/天空球3.jpg');
 
-    ssp.setSphereSkyBackground('../../assets/img/skybox/天空球3.jpg') 
+      const gui = new GUI();
 
-    const gui = new GUI()
-    
-    gui
-      .add({ 图片地址: '' }, '图片地址')
-      .onChange(value => {
-        ssp.setSphereSkyBackground(value)
-      })
-    
-  </script>
-</body>
+      const skyMap = {
+        天空球1: '../../assets/img/skybox/天空球3.jpg',
+        天空球2: '../../assets/img/skybox/wasteland_clouds_puresky_4k.hdr',
+      };
 
+      const skyMapKey = Object.keys(skyMap);
+
+      const params = {
+        presets: skyMapKey[0],
+        url: '',
+      };
+
+      const presetsChangeHandle = (value) => {
+        ssp.setSphereSkyBackground(skyMap[value]);
+      };
+
+      const urlChangeHandle = (value) => {
+        ssp.setSphereSkyBackground(value);
+      };
+
+      gui
+        .add(params, 'presets')
+        .options(skyMapKey)
+        .name('预设图片')
+        .onChange(presetsChangeHandle);
+
+      gui.add(params, 'url').name('图片地址').onChange(urlChangeHandle);
+    </script>
+  </body>
 </html>

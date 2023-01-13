@@ -24,9 +24,17 @@
         tips.setAttribute('hidden', true);
       }
     </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../lib/soonspacejs/index.js",
+          "@soonspacejs/plugin-first-person-controls": "../../lib/soonspacejs/plugins/first-person-controls.js"
+        }
+      }
+    </script>
     <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js';
-      import FirstPersonControlsPlugin from 'https://unpkg.com/@soonspacejs/plugin-first-person-controls/dist/index.esm.js';
+      import SoonSpace from 'soonspacejs';
+      import FirstPersonControlsPlugin from '@soonspacejs/plugin-first-person-controls';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
@@ -64,7 +72,7 @@
           firstPersonControls.start({
             position: { x: 260, y: 50, z: 100 },
             rotation: { x: 0, y: 0, z: 0 },
-            moveSpeed: 10,
+            moveSpeed: 30,
             enableClash: true,
           });
         });
