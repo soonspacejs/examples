@@ -22,10 +22,17 @@
       <div id="view2"></div>
     </div>
 
-    <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js';
-      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js';
-      import { GUI } from '../../lib/gui.js';
+     <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import SoonmanagerSyncPlugin from '../../libs/soonspacejs/plugins/soonmannager-sync.js';
+      import { GUI } from '../../libs/gui.js';
 
       const ssp1 = (window.ssp1 = new SoonSpace({
         el: '#view1',

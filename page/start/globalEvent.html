@@ -13,9 +13,16 @@
   <div id="view"></div>
   <div id="tips">鼠标点击交互后，在控制台查看输出信息。</div>
 
+   <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js"
+      }
+    }
+  </script>
   <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+    import SoonSpace from '../../libs/soonspacejs/index.js'
+    import { GUI } from '../../libs/gui.js'
 
     const ssp = window.ssp = new SoonSpace({
       el: '#view',

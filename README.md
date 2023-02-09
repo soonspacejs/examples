@@ -2,4 +2,8 @@
 
 ## Example for soonspacejs
 
-coding...
+## 使用
+
+```
+直接启用本地服务查看
+```

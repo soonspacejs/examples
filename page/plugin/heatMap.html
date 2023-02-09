@@ -1,186 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "soonspacejs": "../../lib/soonspacejs/index.js",
-        "@soonspacejs/plugin-heat-map": "../../lib/soonspacejs/plugins/heat-map.js",
-        "@soonspacejs/plugin-drawing-shape": "../../lib/soonspacejs/plugins/drawing-shape.js",
-        "gui": "../../lib/gui.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from 'soonspacejs'
-    import HeatMapPlugin from '@soonspacejs/plugin-heat-map'
-    import DrawingShapePlugin from '@soonspacejs/plugin-drawing-shape'
-    import { GUI } from 'gui'
-
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-        showGrid: false
-      },
-      events: {
-        selectPosition(pos) {
-          console.log(pos)
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-heat-map": "../../libs/soonspacejs/plugins/heat-map.js",
+          "@soonspacejs/plugin-drawing-shape": "../../libs/soonspacejs/plugins/drawing-shape.js",
+          "gui": "../../libs/gui.js"
         }
       }
-    })
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import HeatMapPlugin from '@soonspacejs/plugin-heat-map';
+      import DrawingShapePlugin from '@soonspacejs/plugin-drawing-shape';
+      import { GUI } from 'gui';
 
-    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
-
-
-    ssp.loadSbm({
-      id: 'room_01',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
-    })
-      .then(models => {
-        ssp.flyMainViewpoint()
-      })
-      .catch(err => {
-        console.error(err)
-      })
-
-    ssp.addAxesHelper({ id: 'hm_axesHelper' })
-
-    const heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMap')
-    heatMapPlugin.create({
-      id: 'hm1',
-      name: 'hm_name',
-      yAxisHeight: 100,
-      max: 100,
-      min: 1,
-      minPosition: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-      maxPosition: {
-        x: 200,
-        y: 0,
-        z: 200
-      },
-      data: [
-        {
-          x: 100,
-          z: 100,
-          radius: 100,
-          value: 80
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
         },
-        {
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      const drawingShapePlugin = ssp.registerPlugin(
+        DrawingShapePlugin,
+        'drawingShapePlugin'
+      );
+
+      ssp
+        .loadSbm({
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        })
+        .then((models) => {
+          ssp.flyMainViewpoint();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      ssp.addAxesHelper({ id: 'hm_axesHelper' });
+
+      const heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMap');
+      heatMapPlugin.create({
+        id: 'hm1',
+        name: 'hm_name',
+        yAxisHeight: 100,
+        max: 100,
+        min: 1,
+        minPosition: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        maxPosition: {
           x: 200,
-          z: 50,
-          radius: 50,
-          value: 80
+          y: 0,
+          z: 200,
         },
-        {
-          x: 100,
-          z: 50,
-          radius: 50,
-          value: 80
-        },
-      ]
-    })
+        data: [
+          {
+            x: 100,
+            z: 100,
+            radius: 100,
+            value: 80,
+          },
+          {
+            x: 200,
+            z: 50,
+            radius: 50,
+            value: 80,
+          },
+          {
+            x: 100,
+            z: 50,
+            radius: 50,
+            value: 80,
+          },
+        ],
+      });
 
-
-  
-    let polygonHeatMapData = [];
-    let polygonHeatObj = null
-    const gui = new GUI()
-    const fns = {
-      重置数据: function () {
-        heatMapPlugin.setData(
-          'hm1',
-          [
+      let polygonHeatMapData = [];
+      let polygonHeatObj = null;
+      const gui = new GUI();
+      const fns = {
+        重置数据: function () {
+          heatMapPlugin.setData('hm1', [
             {
               x: 100,
               z: 100,
               radius: 100,
-              value: Math.floor(Math.random() * 100)
+              value: Math.floor(Math.random() * 100),
             },
             {
               x: 200,
               z: 50,
               radius: 50,
-              value: Math.floor(Math.random() * 100)
+              value: Math.floor(Math.random() * 100),
             },
             {
               x: 100,
               z: 50,
               radius: 50,
-              value: Math.floor(Math.random() * 100)
+              value: Math.floor(Math.random() * 100),
             },
-          ]
-        )
-      },
-      第二个热力图: function () {
-        heatMapPlugin.create({
-          id: 'hm2',
-          name: 'hm_name',
-          yAxisHeight: 100,
-          max: 50,
-          min: 1,
-          minPosition: {
-            x: 400,
-            y: 0,
-            z: 0
-          },
-          maxPosition: {
-            x: 800,
-            y: 0,
-            z: 600
-          },
-          data: [
-            {
+          ]);
+        },
+        第二个热力图: function () {
+          heatMapPlugin.create({
+            id: 'hm2',
+            name: 'hm_name',
+            yAxisHeight: 100,
+            max: 50,
+            min: 1,
+            minPosition: {
               x: 400,
-              z: 100,
-              radius: 100,
-              value: Math.floor(Math.random() * 100)
+              y: 0,
+              z: 0,
             },
-            {
-              x: 500,
-              z: 50,
-              radius: 50,
-              value: Math.floor(Math.random() * 100)
+            maxPosition: {
+              x: 800,
+              y: 0,
+              z: 600,
             },
-            {
-              x: 400,
-              z: 50,
-              radius: 50,
-              value: Math.floor(Math.random() * 100)
-            },
-          ]
-        })
-      },
-      通过id获取: function () {
-        console.log(heatMapPlugin.getById('hm1'))
-      },
-      通过名称获取: function () {
-        console.log(heatMapPlugin.getByName('hm_name'))
-      },
-      通过id移除: function () {
-        heatMapPlugin.removeById('hm1')
-      },
-    }
+            data: [
+              {
+                x: 400,
+                z: 100,
+                radius: 100,
+                value: Math.floor(Math.random() * 100),
+              },
+              {
+                x: 500,
+                z: 50,
+                radius: 50,
+                value: Math.floor(Math.random() * 100),
+              },
+              {
+                x: 400,
+                z: 50,
+                radius: 50,
+                value: Math.floor(Math.random() * 100),
+              },
+            ],
+          });
+        },
+        通过id获取: function () {
+          console.log(heatMapPlugin.getById('hm1'));
+        },
+        通过名称获取: function () {
+          console.log(heatMapPlugin.getByName('hm_name'));
+        },
+        通过id移除: function () {
+          heatMapPlugin.removeById('hm1');
+        },
+      };
 
-    for (let i in fns) gui.add(fns, i)
-
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>

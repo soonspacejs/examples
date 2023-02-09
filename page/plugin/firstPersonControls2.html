@@ -14,16 +14,17 @@
     <script type="importmap">
       {
         "imports": {
-          "soonspacejs": "../../lib/soonspacejs/index.js",
-          "@soonspacejs/plugin-first-person-controls": "../../lib/soonspacejs/plugins/first-person-controls.js"
+          "three": "../../libs/three/build/three.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-first-person-controls": "../../libs/soonspacejs/plugins/first-person-controls.js"
         }
       }
     </script>
     <script type="module">
       import SoonSpace from 'soonspacejs';
       import FirstPersonControlsPlugin from '@soonspacejs/plugin-first-person-controls';
-      import SoonmanagerSyncPlugin from '../../lib/soonspacejs/plugins/soonmannager-sync.js?t=0122';
-      import { GUI } from '../../lib/gui.js';
+      import SoonmanagerSyncPlugin from '../../libs/soonspacejs/plugins/soonmannager-sync.js?t=0122';
+      import { GUI } from '../../libs/gui.js';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',

@@ -11,8 +11,15 @@
   <body>
     <div id="view"></div>
 
-    <script type="module">
-      import SoonSpace from '../../lib/soonspacejs/index.js';
+     <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
 
       const ssp = (window.ssp = new SoonSpace({
         // 绑定场景的元素选择器

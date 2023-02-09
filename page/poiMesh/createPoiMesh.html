@@ -17,9 +17,16 @@
             type="video/mp4">
 </video>
 
+   <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js"
+      }
+    }
+  </script>
   <script type="module">
-    import SoonSpace from '../../lib/soonspacejs/index.js'
-    import { GUI } from '../../lib/gui.js'
+    import SoonSpace from '../../libs/soonspacejs/index.js'
+    import { GUI } from '../../libs/gui.js'
     import DrawingShapePlugin from 'https://unpkg.com/@soonspacejs/plugin-drawing-shape/dist/index.esm.js'
 
     const ssp = window.ssp = new SoonSpace({

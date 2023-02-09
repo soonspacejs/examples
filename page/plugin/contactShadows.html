@@ -14,10 +14,11 @@
     <script type="importmap">
       {
         "imports": {
-          "soonspacejs": "../../lib/soonspacejs/index.js",
-          "@soonspacejs/plugin-effect": "../../lib/soonspacejs/plugins/effect.js",
-          "@soonspacejs/plugin-soonmanager2-sync": "../../lib/soonspacejs/plugins/soonmanager2-sync.js",
-          "gui": "../../lib/gui.js"
+          "three": "../../libs/three/build/three.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js",
+          "gui": "../../libs/gui.js"
         }
       }
     </script>
@@ -40,7 +41,7 @@
         },
       }));
 
-      ssp.setModelDracoDecoderPath('../../lib/soonspacejs/draco/');
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
       const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
 
