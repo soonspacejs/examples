@@ -1,77 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
 
-    <script type="importmap">
+<body>
+  <div id="view"></div>
+
+  <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js"
         }
       }
     </script>
-    <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
+  <script type="module">
+    import SoonSpace from '../../libs/soonspacejs/index.js';
 
-      const ssp = (window.ssp = new SoonSpace({
-        el: '#view',
-        options: {
-          showInfo: true,
-          showGrid: false,
-        },
-        events: {},
-      }));
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showGrid: false,
+      },
+      events: {},
+    }));
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: 595.5534956179567,
-          y: 202.9488357604006,
-          z: 845.3618488154422,
-        },
-        rotation: {
-          x: -0.10659538721288835,
-          y: 0.7153660332718685,
-          z: 0.0700663799269567,
-        },
-      });
+    ssp.setCameraViewpoint({
+      position: {
+        x: 595.5534956179567,
+        y: 202.9488357604006,
+        z: 845.3618488154422,
+      },
+      rotation: {
+        x: -0.10659538721288835,
+        y: 0.7153660332718685,
+        z: 0.0700663799269567,
+      },
+    });
 
-      ssp.setSphereSkyBackground(
-        '../../assets/img/skybox/wasteland_clouds_puresky_4k.hdr'
-      );
+    ssp.setSphereSkyBackground(
+      '../../assets/img/skybox/wasteland_clouds_puresky_4k.hdr'
+    );
 
-      const selection = [];
+    const selection = [];
 
-      const gltf = await ssp.loadModel({
-        id: 'model_id',
-        name: 'model_id',
-        url: '../../assets/model/gltf/lamborghini_terzo_millenio.glb',
-        onClick() {
-          console.log('model self click', this);
-        },
-      });
+    const gltf = await ssp.loadModel({
+      id: 'model_id',
+      name: 'model_id',
+      url: '../../assets/model/gltf/lamborghini_terzo_millenio.glb',
+      onClick() {
+        console.log('model self click', this);
+      },
+    });
 
-      gltf.traverse((child) => {
-        /**
-         * bloom
-         */
-        if (child.isMesh && child.name === 'Object_28') {
-          selection.push(child);
-        }
-      });
+    const bloomNames = ['Object_28', 'Object_37']
 
-      ssp.setBloom({
-        enabled: true,
-        scalar: 1,
-        selection,
-      });
-    </script>
-  </body>
+    gltf.traverse((child) => {
+      /**
+       * bloom
+       */
+      if (child.isMesh && bloomNames.includes(child.name)) {
+        selection.push(child);
+      }
+    });
+
+    // taillight
+    gltf.getObjectByName(bloomNames[1]).material.color.multiplyScalar(8)
+
+    ssp.setBloom({
+      enabled: true,
+      scalar: 1,
+      selection,
+    });
+  </script>
+</body>
+
 </html>
