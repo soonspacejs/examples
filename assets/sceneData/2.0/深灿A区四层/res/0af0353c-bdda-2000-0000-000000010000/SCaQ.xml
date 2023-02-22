@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Project>
+    <ProjectInfo gkxmlVersion="1.2">
+        <Title>SCaQ</Title>
+    </ProjectInfo>
+    <Building sourceType="GPL" northAxis="0">
+        <EarthReferenceSystem type="WGS84">
+            <altitudeMode>relativeToGround</altitudeMode>
+            <Location>
+                <longitude>30</longitude>
+                <latitude>119</latitude>
+                <altitude>0</altitude>
+            </Location>
+            <Orientation>
+                <heading>0</heading>
+                <tilt>0.0</tilt>
+                <roll>0.0</roll>
+            </Orientation>
+        </EarthReferenceSystem>
+        <ExportOptions>
+            <Item name="floorMerge" value="false" />
+            <Item name="wallMerge" value="true">
+                <MergeObjectTypes>WALL,CEILING,COLUMN,SLAB,SPACE,DOOR,WINDOW,STAIR,ELEVATOR</MergeObjectTypes>
+            </Item>
+        </ExportOptions>
+        <Unit>centimeter</Unit>
+        <DefaultBuilding>false</DefaultBuilding>
+        <DefaultFloor>0</DefaultFloor>
+        <Floors>
+            <Floor id="0" name="1F" baseFloor="1" groupID="0" isMain="True">
+                <FileSource name=".\SCaQ_1F_0.sbm" type="SBM" />
+                <BoundingBox minimum="-112.199997, -2.200000, -2102.500732" maximum="4825.000000, 300.000000, 1602.500000" />
+            </Floor>
+            <Floor id="1" name="2F" baseFloor="2" groupID="1" isMain="True">
+                <FileSource name=".\SCaQ_2F_1.sbm" type="SBM" />
+                <BoundingBox minimum="-10180.000000, -3.510000, -1840.000000" maximum="2400.000000, 445.000000, 1524.992920" />
+            </Floor>
+        </Floors>
+        <SpaceInfo>
+            <Floor id="0" name="1F" longname="631965078" baseFloor="1" level="0" />
+            <Floor id="1" name="2F" longname="454708584" baseFloor="2" level="95" />
+        </SpaceInfo>
+        <ObjectHierarchy>
+            <Entity id="0" name="1F" type="Floor" longname="631965078">
+                <Entity id="6" name="MERGED_0_LIBENT0_0" longname="" type="MERGED" visible="True" />
+                <Entity id="12" name="MERGED_0_LIBENT106_0" longname="" type="MERGED" visible="True" />
+                <Entity id="11" name="MERGED_0_LIBENT107_0" longname="" type="MERGED" visible="True" />
+                <Entity id="8" name="MERGED_0_LIBENT10_0" longname="" type="MERGED" visible="True" />
+                <Entity id="5" name="MERGED_0_LIBENT11_0" longname="" type="MERGED" visible="True" />
+                <Entity id="7" name="MERGED_0_LIBENT15_0" longname="" type="MERGED" visible="True" />
+                <Entity id="2" name="MERGED_0_LIBENT1_0" longname="" type="MERGED" visible="True" />
+                <Entity id="4" name="MERGED_0_LIBENT2_0" longname="" type="MERGED" visible="True" />
+                <Entity id="3" name="MERGED_0_LIBENT3_0" longname="" type="MERGED" visible="True" />
+                <Entity id="9" name="MERGED_0_LIBENT4_0" longname="" type="MERGED" visible="True" />
+                <Entity id="10" name="MERGED_0_LIBENT5_0" longname="" type="MERGED" visible="True" />
+                <Entity id="13" name="MERGED_0_LIBENT6_0" longname="" type="MERGED" visible="True" />
+            </Entity>
+            <Entity id="1" name="2F" type="Floor" longname="454708584">
+                <Entity id="17" name="MERGED_1_ElevatorDefault_0" longname="" type="MERGED" visible="True" />
+                <Entity id="16" name="MERGED_1_ElevatorDoorDefault_0" longname="" type="MERGED" visible="True" />
+                <Entity id="18" name="MERGED_1_ElevatorSignMtr_0" longname="" type="MERGED" visible="True" />
+                <Entity id="6" name="MERGED_1_LIBENT0_0" longname="" type="MERGED" visible="True" />
+                <Entity id="2" name="MERGED_1_LIBENT104_0" longname="" type="MERGED" visible="True" />
+                <Entity id="9" name="MERGED_1_LIBENT105_0" longname="" type="MERGED" visible="True" />
+                <Entity id="10" name="MERGED_1_LIBENT106_0" longname="" type="MERGED" visible="True" />
+                <Entity id="8" name="MERGED_1_LIBENT10_0" longname="" type="MERGED" visible="True" />
+                <Entity id="12" name="MERGED_1_LIBENT113_0" longname="" type="MERGED" visible="True" />
+                <Entity id="13" name="MERGED_1_LIBENT116_0" longname="" type="MERGED" visible="True" />
+                <Entity id="14" name="MERGED_1_LIBENT117_0" longname="" type="MERGED" visible="True" />
+                <Entity id="15" name="MERGED_1_LIBENT118_0" longname="" type="MERGED" visible="True" />
+                <Entity id="5" name="MERGED_1_LIBENT11_0" longname="" type="MERGED" visible="True" />
+                <Entity id="7" name="MERGED_1_LIBENT15_0" longname="" type="MERGED" visible="True" />
+                <Entity id="4" name="MERGED_1_LIBENT2_0" longname="" type="MERGED" visible="True" />
+                <Entity id="3" name="MERGED_1_LIBENT3_0" longname="" type="MERGED" visible="True" />
+                <Entity id="11" name="MERGED_1_LIBENT7_0" longname="" type="MERGED" visible="True" />
+            </Entity>
+        </ObjectHierarchy>
+    </Building>
+</Project>

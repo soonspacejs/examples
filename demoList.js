@@ -139,6 +139,10 @@ export default [
         demoLink: './page/topology/getShortestPath.html',
       },
       {
+        title: '沿路径移动',
+        demoLink: './page/topology/pathAnimation.html'
+      },
+      {
         title: '操控路径',
         demoLink: './page/topology/transformTopology.html',
       },
