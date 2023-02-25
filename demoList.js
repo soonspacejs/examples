@@ -379,6 +379,10 @@ export default [
         demoLink: './page/plugin/drawingTopology.html',
       },
       {
+        title: '路径寻找',
+        demoLink: './page/plugin/pathfinding.html'
+      },
+      {
         title: '第一人称漫游控制器',
         demoLink: './page/plugin/firstPersonControls.html',
       },
