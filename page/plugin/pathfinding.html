@@ -6,11 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>navigation-mesh 样例</title>
+    <link rel="stylesheet" href="../../assets/css/base.css">
     <style>
-        * {
-            margin: 0;
-        }
-
         .interactive {
             display: grid;
             row-gap: 0.5rem;
@@ -30,20 +27,6 @@
         .computeSuccess {
             color: #2d00ff;
         }
-
-        .tips {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            column-gap: 0.5rem;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            right: 0;
-            margin: auto;
-            width: 50vw;
-            height: 3rem;
-        }
     </style>
 </head>
 
@@ -58,9 +41,6 @@
         <div class="wrap">
             <button class="computePath">计算路径</button><span class="computeSuccess"></span>
         </div>
-    </div>
-    <div class="tips">
-        调整<strong>空调高度</strong>后，<strong>重新计算导航区域</strong>查看设备离地高度对导航区域的影响
     </div>
     <div id="view" style="width: 100vw; height: 100vh"></div>
 
@@ -261,7 +241,7 @@
 
         naviParams.computeArea();
 
-        gui.add(naviParams, 'helper').name('导航区域').onChange(helperChange);
+        gui.add(naviParams, 'helper').name('导航区域辅助器').onChange(helperChange);
         gui
             .add(naviParams, 'conditionerY', 1, 4.3, 0.1)
             .name('空调高度')
