@@ -11,14 +11,14 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js?t=0103';
       import SoonmanagerSyncPlugin from '../../libs/soonspacejs/plugins/soonmannager-sync.js?t=0103';
       import { GUI } from '../../libs/gui.js';
@@ -109,7 +109,9 @@
             };
 
             if (isSbm(filepath)) {
-              await ssp.loadModel(info).then((sbm) => ssp.addObject(sbm, group));
+              await ssp
+                .loadModel(info)
+                .then((sbm) => ssp.addObject(sbm, group));
             } else {
               await ssp
                 .loadModel(info)
@@ -155,6 +157,8 @@
           ssp.flyToObj(floorObject);
         } else {
           loadFloorModel(node).then((group) => {
+            ssp.computeModelsBoundsTree();
+
             ssp.flyToObj(group);
           });
         }
