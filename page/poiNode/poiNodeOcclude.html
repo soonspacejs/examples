@@ -23,6 +23,7 @@
   </head>
 
   <body>
+    <div id="tips">转动相机查看背面时，PoiNode 遮挡隐藏</div>
     <div id="view"></div>
 
     <div id="poiTemplate" style="display: none">
@@ -51,6 +52,9 @@
           showInfo: false,
           background: {
             color: '#ccc',
+          },
+          controls: {
+            enableRotateY: false,
           },
         },
         events: {},
@@ -96,6 +100,7 @@
         }
         if (child.name === 'Cube008_2') {
           screen = child;
+          screen.material.map = null;
         }
       });
 
