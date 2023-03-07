@@ -82,6 +82,10 @@ export default [
         demoLink: './page/poiNode/createPoiNode.html',
       },
       {
+        title: 'PoiNode 遮挡',
+        demoLink: './page/poiNode/poiNodeOcclude.html',
+      },
+      {
         title: 'PoiNode 多图层',
         demoLink: './page/poiNode/poiNodeLevel.html',
       },
