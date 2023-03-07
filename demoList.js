@@ -86,6 +86,10 @@ export default [
         demoLink: './page/poiNode/poiNodeOcclude.html',
       },
       {
+        title: 'PoiNode 显隐过渡',
+        demoLink: './page/poiNode/poiNodeTransition.html',
+      },
+      {
         title: 'PoiNode 多图层',
         demoLink: './page/poiNode/poiNodeLevel.html',
       },
