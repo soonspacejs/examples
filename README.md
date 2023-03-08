@@ -1,6 +1,4 @@
-# soonspacejs-example
-
-## Example for soonspacejs
+# Example for soonspacejs
 
 ## 使用
 
