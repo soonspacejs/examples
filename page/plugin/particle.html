@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
+
+<body>
+  <div id="view" style="width: 100vw; height: 100vh"></div>
+
+  <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "three": "../../libs/three/build/three.module.js",
+        "three/examples/": "../../libs/three/examples/",
+        "three/addons/": "../../libs/three/examples/jsm/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
+        }
+      }
+    </script>
+  <script type="module">
+    import SoonSpace from 'soonspacejs';
+    import EffectPlugin, { ClusterType } from '@soonspacejs/plugin-effect';
+
+    import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      ssp
+        .loadModel({
+          id: 'room',
+          position:{x:0,y:-120,z:-100},
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        })
+        .then(() => {
+          ssp.flyMainViewpoint();
+          setup();
+        });
+
+    var pointsOpts = {
+      points: [
+          { x: -200, y: 0, z: 300, value: 50, radius: 300 },
+          { x: 200, y: 0, z: -250, value: 50, radius: 300 },
+          { x: 0, y: 0, z: 0, value: 50, radius: 300 },
+          { x: 150, y: 0, z: 200, value: 50, radius: 300 },
+          { x: -200, y: 0, z: -200, value: 50, radius: 300 },
+          { x: 30, y: 0, z: 200, value: 50, radius: 300 },
+      ],
+      density: 2,
+      solid: 0.1,
+      hollow: 0,
+      clim: { x: 0, y: 50 },
+      gradient: [[0, "#ff0000ff"], [0.6, "#00ff0099"], [1, "#0000ff66"]],
+      size: 2,
+      opacity: 0.3,
+      step: 30,
+      clusterType: ClusterType.Point,
+      shape: 0,
+      step: 20,
+      // valueGradient:function valueGradient_Default({ ratio, value }) {
+      //     // return value - value * (ratio**2)
+      //     return ratio > 0.2 ?  value - value * (ratio - 0.2)  : value
+      // },
+      addRandomPoints
+    }
+
+
+
+
+    var demoOpts = {
+
+      // 热力点示例
+      热力: {
+        points: [
+          { x: 0, y: 0, z: 0, value: 50, radius: 60 },
+          // { x: 0, y: 30, z: 0, value: 30, radius: 30 },
+          { x: 60, y: 0, z: 0, value: 50, radius: 60 },
+          // {x:50,y:0,z:50,value:25,radius:10},
+          // {x:0,y:100,z:100,value:50,radius:50},
+        ],
+        clusterType: ClusterType.Heat,
+        density: 2,
+        solid: 0.3,
+      },
+      // 圆锥示例
+      圆锥: {
+        points: [
+          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
+          { x: 0, y: 100, z: 0, value: 0, radius: 10 },
+        ],
+        clusterType: ClusterType.Line,
+        density: 2,
+        solid: 0.3,
+      },
+      // 圆柱示例
+      圆筒: {
+        points: [
+          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
+          { x: 0, y: 100, z: 0, value: 80, radius: 50 },
+        ],
+        clusterType: ClusterType.Line,
+        // gradient: [[0, "#ff0000ff"],  [0.4, "#00ff00aa"], [0.9, "#0000ff77"]],
+        solid: 0.5,
+        hollow: 0.3
+      },
+
+      点: {
+        points: [
+          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
+          { x: 0, y: 100, z: 0, value: 0, radius: 50 },
+        ],
+        clusterType: ClusterType.Point,
+      }
+    };
+
+
+
+    var metroModel;
+    var points;
+    function createParticleCluster() {
+      points = effectPlugin.createParticleCluster(pointsOpts);
+      window.points = points
+    }
+
+
+    function addRandomPoints() {
+      const pointDatas = [];
+      let pointCount = 100;
+      while (pointCount-- > 0) {
+        pointDatas.push({
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          z: Math.random() * 100,
+          value: Math.random() * 50,
+          radius: Math.random() * 50,
+        });
+      }
+
+      points.addPoint(pointDatas);
+    }
+
+
+
+
+    function updateMaterial() {
+      points.material.needsUpdate = true;
+    }
+
+    function setClim() {
+      points.geometry.clim = points.geometry.clim;
+    }
+    function updateGradient() {
+      points.geometry.gradient = points.geometry.gradient;
+    }
+
+    function updateGeometry(value) {
+      const key = this.property;
+      points.setOptions({ [key]: value });
+    }
+
+
+
+    var guiState = {
+      currDemo: null,
+      densityGradient: `density - density * ratio`,
+      valueGradient: `value - value * ratio`
+    };
+
+    function updateOptions(value) {
+      points.setOptions({ ...value });
+    }
+
+    function setGradient(value) {
+      const key = this.property;
+      points.setOptions({
+        [key]: function ({ ratio, density, value }) {
+          return eval(value)
+        }
+      });
+    }
+
+    var textureLoader = new ssp.THREE.TextureLoader();
+    var map = textureLoader.load("../../assets/img/SnowImg.png");
+
+    var gui = new GUI();
+    gui.title("控制器");
+
+    function setupGui() {
+      gui.add(guiState, 'currDemo', demoOpts).name("示例配置").onChange(updateOptions);
+
+      gui.add(points.geometry, 'clusterType', { Point: 0, Line: 1, Heat: 2 });
+
+      gui.add(points.geometry.clim, 'x', 0, 50, 1).name("clim.x").onChange(setClim);
+      gui.add(points.geometry.clim, 'y', 0, 50, 1).name("clim.y").onChange(setClim);
+      gui.addColor(points.geometry.gradient[0], '1').name("color1").onChange(updateGradient);
+      gui.addColor(points.geometry.gradient[1], '1').name("color2").onChange(updateGradient);
+      gui.addColor(points.geometry.gradient[2], '1').name("color3").onChange(updateGradient);
+      gui.add(pointsOpts, 'shape', { Circle: 0, Square: 1 }).onChange(updateGeometry);
+      gui.add(pointsOpts, 'solid', 0, 1, 0.01).onChange(updateGeometry);
+      gui.add(pointsOpts, 'hollow', 0, 1, 0.01).onChange(updateGeometry);
+      gui.add(pointsOpts, 'density', 0, 10, 1).onChange(updateGeometry);
+      gui.add(pointsOpts, 'step', 1, 50, 1).onChange(updateGeometry);
+
+      gui.add(points.material, 'transparent').name("开启透明度");
+      gui.add(points.material, 'opacity', 0, 1, 0.01);
+      gui.add(points.material, 'size', 0, 4, 0.01);
+      gui.add(points.material, 'vertexColors').name("使用顶点颜色");
+      gui.add(points.material, 'map', { "雪花": map, "空": null }).name("贴图").onChange(updateMaterial);
+
+      gui.add(pointsOpts, 'addRandomPoints').name("随机添加点");
+
+      // gui.add(guiState, 'densityGradient').onChange(setGradient);
+      // gui.add(guiState, 'valueGradient').onChange(setGradient);
+    }
+
+
+
+
+
+
+
+    function setup() {
+      createParticleCluster();
+      setupGui();
+    }
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
