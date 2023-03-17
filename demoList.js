@@ -359,6 +359,10 @@ export default [
         demoLink: './page/plugin/effect.html',
       },
       {
+        title: '特效：粒子簇',
+        demoLink: './page/plugin/particle.html',
+      },
+      {
         title: '地面阴影',
         demoLink: './page/plugin/contactShadows.html',
       },
