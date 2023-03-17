@@ -48,7 +48,8 @@
       ssp
         .loadModel({
           id: 'room',
-          position:{x:0,y:-120,z:-100},
+          position:{x:0,y:-20,z:-10},
+          scale:{x:0.3,y:0.3,z:0.3},
           url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
         })
         .then(() => {
@@ -58,24 +59,20 @@
 
     var pointsOpts = {
       points: [
-          { x: -200, y: 0, z: 300, value: 50, radius: 300 },
-          { x: 200, y: 0, z: -250, value: 50, radius: 300 },
-          { x: 0, y: 0, z: 0, value: 50, radius: 300 },
-          { x: 150, y: 0, z: 200, value: 50, radius: 300 },
-          { x: -200, y: 0, z: -200, value: 50, radius: 300 },
-          { x: 30, y: 0, z: 200, value: 50, radius: 300 },
+          { x: 0, y: -10, z: 0, value: 50, radius: 80 },
+          { x: 0, y: 50, z: 0, value: 50, radius: 50 },
+          { x: 0, y: 80, z: 0, value: 30, radius: 30 },
       ],
       density: 2,
-      solid: 0.1,
+      solid: 0.3,
       hollow: 0,
       clim: { x: 0, y: 50 },
       gradient: [[0, "#ff0000ff"], [0.6, "#00ff0099"], [1, "#0000ff66"]],
-      size: 2,
-      opacity: 0.3,
-      step: 30,
+      size: 0.7,
+      opacity: 0.7,
+      step: 1,
       clusterType: ClusterType.Point,
       shape: 0,
-      step: 20,
       // valueGradient:function valueGradient_Default({ ratio, value }) {
       //     // return value - value * (ratio**2)
       //     return ratio > 0.2 ?  value - value * (ratio - 0.2)  : value
@@ -88,47 +85,68 @@
 
     var demoOpts = {
 
-      // 热力点示例
-      热力: {
-        points: [
-          { x: 0, y: 0, z: 0, value: 50, radius: 60 },
-          // { x: 0, y: 30, z: 0, value: 30, radius: 30 },
-          { x: 60, y: 0, z: 0, value: 50, radius: 60 },
-          // {x:50,y:0,z:50,value:25,radius:10},
-          // {x:0,y:100,z:100,value:50,radius:50},
-        ],
-        clusterType: ClusterType.Heat,
-        density: 2,
-        solid: 0.3,
-      },
-      // 圆锥示例
-      圆锥: {
-        points: [
-          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
-          { x: 0, y: 100, z: 0, value: 0, radius: 10 },
-        ],
-        clusterType: ClusterType.Line,
-        density: 2,
-        solid: 0.3,
-      },
-      // 圆柱示例
-      圆筒: {
-        points: [
-          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
-          { x: 0, y: 100, z: 0, value: 80, radius: 50 },
-        ],
-        clusterType: ClusterType.Line,
-        // gradient: [[0, "#ff0000ff"],  [0.4, "#00ff00aa"], [0.9, "#0000ff77"]],
-        solid: 0.5,
-        hollow: 0.3
-      },
+  // 热力点示例
+  热力:{
+    points: [
+      { x: 0, y: 0, z: 0, value: 50, radius: 60 },
+      // { x: 0, y: 30, z: 0, value: 30, radius: 30 },
+      {x:60,y:0,z:0,value:50,radius:60},
+      // {x:50,y:0,z:50,value:25,radius:10},
+      // {x:0,y:100,z:100,value:50,radius:50},
+    ],
+    clusterType: ClusterType.Heat,
+    density: 2,
+    solid: 0.3,
+  },
+// 圆锥示例
+  圆锥:{
+    points: [
+      { x: 0, y: -20, z: 0, value: 80, radius: 50 },
+      { x: 0, y: 80, z: 0, value: 0, radius: 10 },
+    ],
+    clusterType: ClusterType.Line,
+    density: 3,
+    solid: 0.3,
+    size:0.3,
+    step:1,
+    opacity:0.7
+  },
+// 圆柱示例
+  圆筒:{
+    points: [
+      { x: 0, y: -20, z: 0, value: 80, radius: 50 },
+      { x: 0, y: 80, z: 0, value: 80, radius: 50 },
+    ],
+    clusterType: ClusterType.Line,
+    density: 3,
+    solid: 0.3,
+    size:0.3,
+    step:1,
+    opacity:0.7,
+    hollow:0.3
+  },
 
       点: {
         points: [
-          { x: 0, y: 0, z: 0, value: 80, radius: 50 },
-          { x: 0, y: 100, z: 0, value: 0, radius: 50 },
-        ],
-        clusterType: ClusterType.Point,
+          { x: -80, y: 0, z: 100, value: 50, radius: 120 },
+          { x: 80, y: 0, z: -100, value: 50, radius: 120 },
+          { x: 0, y: 0, z: 0, value: 50, radius: 120 },
+          { x: 50, y: 0, z: 80, value: 50, radius: 120 },
+          { x: -80, y: 0, z: -80, value: 50, radius: 120 },
+          { x: 15, y: 0, z: 80, value: 50, radius: 120 },
+      ],
+      density: 1.5,
+      solid: 0.3,
+      hollow: 0,
+      clim: { x: 0, y: 50 },
+      gradient: [[0, "#ff0000ff"], [0.6, "#00ff0099"], [1, "#0000ff66"]],
+      size: 1,
+      opacity: 0.7,
+      step: 2,
+      clusterType: ClusterType.Point,
+      shape: 0,
+      clusterType: ClusterType.Point,
+
       }
     };
 
