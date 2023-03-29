@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+        "three/examples/": "../../libs/three/examples/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          controls: {},
+        },
+        events: {
+          selectPosition(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: -0.17452960001701623,
+          y: 12.596326957288422,
+          z: -5.757240959574857,
+        },
+        rotation: {
+          x: -1.0185843716792895,
+          y: -0.4973201828089441,
+          z: -0.6588573352182446,
+        },
+      });
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/深灿A区四层');
+
+      /**
+       * 加载场景
+       */
+      soonmanager2Sync.loadScene().then(() => {
+        console.log('加载完成');
+      });
+
+      const walker = await ssp.loadModel({
+        id: 'walker',
+        url: '../../assets/model/gltf/male-walk.gltf',
+      });
+
+      ssp.playModelAnimation(walker, 0);
+
+      /**
+       * 路径数据
+       */
+      const topologies = await soonmanager2Sync.getTopologies();
+
+      const [t1] = topologies;
+
+      const topology = ssp.createTopology({
+        ...t1,
+      });
+
+      /**
+       * 创建最短路径
+       */
+      const shortestPath = ssp.getShortestPath(topology, {
+        start: {
+          x: 12.987072911259318,
+          y: 0.9499999880790693,
+          z: -6.571833494880249,
+        },
+        end: {
+          x: 1.0803913336886053,
+          y: 0.9499999880790693,
+          z: -17.32903329993345,
+        },
+        id: 'shortestPath',
+        linkWidth: t1.linkWidth,
+        nodeRadius: t1.nodeRadius,
+        nodeColor: 'red',
+        imgUrl: '../../assets/img/topology/arrow.png',
+        animation: true,
+      });
+
+      /**
+       * 模型路径动画
+       */
+      const animation = ssp.createTopologyAnimation(walker, shortestPath, {
+        speed: 0.002,
+        onStart() {
+          console.log('start');
+        },
+      });
+
+      let count = 0;
+
+      (async () => {
+        while (true) {
+          animation.reverse = !!(count & 1);
+
+          await animation.play();
+
+          count++;
+        }
+      })();
+    </script>
+  </body>
+</html>

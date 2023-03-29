@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <style>
+      #progress {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="progress">
+      <label for="progress-bar">巡检进度</label>
+      <progress id="progress-bar" value="0" max="1"></progress>
+      <span id="progress-content">0 %</span>
+    </div>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/addons/": "../../libs/three/examples/jsm/",
+        "three/examples/": "../../libs/three/examples/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import PatrolControlsPlugin from '../../libs/soonspacejs/plugins/patrol-controls.js';
+      import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      ssp.addGroundHelper({
+        id: 'test_ground',
+        imgUrl: '../../assets/img/ground/005.jpg',
+        width: 200000,
+        height: 200000,
+        position: { x: 0, y: -1000, z: 0 },
+        repeat: { x: 10, y: 10 },
+      });
+
+      ssp
+        .createTopologyFromGml(
+          // topologyInfo
+          {
+            url: '../../assets/gml/tuobutujinzui.gml',
+            id: 'gml_for_topology',
+            name: 'gml_for_topology_name',
+            linkWidth: 100,
+            linkColor: ['green', 'yellow', 'orange'],
+            renderNode: false,
+            nodeColor: 0x0000ff,
+            position: {
+              x: 1000,
+              y: 0,
+              z: 0,
+            },
+            scale: {
+              x: 1.5,
+              y: 1.5,
+              z: 1.5,
+            },
+          }
+        )
+        .then((topology) => {
+          ssp.flyToObj(topology);
+
+          const patrolControls = ssp.registerPlugin(
+            PatrolControlsPlugin,
+            'patrolControls'
+          );
+
+          const shortestPath = ssp.getShortestPath(topology, {
+            start: {
+              x: -2276.699237322046,
+              y: 299.9999999999998,
+              z: -2981.9710830239715,
+              isVector3: true,
+            },
+            end: {
+              x: 2118.35618722643,
+              y: -650.0000000000001,
+              z: -17893.889427365742,
+              isVector3: true,
+            },
+            id: 'shortestPath',
+            renderNode: true,
+            linkWidth: 100,
+            nodeColor: 'orange',
+            imgUrl: '../../assets/img/topology/arrow.png',
+            animation: true,
+          });
+
+
+
+      var animation;
+
+
+var state = {
+  运动速度:1,
+  eyeHeight:10,
+  lookDistance:30,
+  暂停:false,
+  播放速度:1,
+  get 进度(){
+    return animation.progress
+  },
+  set 进度(value){
+    animation.progress = value
+  },
+  前进:function(){
+    animation.forward()
+  },
+  后退:function(){
+    animation.backward()
+  }
+};
+
+
+function createPathAnimation(){
+
+  if (animation){
+    animation.stop();
+    ssp.viewport.mixer.uncacheAction(animation);
+  }
+
+  /**
+   * 模型路径动画
+   */
+   animation = ssp.createPathAnimationActionForCamera(shortestPath, {
+    front:{x:0,y:0,z:1},
+    speed:state.运动速度,
+    eyeHeight:state.eyeHeight,
+    lookDistance:state.lookDistance,
+  });
+
+  animation.play();
+}
+
+createPathAnimation()
+
+
+
+
+
+
+
+var gui = new GUI();
+gui.title("控制器");
+gui.add(state,"运动速度",0,5).onFinishChange(createPathAnimation)
+gui.add(state,"eyeHeight",0,50).onFinishChange(createPathAnimation)
+gui.add(state,"lookDistance",0,50).onFinishChange(createPathAnimation)
+
+gui.add(state,"暂停").onFinishChange(function(paused){
+  animation.paused = paused
+})
+gui.add(state,"播放速度",-3,3).onFinishChange(function(timeScale){
+  animation.timeScale  = timeScale
+})
+gui.add(state,"前进")
+gui.add(state,"后退")
+gui.add(state,"进度",0,1).listen()
+
+
+        });
+    </script>
+  </body>
+</html>
