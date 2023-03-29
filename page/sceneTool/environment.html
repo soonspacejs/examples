@@ -11,84 +11,145 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
+          "gui": "../../libs/gui.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
-      import { GUI } from '../../libs/gui.js';
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import { GUI } from 'gui';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
         options: {
-          showGrid: true,
+          background: {
+            color: '#ccc',
+          },
+          showGrid: false,
         },
       }));
 
-      ssp.hideAllLight();
-
-      ssp.setEnvironment();
-
-      Promise.all([
-        ssp.loadModel({
-          id: 'sbm_room',
-          name: 'sbm_room',
-          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-          position: {
-            x: -200,
-            y: 0,
-            z: 0,
-          },
-          scale: {
-            x: 0.1,
-            y: 0.1,
-            z: 0.1,
-          },
-        }),
-        ssp.loadModel({
-          id: 'gltf_room',
-          name: 'gltf_room',
-          url: '../../assets/model/gltf/Hospital_Room.gltf',
-        }),
-      ]).then(() => {
-        ssp.flyMainViewpoint();
+      ssp.setCameraViewpoint({
+        position: {
+          x: -12.366142303648925,
+          y: 11.465746266780819,
+          z: -3.6987486107899645,
+        },
+        rotation: {
+          x: -0.9141267294641843,
+          y: -0.904374293547057,
+          z: -0.7951974968300518,
+        },
       });
+
+      /**
+       * 加载场景
+       */
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/管道测试-out');
+
+      await soonmanager2Sync.loadScene().then(() => {
+        console.log('加载完成');
+      });
+
+      /**
+       * 地面阴影
+       */
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+
+      const size = new ssp.THREE.Vector3(),
+        center = new ssp.THREE.Vector3();
+
+      box.getSize(size);
+      box.getCenter(center);
+
+      console.log(size, center);
+
+      const shadows = effectPlugin.createContactShadows({
+        id: 'shadows',
+        position: { x: center.x, y: box.min.y, z: center.z },
+        opacity: 1,
+        scale: [size.x * 3, size.z * 3],
+        blur: 1,
+        far: 1,
+        resolution: 1024,
+        frames: 4,
+        darkness: 2,
+      });
+
+      /**
+       * light
+       */
+
+      const positionHeight = Math.tan(Math.PI / 4) * size.x;
+
+      const directionalLight = ssp.createDirectionalLight({
+        id: 'directionalLight',
+        name: 'directionalLight',
+        position: {
+          x: box.max.x,
+          y: positionHeight,
+          z: box.max.z,
+        },
+        target: {
+          x: box.min.x,
+          y: box.min.y,
+          z: box.min.z,
+        },
+        openShadow: true,
+        shadowAutoUpdate: false,
+        intensity: 2,
+        mapSize: 512,
+      });
+
+      const files = ['sunrise_1k.hdr', 'clouds_4k.hdr'];
 
       const gui = new GUI();
 
       const params = {
-        light: false,
-        environment: true,
+        file: files[0],
+        background: true,
       };
 
-      gui
-        .add(params, 'light')
-        .name('开启灯光')
-        .onChange((value) => {
-          if (value) {
-            ssp.showAllLight();
-          } else {
-            ssp.hideAllLight();
-          }
+      const paramsHandle = () => {
+        ssp.setEnvironment({
+          path: '../../assets/img/hdr/',
+          ...params,
         });
 
+        if (!params.background) {
+          ssp.setBackgroundColor('#ccc');
+        }
+      };
+
+      paramsHandle();
+
       gui
-        .add(params, 'environment')
-        .name('开启场景环境反射')
-        .onChange((value) => {
-          if (value) {
-            ssp.setEnvironment();
-          } else {
-            ssp.viewport.scene.environment = null;
-            ssp.render();
-          }
-        });
+        .add(params, 'file')
+        .options(files)
+        .name('HDR环境')
+        .onChange(paramsHandle);
+
+      gui.add(params, 'background').name('同步至背景').onChange(paramsHandle);
     </script>
   </body>
 </html>
