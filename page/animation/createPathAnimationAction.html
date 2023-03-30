@@ -23,7 +23,6 @@
     </script>
     <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
-      import {createAnimationOperate} from '../../libs/soonspacejs/index.js';
       import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
       import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
@@ -72,8 +71,7 @@
         url: '../../assets/model/gltf/male-walk.gltf',
       });
 
-      var walkAni = ssp.playModelAnimation(walker, 0);
-      var walkOperate = createAnimationOperate(walkAni);
+      var walkOperate = ssp.playModelAnimation(walker, 0);
 
       /**
        * 路径数据
@@ -160,14 +158,16 @@
 
       var gui = new GUI();
       gui.title("控制器");
-      gui.add(state,"运动速度",0,5).onFinishChange(createPathAnimation)
-      
+
       gui.add(state,"暂停").onFinishChange(function(paused){
         animation.paused = walkOperate.paused = paused
       })
       gui.add(state,"播放速度",-3,3).onFinishChange(function(timeScale){
         animation.timeScale = walkOperate.timeScale = timeScale
       })
+      gui.add(state,"运动速度",0,5).onFinishChange(createPathAnimation)
+      
+
       gui.add(state,"前进")
       gui.add(state,"后退")
       gui.add(state,"进度",0,1).listen()

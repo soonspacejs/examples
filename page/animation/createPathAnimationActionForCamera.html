@@ -17,11 +17,6 @@
   </head>
 
   <body>
-    <div id="progress">
-      <label for="progress-bar">巡检进度</label>
-      <progress id="progress-bar" value="0" max="1"></progress>
-      <span id="progress-content">0 %</span>
-    </div>
     <div id="view"></div>
 
     <script type="importmap">
@@ -40,6 +35,7 @@
       import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 
+      var animation;
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
         options: {
@@ -85,12 +81,14 @@
           }
         )
         .then((topology) => {
-          ssp.flyToObj(topology);
+          // ssp.flyToObj(topology);
 
-          const patrolControls = ssp.registerPlugin(
-            PatrolControlsPlugin,
-            'patrolControls'
-          );
+          // const patrolControls = ssp.registerPlugin(
+          //   PatrolControlsPlugin,
+          //   'patrolControls'
+          // );
+          ssp.viewport.camera.position.set(0,0,0);
+          ssp.viewport.camera.rotation.set(0,0,0);
 
           const shortestPath = ssp.getShortestPath(topology, {
             start: {
@@ -115,13 +113,13 @@
 
 
 
-      var animation;
+
 
 
 var state = {
-  运动速度:1,
-  eyeHeight:10,
-  lookDistance:30,
+  运动速度:300,
+  eyeHeight:200,
+  lookDistance:20,
   暂停:false,
   播放速度:1,
   get 进度(){
@@ -149,11 +147,15 @@ function createPathAnimation(){
   /**
    * 模型路径动画
    */
-   animation = ssp.createPathAnimationActionForCamera(shortestPath, {
-    front:{x:0,y:0,z:1},
+   ssp.viewport.scene.add(ssp.viewport.camera)
+   animation = window.animation = ssp.createPathAnimationActionForCamera(shortestPath, {
+    // front:{x:0,y:0,z:1},
     speed:state.运动速度,
+    // duration:10,
     eyeHeight:state.eyeHeight,
     lookDistance:state.lookDistance,
+    // enableUp:true,
+    up:{x:0,y:1,z:0}
   });
 
   animation.play();
@@ -169,8 +171,8 @@ createPathAnimation()
 
 var gui = new GUI();
 gui.title("控制器");
-gui.add(state,"运动速度",0,5).onFinishChange(createPathAnimation)
-gui.add(state,"eyeHeight",0,50).onFinishChange(createPathAnimation)
+gui.add(state,"运动速度",0,500).onFinishChange(createPathAnimation)
+gui.add(state,"eyeHeight",0,500).onFinishChange(createPathAnimation)
 gui.add(state,"lookDistance",0,50).onFinishChange(createPathAnimation)
 
 gui.add(state,"暂停").onFinishChange(function(paused){
