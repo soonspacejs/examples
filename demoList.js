@@ -331,6 +331,7 @@ export default [
         title: '渐变色过渡',
         demoLink: './page/animation/randomColor.html',
       },
+      
       {
         title: '路径动画-tween',
         demoLink: './page/animation/pathAnimation.html',
