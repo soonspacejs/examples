@@ -523,7 +523,7 @@ function boneOperateGUI(){
 
 
 const boneAnimationState = {
-  duration:10,
+  speed:30,
   sampleLength:2,
   lookDistance:0,
   enableUp:true,
@@ -542,7 +542,7 @@ function boneAnimationGUI(){
   boneAnimationConfigFolder = boneAnimationFolder.addFolder("配置");
   boneAnimationConfigFolder.close();
   boneAnimationConfigFolder.onFinishChange(createBoneAnimation);
-  boneAnimationConfigFolder.add(boneAnimationState,"duration",1,50);
+  boneAnimationConfigFolder.add(boneAnimationState,"speed",0,50);
   boneAnimationConfigFolder.add(boneAnimationState,"sampleLength",1,50);
   boneAnimationConfigFolder.add(boneAnimationState,"lookDistance",-100,100);
 
@@ -600,7 +600,7 @@ function createBoneAnimation(){
 
 
 const pathAnimationState = {
-  duration:10,
+  speed:30,
   sampleLength:2,
   lookDistance:0,
   front:new Vector3(0,-1,0),
@@ -622,7 +622,7 @@ function pathAnimationGUI(){
   pathAnimationConfigGUI = pathAnimationFolder.addFolder("配置");
   pathAnimationConfigGUI.close();
   pathAnimationConfigGUI.onFinishChange(createPathAnimation);
-  pathAnimationConfigGUI.add(pathAnimationState,"duration",1,50);
+  pathAnimationConfigGUI.add(pathAnimationState,"speed",0,50);
   pathAnimationConfigGUI.add(pathAnimationState,"sampleLength",1,50);
   pathAnimationConfigGUI.add(pathAnimationState,"lookDistance",-100,100);
   pathAnimationConfigGUI.add(pathAnimationState,"smooth");
