@@ -333,7 +333,7 @@ export default [
       },
       {
         title: '路径动画-tween',
-        demoLink: './page/animation/createAnimation.html',
+        demoLink: './page/animation/pathAnimation.html',
       },
       {
         title: '路径动画-Action',
