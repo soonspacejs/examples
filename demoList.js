@@ -331,6 +331,22 @@ export default [
         title: '渐变色过渡',
         demoLink: './page/animation/randomColor.html',
       },
+      {
+        title: '路径动画-tween',
+        demoLink: './page/animation/createAnimation.html',
+      },
+      {
+        title: '路径动画-Action',
+        demoLink: './page/animation/createPathAnimationAction.html',
+      },
+      {
+        title: '相机动画',
+        demoLink: './page/animation/createPathAnimationActionForCamera.html',
+      },
+      {
+        title: '骨骼动画',
+        demoLink: './page/animation/createBonePathAnimation.html',
+      },
     ],
   },
   // plugin
