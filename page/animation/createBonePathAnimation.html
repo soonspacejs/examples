@@ -132,7 +132,7 @@ function initScene() {
 
 // 路径顶点映射
 const pathPointsMap = {
-  立体:[{x:0,y:0,z:0},{x:50,y:0,z:0},{x:50,y:50,z:0},{x:50,y:50,z:50},{x:0,y:50,z:50}],
+  立体:[{x:0,y:0,z:0},{x:50,y:0,z:0},{x:80,y:50,z:0},{x:50,y:50,z:50},{x:0,y:50,z:50}],
   平面:[{x:0,y:0,z:0},{x:30,y:0,z:0},{x:60,y:0,z:0},{x:50,y:0,z:50},{x:0,y:0,z:50},{x:0,y:0,z:100}],
 };
 
@@ -606,6 +606,7 @@ const pathAnimationState = {
   front:new Vector3(0,-1,0),
   anchor:new Vector3(0,0,0),
   enableUp:false,
+  fixUp:false,
   up:new Vector3(0,0,1),
   smooth:true,
 };
@@ -636,6 +637,7 @@ function pathAnimationGUI(){
   pathAnimationConfigGUI.add(pathAnimationState.anchor,"z",pathAnimationState.anchor.z -100,pathAnimationState.anchor.z + 100).name("anchor.z");
   
   pathAnimationConfigGUI.add(pathAnimationState,"enableUp").name("enableUp").listen();
+  pathAnimationConfigGUI.add(pathAnimationState,"fixUp").name("fixUp");
   pathAnimationConfigGUI.add(pathAnimationState.up,"x",pathAnimationState.up.x -50,pathAnimationState.up.x + 50).name("up.x");
   pathAnimationConfigGUI.add(pathAnimationState.up,"y",pathAnimationState.up.y -50,pathAnimationState.up.y + 50).name("up.y");
   pathAnimationConfigGUI.add(pathAnimationState.up,"z",pathAnimationState.up.z -50,pathAnimationState.up.z + 50).name("up.z");
