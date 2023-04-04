@@ -447,7 +447,7 @@ function createSkinnedMesh(){
   if (!model) return;
   
   const {model:skinModel,skeleton:skelet} = createChainSkeletalModel({
-    model,
+    target:model,
     axial:boneState.轴,
     start:boneState.起点,
     number:boneState.数目,
