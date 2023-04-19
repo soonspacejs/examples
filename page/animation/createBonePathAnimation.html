@@ -17,753 +17,964 @@
   </head>
 
   <body>
-    <div id="view"></div>
+    <canvas id="view" ></canvas>
 
     <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
           "three/addons/": "../../libs/three/examples/jsm/",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
       }
     </script>
     <script type="module">
-     
-
-import {
-  Color,
-  CylinderGeometry,
-  DoubleSide,
-  MeshPhongMaterial,
-  PerspectiveCamera,
-  PointLight,
-  Scene,
-  SkeletonHelper,
-  Vector3,
-  WebGLRenderer,
-  CatmullRomCurve3,
-  Clock,
-  AnimationMixer,
-  Matrix4,
-  LoopOnce,
-  LoopRepeat,
-  LoopPingPong,
-  Mesh,
-  Object3D,
-  CameraHelper,
-} from 'three';
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js"
-import * as THREE from 'three';
-window.THREE = THREE;
-
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { ViewHelper } from 'three/examples/jsm/helpers/ViewHelper.js';
-
-import {createChainSkeletalModel,createCurveAnimationClip,createGuiAnimationController,createLineSegmentsByCurve,createCurveAnimationClipForBones,createPolylineCurve} from '../../libs/soonspacejs/index.js';
-
-var gui,scene,camera,renderer,orbit,lights,clock,mixer,gltfLoader,viewHelper;
-
-function initScene() {
-  gui = new GUI();
-  gui.title("控制器");
-
-  scene = new Scene();
-  scene.background = new Color( 0x444444 );
-
-  gltfLoader = new GLTFLoader();
-
-  clock = new Clock();
-  mixer = new AnimationMixer(scene);
-
-  camera = renderState.camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
-  const cameraMatrix = new Matrix4();
-  cameraMatrix.elements = [-0.9144602613916779, 1.3552527156068808e-20, 0.4046757100882944, 0, 0.00014165412657403143, 0.9999999387347509, 0.0003201009262103611, 0, -0.40467568529573616, 0.00035004356091232816, -0.9144602053670421, 0, -13.22277490792897, 8.916829900538009, -40.56254746796467, 1];
-  cameraMatrix.decompose(camera.position,camera.quaternion,camera.scale);
-  
-
-
-
-  renderer = new WebGLRenderer( { antialias: true } );
-  renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
-
-  orbit = new OrbitControls( camera, renderer.domElement );
-
-  lights = [];
-  lights[ 0 ] = new PointLight( 0xffffff, 1, 0 );
-  lights[ 1 ] = new PointLight( 0xffffff, 1, 0 );
-  lights[ 2 ] = new PointLight( 0xffffff, 1, 0 );
-
-  lights[ 0 ].position.set( 0, 200, 0 );
-  lights[ 1 ].position.set( 100, 200, 100 );
-  lights[ 2 ].position.set( - 100, - 200, - 100 );
-
-  scene.add( lights[ 0 ] );
-  scene.add( lights[ 1 ] );
-  scene.add( lights[ 2 ] );
-
-
-  viewHelper = new ViewHelper(camera);
-  viewHelper.scale.set(10, 10, 10);
-  for (const helper of viewHelper.children) {
-    helper.material.depthTest = false;
-  }
-  scene.add(viewHelper)
-
-  window.addEventListener( 'resize', function () {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-  });
-
-  Object.assign(window,{ gui,scene,camera,renderer,orbit,lights,clock,mixer})
-}
-
-
-
-
-
-// 路径顶点映射
-const pathPointsMap = {
-  立体:[{x:0,y:0,z:0},{x:50,y:0,z:0},{x:80,y:50,z:0},{x:50,y:50,z:50},{x:0,y:50,z:50}],
-  平面:[{x:0,y:0,z:0},{x:30,y:0,z:0},{x:60,y:0,z:0},{x:50,y:0,z:50},{x:0,y:0,z:50},{x:0,y:0,z:100}],
-};
-
-// 路径类型
-const pathTypes = {
-  样条曲线:function(points){
-    return new CatmullRomCurve3(points)
-  },
-  折线:createPolylineCurve,
-};
-
-
-
-// 路径状态
-const pathState = {
-  顶点集:pathPointsMap.平面,
-  曲线类型:pathTypes.样条曲线,
-  缩放:1,
-};
-
-function pathGUI(){
-  const folder = gui.addFolder( '路径' );
-  folder.close();
-  folder.onFinishChange(createPath)
-  folder.add(pathState,"顶点集",pathPointsMap);
-  folder.add(pathState,"曲线类型",pathTypes);
-  folder.add(pathState,"缩放",0,10);
-}
-
-
-var path,curve,points;
-function createPath(){
-  path?.removeFromParent();
-
-  const scalar = pathState.缩放;
-  points = pathState.顶点集.map((point)=>{
-    return new Vector3().copy(point).multiplyScalar(scalar);
-  })
-  curve = pathState.曲线类型(points);
-  path = createLineSegmentsByCurve(curve);
-  scene.add(path);
-
-  createBoneAnimation();
-  createPathAnimation();
-}
-
-
-const modelMap = {
-  圆筒:{
-    model:cylinderModel,
-    boneState: {
-      数目:5,
-      柔性系数:1,
-      轴:new Vector3(0,10,0),
-      起点:new Vector3(0,-20,0),
-    }
-  },
-  地铁:{
-    model:metroModel,
-    boneState:{
-      数目:7,
-      柔性系数:0,
-      轴:new Vector3(0,0,-27.5),
-      起点:new Vector3(0,0,81),
-    },
-    boneAnimationState:{
-      enableUp:false,
-      tolerance:0.01
-    },
-    pathAnimationState:{
-      lookDistance:20,
-      front:new Vector3(0,0,1),
-      anchor:new Vector3(0,0,80),
-    }
-  },
-  // 地铁:{
-  //   model:metroModel,
-  //   boneState:{
-  //     数目:6,
-  //     柔性系数:0,
-  //     轴:new Vector3(-19.7,0,0),
-  //     起点:new Vector3(59,1,-1),
-  //     enableUp:false,
-  //   },
-  //   boneAnimationState:{
-  //     enableUp:false,
-  //   }
-  // },
-  相机:{
-    model:camera,
-    pathAnimationState:{
-        lookDistance:25,
-        front:new Vector3(0,0,-1),
-        anchor:new Vector3(0,-10,0),
-        enableUp:false,
-        up:new Vector3(0,1,0),
-    }
-  }
-};
-
-// 模型参数
-const modelState = {
-  高度分段: 10,
-  高度: 40,
-  模型:"圆筒"
-};
-var model;
-
-
-
-var modelFolder,selectModelController;
-function modelGUI(){
-  modelFolder = gui.addFolder( '模型' );
-  modelFolder.close();
-  selectModelController = modelFolder.add(modelState,"模型",Object.keys(modelMap)).name("选择模型").onFinishChange(selectModelChange);
-
-  Object.assign(window,{modelFolder,modelMap,selectModelGUI: selectModelController,modelState});
-}
-
-function modelMapChange(){
-  if (!model){
-    const modelConfig = modelMap[modelState.模型];
-    model = modelConfig.model ?? cylinderModel;
-  }
-  selectModelController = selectModelController?.options(Object.keys(modelMap)).onFinishChange(selectModelChange);
-}
-
-var modelConfigFloder
-function selectModelChange(){
-  modelConfigFloder?.destroy();
-  const config = modelMap[modelState.模型];
-  model = config.model;
-  if (config.boneState) updateBoneConfigGUI(config.boneState);
-  if (config.boneAnimationState) updateBoneAnimationConfigGUI(config.boneAnimationState);
-  if (config.pathAnimationState) updatePathAnimationConfigGUI(config.pathAnimationState);
-  
-
-  switch (modelState.模型){
-    case "圆筒":{
-      modelConfigFloder = modelFolder.addFolder("配置");
-      modelConfigFloder.onFinishChange(createCylinderModel)
-      modelConfigFloder.add(modelState,"高度分段",1,30,1).name("高度分段");
-      modelConfigFloder.add(modelState,"高度",1,100).name("高度");
-      break
-    }
-    case "相机":{
-      skinnedModel?.removeFromParent();
-      skeletonHelper?.removeFromParent();
-      renderCameraGUI.setValue(camera2);
-      renderCameraChanged(camera2);
-      renderCameraGUI.show();
-      cylinderModel?.removeFromParent();
-      skeletonFolder.hide();
-      boneAnimationFolder.hide();
-
-      skinnedModel = model;
-      skinnedMeshGUI();
-      createPathAnimation();
-      return
-    }
-  }
-  skeletonFolder.show();
-  boneAnimationFolder.show();
-  renderCameraGUI.setValue(camera);
-  renderCameraGUI.hide();
-  camera2Helper.visible = false;
-
-  createSkinnedMesh();
-}
-
-
-var camera2,camera2Helper
-function createCameraModel() { 
-  camera2 = modelMap.相机.model = new PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 0.1, 1000 );
-  scene.add(camera2);
-  camera2Helper = new CameraHelper(camera2);
-  scene.add(camera2Helper);
-  Object.assign(window,{camera2,camera2Helper});
-}
-
-var renderState = {
-  camera:camera,
-};
-
-function renderCameraChanged(cam) {
-  camera2Helper.visible = cam === camera;
-}
-
-
-
-
-
-var metroModel;
-function loadModel(){
-  gltfLoader.load( "../../assets/model/gltf/metro.glb",(gltf) => {
-    metroModel = gltf.scene;
-    metroModel.scale.multiplyScalar(0.5);
-    modelMap.地铁.model = metroModel;
-    modelMapChange()
-  });
-}
-
-// 骨骼参数
-var boneState = {
-  数目:5,
-  柔性系数:1,
-  轴:new Vector3(0,10,0),
-  起点:new Vector3(0,-20,0),
-};
-
-var skeletonFolder,boneConfigFloder;
-function boneGUI(){
-  skeletonFolder = gui.addFolder( '骨骼' );
-  skeletonFolder.close();   
-  
-  boneConfigFloder = skeletonFolder.addFolder("配置");
-  boneConfigFloder.onFinishChange(createSkinnedMesh);
-  boneConfigFloder.add(boneState,"数目",1,10,1).name("数目");
-  boneConfigFloder.add(boneState,"柔性系数",0,1).name("柔性系数");
-
-  boneConfigFloder.add(boneState.轴,"x",boneState.轴.x -50,boneState.轴.x + 50).name("轴.x");
-  boneConfigFloder.add(boneState.轴,"y",boneState.轴.y -50,boneState.轴.y + 50).name("轴.y");
-  boneConfigFloder.add(boneState.轴,"z",boneState.轴.z -50,boneState.轴.z + 50).name("轴.z");
-
-  boneConfigFloder.add(boneState.起点,"x",boneState.起点.x -100,boneState.起点.x + 100).name("起点.x");
-  boneConfigFloder.add(boneState.起点,"y",boneState.起点.y -100,boneState.起点.y + 100).name("起点.y");
-  boneConfigFloder.add(boneState.起点,"z",boneState.起点.z -100,boneState.起点.z + 100).name("起点.z");
-}
-
-
-
-function updateBoneConfigGUI(state){
-  const controllers = {...state};
-  
-  for (const axis of ["x","y","z"]){
-    if (state["轴"]){
-      controllers[`轴.${axis}`] = state["轴"][axis]
-    }
-    if (state["起点"]){
-      controllers[`起点.${axis}`] = state["起点"][axis]
-    }
-    if (state.up){
-      controllers[`up.${axis}`] = state.up[axis]
-    }
-  }
-  
-  boneConfigFloder.load({controllers});
-}
-
-
-
-
-
-var cylinderModel;
-function createCylinderModel(){
-  cylinderModel?.removeFromParent();
-
-  const geometry = new CylinderGeometry(
-    3, // 顶部半径
-    3, // 底部半径
-    modelState.高度, // height
-    8, // 半径分段
-    modelState.高度分段, 
-    true // openEnded
-  );
-  geometry.scale(0.3,1,1);
-
-  const material = new MeshPhongMaterial( {
-    color: 0x156289,
-    emissive: 0x072534,
-    side: DoubleSide,
-    flatShading: true
-  });
-  const mesh = new Mesh(geometry,material);
-
-
-  const geometry2 = new CylinderGeometry(
-    3, // 顶部半径
-    3, // 底部半径
-    modelState.高度/3, // height
-    8, // 半径分段
-    modelState.高度分段, 
-    true // openEnded
-  );
-  geometry2.scale(0.4,1,1);
-  geometry2.rotateX(Math.PI/2);
- 
-  const material2 = new MeshPhongMaterial( {
-    color: 0xCA67EA,
-    emissive: 0x072534,
-    side: DoubleSide,
-    flatShading: true
-  });
-
-  const mesh2 = new Mesh(geometry2,material2);
-
-
-
-  cylinderModel = new Object3D();
-  cylinderModel.add(mesh,mesh2);
-
-  modelMap.圆筒.model = cylinderModel;
-
-  modelMapChange()
-}
-
-var skinnedModel,bones,skeleton,skeletonHelper;
-function createSkinnedMesh(){
-  skinnedModel?.removeFromParent();
-  skeletonHelper?.removeFromParent();
-
-  if (!model) return;
-  
-  const {model:skinModel,skeleton:skelet} = createChainSkeletalModel({
-    target:model,
-    axial:boneState.轴,
-    start:boneState.起点,
-    number:boneState.数目,
-    flexible:boneState.柔性系数,
-  });
-  skinnedModel = skinModel;
-  skeleton = skelet;
-
-  scene.add(skinnedModel);
-  
-  bones = skeleton.bones;
-
-  skeletonHelper = new SkeletonHelper( skinnedModel );
-  skeletonHelper.material.linewidth = 2;
-  scene.add( skeletonHelper );
-
-  createBoneAnimation();
-  createPathAnimation();
-  skinnedMeshGUI();
-  boneOperateGUI();
-
-  Object.assign(window,{skinnedMesh: skinnedModel,bones,skeletonHelper})
-}
-
-
-var skinnedMeshFloder;
-function skinnedMeshGUI(){
-  skinnedMeshFloder?.destroy();
-
-  skinnedMeshFloder = modelFolder.addFolder("操作");
-  skinnedMeshFloder.close();
-  skinnedMeshFloder.add( skinnedModel.position, 'x', - 50 + skinnedModel.position.x, 50 + skinnedModel.position.x ).name( 'position.x' );;
-  skinnedMeshFloder.add( skinnedModel.position, 'y', - 50 + skinnedModel.position.y, 50 + skinnedModel.position.y ).name( 'position.y' );;
-  skinnedMeshFloder.add( skinnedModel.position, 'z', - 50 + skinnedModel.position.z, 50 + skinnedModel.position.z ).name( 'position.z' );;
-
-  skinnedMeshFloder.add( skinnedModel.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.x' );
-  skinnedMeshFloder.add( skinnedModel.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.y' );
-  skinnedMeshFloder.add( skinnedModel.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.z' );
-
-  skinnedMeshFloder.add( skinnedModel.scale, 'x', 0, 2 ).name( 'scale.x' );
-  skinnedMeshFloder.add( skinnedModel.scale, 'y', 0, 2 ).name( 'scale.y' );
-  skinnedMeshFloder.add( skinnedModel.scale, 'z', 0, 2 ).name( 'scale.z' );
-}
-
-
-var boneOperateFloder;
-function boneOperateGUI(){
-  boneOperateFloder?.destroy()
-
-  boneOperateFloder = skeletonFolder.addFolder("操作");
-  boneOperateFloder.close();
-  const boneLength = bones.length;
-  for ( let i = 0; i < boneLength; i ++ ) {
-    const bone = bones[ i ];
-    const boneFolder = boneOperateFloder.addFolder( 'Bone ' + i );
-
-    boneFolder.add( bone.position, 'x', - 50 + bone.position.x, 50 + bone.position.x ).name( 'position.x' );
-    boneFolder.add( bone.position, 'y', - 50 + bone.position.y, 50 + bone.position.y ).name( 'position.y' );
-    boneFolder.add( bone.position, 'z', - 50 + bone.position.z, 50 + bone.position.z ).name( 'position.z' );
-
-    boneFolder.add( bone.rotation, 'x', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.x' );
-    boneFolder.add( bone.rotation, 'y', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.y' );
-    boneFolder.add( bone.rotation, 'z', - Math.PI * 0.5, Math.PI * 0.5 ).name( 'rotation.z' );
-
-    boneFolder.add( bone.scale, 'x', 0, 2 ).name( 'scale.x' );
-    boneFolder.add( bone.scale, 'y', 0, 2 ).name( 'scale.y' );
-    boneFolder.add( bone.scale, 'z', 0, 2 ).name( 'scale.z' );
-  }
-}
-
-
-
-
-
-const boneAnimationState = {
-  speed:30,
-  sampleLength:2,
-  lookDistance:0,
-  enableUp:true,
-  up:new Vector3(0,0,1),
-  stretch:true,
-  tolerance:0.1,
-};
-
-var boneAnimation;
-
-var boneAnimationFolder,boneAnimationConfigFolder 
-function boneAnimationGUI(){
-  boneAnimationFolder = gui.addFolder( '骨骼动画' );
-  boneAnimationFolder.close()
-
-  boneAnimationConfigFolder = boneAnimationFolder.addFolder("配置");
-  boneAnimationConfigFolder.close();
-  boneAnimationConfigFolder.onFinishChange(createBoneAnimation);
-  boneAnimationConfigFolder.add(boneAnimationState,"speed",0,50);
-  boneAnimationConfigFolder.add(boneAnimationState,"sampleLength",1,50);
-  boneAnimationConfigFolder.add(boneAnimationState,"lookDistance",-100,100);
-
-  boneAnimationConfigFolder.add(boneAnimationState,"stretch");
-  boneAnimationConfigFolder.add(boneAnimationState,"tolerance",0,1);
-
-  boneAnimationConfigFolder.add(boneAnimationState,"enableUp");
-  boneAnimationConfigFolder.add(boneAnimationState.up,"x",boneAnimationState.up.x -50,boneAnimationState.up.x + 50).name("up.x");
-  boneAnimationConfigFolder.add(boneAnimationState.up,"y",boneAnimationState.up.y -50,boneAnimationState.up.y + 50).name("up.y");
-  boneAnimationConfigFolder.add(boneAnimationState.up,"z",boneAnimationState.up.z -50,boneAnimationState.up.z + 50).name("up.z");
-}
-
-function updateBoneAnimationConfigGUI(state){
-  const controllers = {...state};
-  
-  for (const axis of ["x","y","z"]){
-    if (state.up){
-      controllers[`up.${axis}`] = state.up[axis]
-    }
-  }
-  
-  boneAnimationConfigFolder.load({controllers});
-}
-
-
-function createBoneAnimation(){
-  if (boneAnimation && boneAnimation.action){
-    boneAnimation.action.stop();
-    mixer.uncacheAction(boneAnimation.action);
-
-    skinnedModel.updateMatrix();
-    skinnedModel.updateWorldMatrix(true,true);
-  }
-
-  if (!(curve && skeleton)) return;
-
-  const clip = createCurveAnimationClipForBones({
-    name:"骨骼动画",
-    curve,
-    skeleton,
-    ...boneAnimationState
-  });
-  
-
-  const action = mixer.clipAction(clip,skinnedModel);
-  action.setLoop(LoopPingPong);
-  if (pathAnimation){
-    boneAnimation.action = action;
-  }else{
-    boneAnimation = createGuiAnimationController(action);
-    animationActionGUI(boneAnimationFolder,boneAnimation);
-  }
-}
-
-
-
-const pathAnimationState = {
-  speed:30,
-  sampleLength:2,
-  lookDistance:0,
-  front:new Vector3(0,-1,0),
-  anchor:new Vector3(0,0,0),
-  enableUp:false,
-  fixUp:false,
-  up:new Vector3(0,0,1),
-  smooth:true,
-};
-
-var pathAnimation;
-
-var pathAnimationFolder,renderCameraGUI,pathAnimationConfigGUI
-function pathAnimationGUI(){
-  pathAnimationFolder = gui.addFolder( '路径动画' );
-  pathAnimationFolder.close();
-
-  renderCameraGUI = pathAnimationFolder.add(renderState,"camera",{默认相机:camera,路径相机:camera2}).name("视角").onFinishChange(renderCameraChanged);
-
-  pathAnimationConfigGUI = pathAnimationFolder.addFolder("配置");
-  pathAnimationConfigGUI.close();
-  pathAnimationConfigGUI.onFinishChange(createPathAnimation);
-  pathAnimationConfigGUI.add(pathAnimationState,"speed",0,50);
-  pathAnimationConfigGUI.add(pathAnimationState,"sampleLength",1,50);
-  pathAnimationConfigGUI.add(pathAnimationState,"lookDistance",-100,100);
-  pathAnimationConfigGUI.add(pathAnimationState,"smooth");
-
-  pathAnimationConfigGUI.add(pathAnimationState.front,"x",pathAnimationState.front.x -50,pathAnimationState.front.x + 50).name("front.x");
-  pathAnimationConfigGUI.add(pathAnimationState.front,"y",pathAnimationState.front.y -50,pathAnimationState.front.y + 50).name("front.y");
-  pathAnimationConfigGUI.add(pathAnimationState.front,"z",pathAnimationState.front.z -50,pathAnimationState.front.z + 50).name("front.z");
-
-  pathAnimationConfigGUI.add(pathAnimationState.anchor,"x",pathAnimationState.anchor.x -100,pathAnimationState.anchor.x + 100).name("anchor.x");
-  pathAnimationConfigGUI.add(pathAnimationState.anchor,"y",pathAnimationState.anchor.y -100,pathAnimationState.anchor.y + 100).name("anchor.y");
-  pathAnimationConfigGUI.add(pathAnimationState.anchor,"z",pathAnimationState.anchor.z -100,pathAnimationState.anchor.z + 100).name("anchor.z");
-  
-  pathAnimationConfigGUI.add(pathAnimationState,"enableUp").name("enableUp").listen();
-  pathAnimationConfigGUI.add(pathAnimationState,"fixUp").name("fixUp");
-  pathAnimationConfigGUI.add(pathAnimationState.up,"x",pathAnimationState.up.x -50,pathAnimationState.up.x + 50).name("up.x");
-  pathAnimationConfigGUI.add(pathAnimationState.up,"y",pathAnimationState.up.y -50,pathAnimationState.up.y + 50).name("up.y");
-  pathAnimationConfigGUI.add(pathAnimationState.up,"z",pathAnimationState.up.z -50,pathAnimationState.up.z + 50).name("up.z");
-
-}
-
-
-function animationActionGUI(gui,actionController){
-  const operateFloder = gui.addFolder("操作");
-  actionController.guis.push(operateFloder);
-
-  operateFloder.add(actionController,"play").name("播放").listen();
-  operateFloder.add(actionController,"stop").name("停止");
-
-
-  operateFloder.add(actionController,"progress",0,1).name("进度").listen();
-  operateFloder.add(actionController,"timeScale",-3,3).name("倍速").listen();
-  operateFloder.add(actionController,"forward").name("前进");
-  operateFloder.add(actionController,"backward").name("后退");
-  operateFloder.add(actionController,"loop",{
-    Once:LoopOnce,
-    Repeat:LoopRepeat,
-    PingPong:LoopPingPong,
-  }).name("循环模式");
-}
-
-
-function updatePathAnimationConfigGUI(state){
-  const controllers = {...state};
-  
-  for (const axis of ["x","y","z"]){
-    if (state.front){
-      controllers[`front.${axis}`] = state.front[axis]
-    }
-    if (state.anchor){
-      controllers[`anchor.${axis}`] = state.anchor[axis]
-    }
-    if (state.up){
-      controllers[`up.${axis}`] = state.up[axis]
-    }
-  }
-  
-  pathAnimationConfigGUI.load({controllers});
-}
-
-
-
-function createPathAnimation(){
-  if (pathAnimation && pathAnimation.action){
-    pathAnimation.action.stop();
-    mixer.uncacheAction(pathAnimation.action);
-
-    skinnedModel.updateMatrix();
-    skinnedModel.updateWorldMatrix(true,true);
-  }
-
-  if (!(curve && skinnedModel)) return;
-
-  const options = {
-    name:"路径动画",
-    target:skinnedModel,
-    ...pathAnimationState
-  };
-
-  if (pathState.曲线类型 === pathTypes.折线){
-    options.points = points;
-  }else {
-    options.curve = curve;
-  }
-
-  const clip = createCurveAnimationClip(options);
-  const action = mixer.clipAction(clip,skinnedModel);
-  action.setLoop(LoopPingPong);
-  if (pathAnimation){
-    pathAnimation.action = action;
-  }else{
-    pathAnimation = window.pathAnimation = createGuiAnimationController(action);
-    animationActionGUI(pathAnimationFolder,pathAnimation);
-  }
-}
-
-
-
-
-
-
-
-function setupGui() {
-  modelGUI();
-  pathGUI();
-  boneGUI();
-  boneAnimationGUI();
-  pathAnimationGUI();
-}
-
-
-
-function render() {
-  requestAnimationFrame( render );
-
-  mixer.update(clock.getDelta());
-  renderer.render(scene,renderState.camera);
-}
-
-
-function setup(){
-  initScene();
-  createCameraModel();
-  setupGui();
-  createPath();
-  createCylinderModel();
-  loadModel();
-  selectModelChange();
-  render();
-
-  Object.assign(window,{skinnedMesh: skinnedModel})
-}
-
-
-setup();
-
-
-
-
-
-
+      import {
+        Color,
+        CylinderGeometry,
+        DoubleSide,
+        MeshPhongMaterial,
+        PerspectiveCamera,
+        PointLight,
+        Scene,
+        SkeletonHelper,
+        Vector3,
+        WebGLRenderer,
+        CatmullRomCurve3,
+        Clock,
+        AnimationMixer,
+        Matrix4,
+        LoopOnce,
+        LoopRepeat,
+        LoopPingPong,
+        Mesh,
+        Object3D,
+        CameraHelper,
+      } from "three";
+      import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+      import * as THREE from "three";
+      window.THREE = THREE;
+
+      import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+      import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+      
+      import { ViewHelper } from "three/examples/jsm/helpers/ViewHelper.js";
+
+      import {
+        createChainSkeletalModel,
+        createCurveAnimationClip,
+        createGuiAnimationController,
+        createLineSegmentsByCurve,
+        createCurveAnimationClipForBones,
+        createPolylineCurve,
+      } from "../../libs/soonspacejs/index.js";
+
+      var gui,
+        scene,
+        camera,
+        renderer,
+        orbit,
+        lights,
+        clock,
+        mixer,
+        gltfLoader,
+        viewHelper;
+
+      function initScene() {
+        gui = new GUI();
+        gui.title("控制器");
+
+        scene = new Scene();
+        scene.background = new Color(0x444444);
+
+        gltfLoader = new GLTFLoader();
+
+        clock = new Clock();
+        mixer = new AnimationMixer(scene);
+
+        camera = renderState.camera = new PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          10000
+        );
+        const cameraMatrix = new Matrix4();
+        cameraMatrix.elements = [
+          -0.9144602613916779, 1.3552527156068808e-20, 0.4046757100882944, 0,
+          0.00014165412657403143, 0.9999999387347509, 0.0003201009262103611, 0,
+          -0.40467568529573616, 0.00035004356091232816, -0.9144602053670421, 0,
+          -13.22277490792897, 8.916829900538009, -40.56254746796467, 1,
+        ];
+        cameraMatrix.decompose(
+          camera.position,
+          camera.quaternion,
+          camera.scale
+        );
+        scene.add(camera);
+        const canvas = document.querySelector('#view')
+        renderer = new WebGLRenderer({ antialias: true ,canvas });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // document.body.appendChild(renderer.domElement);
+
+        orbit = new OrbitControls(camera, renderer.domElement);
+       
+        lights = [];
+        lights[0] = new PointLight(0xffffff, 1, 0);
+        lights[1] = new PointLight(0xffffff, 1, 0);
+        lights[2] = new PointLight(0xffffff, 1, 0);
+
+        lights[0].position.set(0, 200, 0);
+        lights[1].position.set(100, 200, 100);
+        lights[2].position.set(-100, -200, -100);
+
+        scene.add(lights[0]);
+        scene.add(lights[1]);
+        scene.add(lights[2]);
+
+        viewHelper = new ViewHelper(camera);
+
+        viewHelper.scale.set(10, 10, 10);
+       
+        for (const helper of viewHelper.children) {
+          helper.material.depthTest = false;
+        }
+        scene.add(viewHelper);
+
+        window.addEventListener("resize", function () {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        Object.assign(window, {
+          gui,
+          scene,
+          camera,
+          renderer,
+          orbit,
+          lights,
+          clock,
+          mixer,
+        });
+      }
+
+      // 路径顶点映射
+      const pathPointsMap = {
+        立体: [
+          { x: 0, y: 0, z: 0 },
+          { x: 50, y: 0, z: 0 },
+          { x: 80, y: 50, z: 0 },
+          { x: 50, y: 50, z: 50 },
+          { x: 0, y: 50, z: 50 },
+        ],
+        平面: [
+          { x: 0, y: 0, z: 0 },
+          { x: 30, y: 0, z: 0 },
+          { x: 60, y: 0, z: 0 },
+          { x: 50, y: 0, z: 50 },
+          { x: 0, y: 0, z: 50 },
+          { x: 0, y: 0, z: 100 },
+        ],
+      };
+
+      // 路径类型
+      const pathTypes = {
+        样条曲线: function (points) {
+          return new CatmullRomCurve3(points);
+        },
+        折线: createPolylineCurve,
+      };
+
+      // 路径状态
+      const pathState = {
+        顶点集: pathPointsMap.平面,
+        曲线类型: pathTypes.样条曲线,
+        缩放: 1,
+      };
+
+      function pathGUI() {
+        const folder = gui.addFolder("路径");
+        folder.close();
+        folder.onFinishChange(createPath);
+        folder.add(pathState, "顶点集", pathPointsMap);
+        folder.add(pathState, "曲线类型", pathTypes);
+        folder.add(pathState, "缩放", 0, 10);
+      }
+
+      var path, curve, points;
+      function createPath() {
+        path?.removeFromParent();
+
+        const scalar = pathState.缩放;
+        points = pathState.顶点集.map((point) => {
+          return new Vector3().copy(point).multiplyScalar(scalar);
+        });
+        curve = pathState.曲线类型(points);
+        path = createLineSegmentsByCurve(curve);
+        scene.add(path);
+
+        createBoneAnimation();
+        createPathAnimation();
+      }
+
+      const modelMap = {
+        圆筒: {
+          model: cylinderModel,
+          boneState: {
+            数目: 5,
+            柔性系数: 1,
+            轴: new Vector3(0, 10, 0),
+            起点: new Vector3(0, -20, 0),
+          },
+        },
+        地铁: {
+          model: metroModel,
+          boneState: {
+            数目: 7,
+            柔性系数: 0,
+            轴: new Vector3(0, 0, -27.5),
+            起点: new Vector3(0, 0, 81),
+          },
+          boneAnimationState: {
+            enableUp: false,
+            tolerance: 0.01,
+          },
+          pathAnimationState: {
+            lookDistance: 20,
+            front: new Vector3(0, 0, 1),
+            anchor: new Vector3(0, 0, 80),
+          },
+        },
+        // 地铁:{
+        //   model:metroModel,
+        //   boneState:{
+        //     数目:6,
+        //     柔性系数:0,
+        //     轴:new Vector3(-19.7,0,0),
+        //     起点:new Vector3(59,1,-1),
+        //     enableUp:false,
+        //   },
+        //   boneAnimationState:{
+        //     enableUp:false,
+        //   }
+        // },
+        相机: {
+          model: camera,
+          pathAnimationState: {
+            lookDistance: 25,
+            front: new Vector3(0, 0, -1),
+            anchor: new Vector3(0, -10, 0),
+            enableUp: false,
+            up: new Vector3(0, 1, 0),
+          },
+        },
+      };
+
+      // 模型参数
+      const modelState = {
+        高度分段: 10,
+        高度: 40,
+        模型: "圆筒",
+      };
+      var model;
+
+      var modelFolder, selectModelController;
+      function modelGUI() {
+        modelFolder = gui.addFolder("模型");
+        modelFolder.close();
+        selectModelController = modelFolder
+          .add(modelState, "模型", Object.keys(modelMap))
+          .name("选择模型")
+          .onFinishChange(selectModelChange);
+
+        Object.assign(window, {
+          modelFolder,
+          modelMap,
+          selectModelGUI: selectModelController,
+          modelState,
+        });
+      }
+
+      function modelMapChange() {
+        if (!model) {
+          const modelConfig = modelMap[modelState.模型];
+          model = modelConfig.model ?? cylinderModel;
+        }
+        selectModelController = selectModelController
+          ?.options(Object.keys(modelMap))
+          .onFinishChange(selectModelChange);
+      }
+
+      var modelConfigFloder;
+      function selectModelChange() {
+        modelConfigFloder?.destroy();
+        const config = modelMap[modelState.模型];
+        model = config.model;
+        if (config.boneState) updateBoneConfigGUI(config.boneState);
+        if (config.boneAnimationState)
+          updateBoneAnimationConfigGUI(config.boneAnimationState);
+        if (config.pathAnimationState)
+          updatePathAnimationConfigGUI(config.pathAnimationState);
+
+        switch (modelState.模型) {
+          case "圆筒": {
+            modelConfigFloder = modelFolder.addFolder("配置");
+            modelConfigFloder.onFinishChange(createCylinderModel);
+            modelConfigFloder
+              .add(modelState, "高度分段", 1, 30, 1)
+              .name("高度分段");
+            modelConfigFloder.add(modelState, "高度", 1, 100).name("高度");
+            break;
+          }
+          case "相机": {
+            skinnedModel?.removeFromParent();
+            skeletonHelper?.removeFromParent();
+            renderCameraGUI.setValue(camera2);
+            renderCameraChanged(camera2);
+            renderCameraGUI.show();
+            cylinderModel?.removeFromParent();
+            skeletonFolder.hide();
+            boneAnimationFolder.hide();
+
+            skinnedModel = model;
+            skinnedMeshGUI();
+            createPathAnimation();
+            return;
+          }
+        }
+        skeletonFolder.show();
+        boneAnimationFolder.show();
+        renderCameraGUI.setValue(camera);
+        renderCameraGUI.hide();
+        camera2Helper.visible = false;
+
+        createSkinnedMesh();
+      }
+
+      var camera2, camera2Helper;
+      function createCameraModel() {
+        camera2 = modelMap.相机.model = new PerspectiveCamera(
+          65,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        scene.add(camera2);
+        camera2Helper = new CameraHelper(camera2);
+        scene.add(camera2Helper);
+        Object.assign(window, { camera2, camera2Helper });
+      }
+
+      var renderState = {
+        camera: camera,
+      };
+
+      function renderCameraChanged(cam) {
+        camera2Helper.visible = cam === camera;
+      }
+
+      var metroModel;
+      function loadModel() {
+        gltfLoader.load("../../assets/model/gltf/metro.glb", (gltf) => {
+          metroModel = gltf.scene;
+          metroModel.scale.multiplyScalar(0.5);
+          modelMap.地铁.model = metroModel;
+          modelMapChange();
+        });
+      }
+
+      // 骨骼参数
+      var boneState = {
+        数目: 5,
+        柔性系数: 1,
+        轴: new Vector3(0, 10, 0),
+        起点: new Vector3(0, -20, 0),
+      };
+
+      var skeletonFolder, boneConfigFloder;
+      function boneGUI() {
+        skeletonFolder = gui.addFolder("骨骼");
+        skeletonFolder.close();
+
+        boneConfigFloder = skeletonFolder.addFolder("配置");
+        boneConfigFloder.onFinishChange(createSkinnedMesh);
+        boneConfigFloder.add(boneState, "数目", 1, 10, 1).name("数目");
+        boneConfigFloder.add(boneState, "柔性系数", 0, 1).name("柔性系数");
+
+        boneConfigFloder
+          .add(boneState.轴, "x", boneState.轴.x - 50, boneState.轴.x + 50)
+          .name("轴.x");
+        boneConfigFloder
+          .add(boneState.轴, "y", boneState.轴.y - 50, boneState.轴.y + 50)
+          .name("轴.y");
+        boneConfigFloder
+          .add(boneState.轴, "z", boneState.轴.z - 50, boneState.轴.z + 50)
+          .name("轴.z");
+
+        boneConfigFloder
+          .add(
+            boneState.起点,
+            "x",
+            boneState.起点.x - 100,
+            boneState.起点.x + 100
+          )
+          .name("起点.x");
+        boneConfigFloder
+          .add(
+            boneState.起点,
+            "y",
+            boneState.起点.y - 100,
+            boneState.起点.y + 100
+          )
+          .name("起点.y");
+        boneConfigFloder
+          .add(
+            boneState.起点,
+            "z",
+            boneState.起点.z - 100,
+            boneState.起点.z + 100
+          )
+          .name("起点.z");
+      }
+
+      function updateBoneConfigGUI(state) {
+        const controllers = { ...state };
+
+        for (const axis of ["x", "y", "z"]) {
+          if (state["轴"]) {
+            controllers[`轴.${axis}`] = state["轴"][axis];
+          }
+          if (state["起点"]) {
+            controllers[`起点.${axis}`] = state["起点"][axis];
+          }
+          if (state.up) {
+            controllers[`up.${axis}`] = state.up[axis];
+          }
+        }
+
+        boneConfigFloder.load({ controllers });
+      }
+
+      var cylinderModel;
+      function createCylinderModel() {
+        cylinderModel?.removeFromParent();
+
+        const geometry = new CylinderGeometry(
+          3, // 顶部半径
+          3, // 底部半径
+          modelState.高度, // height
+          8, // 半径分段
+          modelState.高度分段,
+          true // openEnded
+        );
+        geometry.scale(0.3, 1, 1);
+
+        const material = new MeshPhongMaterial({
+          color: 0x156289,
+          emissive: 0x072534,
+          side: DoubleSide,
+          flatShading: true,
+        });
+        const mesh = new Mesh(geometry, material);
+
+        const geometry2 = new CylinderGeometry(
+          3, // 顶部半径
+          3, // 底部半径
+          modelState.高度 / 3, // height
+          8, // 半径分段
+          modelState.高度分段,
+          true // openEnded
+        );
+        geometry2.scale(0.4, 1, 1);
+        geometry2.rotateX(Math.PI / 2);
+
+        const material2 = new MeshPhongMaterial({
+          color: 0xca67ea,
+          emissive: 0x072534,
+          side: DoubleSide,
+          flatShading: true,
+        });
+
+        const mesh2 = new Mesh(geometry2, material2);
+
+        cylinderModel = new Object3D();
+        cylinderModel.add(mesh, mesh2);
+
+        modelMap.圆筒.model = cylinderModel;
+
+        modelMapChange();
+      }
+
+      var skinnedModel, bones, skeleton, skeletonHelper;
+      function createSkinnedMesh() {
+        skinnedModel?.removeFromParent();
+        skeletonHelper?.removeFromParent();
+
+        if (!model) return;
+
+        const { model: skinModel, skeleton: skelet } = createChainSkeletalModel(
+          {
+            target: model,
+            axial: boneState.轴,
+            start: boneState.起点,
+            number: boneState.数目,
+            flexible: boneState.柔性系数,
+          }
+        );
+        skinnedModel = skinModel;
+        skeleton = skelet;
+
+        scene.add(skinnedModel);
+
+        bones = skeleton.bones;
+
+        skeletonHelper = new SkeletonHelper(skinnedModel);
+        skeletonHelper.material.linewidth = 2;
+        scene.add(skeletonHelper);
+
+        createBoneAnimation();
+        createPathAnimation();
+        skinnedMeshGUI();
+        boneOperateGUI();
+
+        Object.assign(window, {
+          skinnedMesh: skinnedModel,
+          bones,
+          skeletonHelper,
+        });
+      }
+
+      var skinnedMeshFloder;
+      function skinnedMeshGUI() {
+        skinnedMeshFloder?.destroy();
+
+        skinnedMeshFloder = modelFolder.addFolder("操作");
+        skinnedMeshFloder.close();
+        skinnedMeshFloder
+          .add(
+            skinnedModel.position,
+            "x",
+            -50 + skinnedModel.position.x,
+            50 + skinnedModel.position.x
+          )
+          .name("position.x");
+        skinnedMeshFloder
+          .add(
+            skinnedModel.position,
+            "y",
+            -50 + skinnedModel.position.y,
+            50 + skinnedModel.position.y
+          )
+          .name("position.y");
+        skinnedMeshFloder
+          .add(
+            skinnedModel.position,
+            "z",
+            -50 + skinnedModel.position.z,
+            50 + skinnedModel.position.z
+          )
+          .name("position.z");
+
+        skinnedMeshFloder
+          .add(skinnedModel.rotation, "x", -Math.PI * 0.5, Math.PI * 0.5)
+          .name("rotation.x");
+        skinnedMeshFloder
+          .add(skinnedModel.rotation, "y", -Math.PI * 0.5, Math.PI * 0.5)
+          .name("rotation.y");
+        skinnedMeshFloder
+          .add(skinnedModel.rotation, "z", -Math.PI * 0.5, Math.PI * 0.5)
+          .name("rotation.z");
+
+        skinnedMeshFloder.add(skinnedModel.scale, "x", 0, 2).name("scale.x");
+        skinnedMeshFloder.add(skinnedModel.scale, "y", 0, 2).name("scale.y");
+        skinnedMeshFloder.add(skinnedModel.scale, "z", 0, 2).name("scale.z");
+      }
+
+      var boneOperateFloder;
+      function boneOperateGUI() {
+        boneOperateFloder?.destroy();
+
+        boneOperateFloder = skeletonFolder.addFolder("操作");
+        boneOperateFloder.close();
+        const boneLength = bones.length;
+        for (let i = 0; i < boneLength; i++) {
+          const bone = bones[i];
+          const boneFolder = boneOperateFloder.addFolder("Bone " + i);
+
+          boneFolder
+            .add(
+              bone.position,
+              "x",
+              -50 + bone.position.x,
+              50 + bone.position.x
+            )
+            .name("position.x");
+          boneFolder
+            .add(
+              bone.position,
+              "y",
+              -50 + bone.position.y,
+              50 + bone.position.y
+            )
+            .name("position.y");
+          boneFolder
+            .add(
+              bone.position,
+              "z",
+              -50 + bone.position.z,
+              50 + bone.position.z
+            )
+            .name("position.z");
+
+          boneFolder
+            .add(bone.rotation, "x", -Math.PI * 0.5, Math.PI * 0.5)
+            .name("rotation.x");
+          boneFolder
+            .add(bone.rotation, "y", -Math.PI * 0.5, Math.PI * 0.5)
+            .name("rotation.y");
+          boneFolder
+            .add(bone.rotation, "z", -Math.PI * 0.5, Math.PI * 0.5)
+            .name("rotation.z");
+
+          boneFolder.add(bone.scale, "x", 0, 2).name("scale.x");
+          boneFolder.add(bone.scale, "y", 0, 2).name("scale.y");
+          boneFolder.add(bone.scale, "z", 0, 2).name("scale.z");
+        }
+      }
+
+      const boneAnimationState = {
+        speed: 30,
+        sampleLength: 2,
+        lookDistance: 0,
+        enableUp: true,
+        up: new Vector3(0, 0, 1),
+        stretch: true,
+        tolerance: 0.1,
+      };
+
+      var boneAnimation;
+
+      var boneAnimationFolder, boneAnimationConfigFolder;
+      function boneAnimationGUI() {
+        boneAnimationFolder = gui.addFolder("骨骼动画");
+        boneAnimationFolder.close();
+
+        boneAnimationConfigFolder = boneAnimationFolder.addFolder("配置");
+        boneAnimationConfigFolder.close();
+        boneAnimationConfigFolder.onFinishChange(createBoneAnimation);
+        boneAnimationConfigFolder.add(boneAnimationState, "speed", 0, 50);
+        boneAnimationConfigFolder.add(
+          boneAnimationState,
+          "sampleLength",
+          1,
+          50
+        );
+        boneAnimationConfigFolder.add(
+          boneAnimationState,
+          "lookDistance",
+          -100,
+          100
+        );
+
+        boneAnimationConfigFolder.add(boneAnimationState, "stretch");
+        boneAnimationConfigFolder.add(boneAnimationState, "tolerance", 0, 1);
+
+        boneAnimationConfigFolder.add(boneAnimationState, "enableUp");
+        boneAnimationConfigFolder
+          .add(
+            boneAnimationState.up,
+            "x",
+            boneAnimationState.up.x - 50,
+            boneAnimationState.up.x + 50
+          )
+          .name("up.x");
+        boneAnimationConfigFolder
+          .add(
+            boneAnimationState.up,
+            "y",
+            boneAnimationState.up.y - 50,
+            boneAnimationState.up.y + 50
+          )
+          .name("up.y");
+        boneAnimationConfigFolder
+          .add(
+            boneAnimationState.up,
+            "z",
+            boneAnimationState.up.z - 50,
+            boneAnimationState.up.z + 50
+          )
+          .name("up.z");
+      }
+
+      function updateBoneAnimationConfigGUI(state) {
+        const controllers = { ...state };
+
+        for (const axis of ["x", "y", "z"]) {
+          if (state.up) {
+            controllers[`up.${axis}`] = state.up[axis];
+          }
+        }
+
+        boneAnimationConfigFolder.load({ controllers });
+      }
+
+      function createBoneAnimation() {
+        if (boneAnimation && boneAnimation.action) {
+          boneAnimation.action.stop();
+          mixer.uncacheAction(boneAnimation.action);
+
+          skinnedModel.updateMatrix();
+          skinnedModel.updateWorldMatrix(true, true);
+        }
+
+        if (!(curve && skeleton)) return;
+
+        const clip = createCurveAnimationClipForBones({
+          name: "骨骼动画",
+          curve,
+          skeleton,
+          ...boneAnimationState,
+        });
+
+        const action = mixer.clipAction(clip, skinnedModel);
+        action.setLoop(LoopPingPong);
+        if (pathAnimation) {
+          boneAnimation.action = action;
+        } else {
+          boneAnimation = createGuiAnimationController(action);
+          animationActionGUI(boneAnimationFolder, boneAnimation);
+        }
+      }
+
+      const pathAnimationState = {
+        speed: 30,
+        sampleLength: 2,
+        lookDistance: 0,
+        front: new Vector3(0, -1, 0),
+        anchor: new Vector3(0, 0, 0),
+        enableUp: false,
+        fixUp: false,
+        up: new Vector3(0, 0, 1),
+        smooth: true,
+      };
+
+      var pathAnimation;
+
+      var pathAnimationFolder, renderCameraGUI, pathAnimationConfigGUI;
+      function pathAnimationGUI() {
+        pathAnimationFolder = gui.addFolder("路径动画");
+        pathAnimationFolder.close();
+
+        renderCameraGUI = pathAnimationFolder
+          .add(renderState, "camera", { 默认相机: camera, 路径相机: camera2 })
+          .name("视角")
+          .onFinishChange(renderCameraChanged);
+
+        pathAnimationConfigGUI = pathAnimationFolder.addFolder("配置");
+        pathAnimationConfigGUI.close();
+        pathAnimationConfigGUI.onFinishChange(createPathAnimation);
+        pathAnimationConfigGUI.add(pathAnimationState, "speed", 0, 50);
+        pathAnimationConfigGUI.add(pathAnimationState, "sampleLength", 1, 50);
+        pathAnimationConfigGUI.add(
+          pathAnimationState,
+          "lookDistance",
+          -100,
+          100
+        );
+        pathAnimationConfigGUI.add(pathAnimationState, "smooth");
+
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.front,
+            "x",
+            pathAnimationState.front.x - 50,
+            pathAnimationState.front.x + 50
+          )
+          .name("front.x");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.front,
+            "y",
+            pathAnimationState.front.y - 50,
+            pathAnimationState.front.y + 50
+          )
+          .name("front.y");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.front,
+            "z",
+            pathAnimationState.front.z - 50,
+            pathAnimationState.front.z + 50
+          )
+          .name("front.z");
+
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.anchor,
+            "x",
+            pathAnimationState.anchor.x - 100,
+            pathAnimationState.anchor.x + 100
+          )
+          .name("anchor.x");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.anchor,
+            "y",
+            pathAnimationState.anchor.y - 100,
+            pathAnimationState.anchor.y + 100
+          )
+          .name("anchor.y");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.anchor,
+            "z",
+            pathAnimationState.anchor.z - 100,
+            pathAnimationState.anchor.z + 100
+          )
+          .name("anchor.z");
+
+        pathAnimationConfigGUI
+          .add(pathAnimationState, "enableUp")
+          .name("enableUp")
+          .listen();
+        pathAnimationConfigGUI.add(pathAnimationState, "fixUp").name("fixUp");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.up,
+            "x",
+            pathAnimationState.up.x - 50,
+            pathAnimationState.up.x + 50
+          )
+          .name("up.x");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.up,
+            "y",
+            pathAnimationState.up.y - 50,
+            pathAnimationState.up.y + 50
+          )
+          .name("up.y");
+        pathAnimationConfigGUI
+          .add(
+            pathAnimationState.up,
+            "z",
+            pathAnimationState.up.z - 50,
+            pathAnimationState.up.z + 50
+          )
+          .name("up.z");
+      }
+
+      function animationActionGUI(gui, actionController) {
+        const operateFloder = gui.addFolder("操作");
+        actionController.guis.push(operateFloder);
+
+        operateFloder.add(actionController, "play").name("播放").listen();
+        operateFloder.add(actionController, "stop").name("停止");
+
+        operateFloder
+          .add(actionController, "progress", 0, 1)
+          .name("进度")
+          .listen();
+        operateFloder
+          .add(actionController, "timeScale", -3, 3)
+          .name("倍速")
+          .listen();
+        operateFloder.add(actionController, "forward").name("前进");
+        operateFloder.add(actionController, "backward").name("后退");
+        operateFloder
+          .add(actionController, "loop", {
+            Once: LoopOnce,
+            Repeat: LoopRepeat,
+            PingPong: LoopPingPong,
+          })
+          .name("循环模式");
+      }
+
+      function updatePathAnimationConfigGUI(state) {
+        const controllers = { ...state };
+
+        for (const axis of ["x", "y", "z"]) {
+          if (state.front) {
+            controllers[`front.${axis}`] = state.front[axis];
+          }
+          if (state.anchor) {
+            controllers[`anchor.${axis}`] = state.anchor[axis];
+          }
+          if (state.up) {
+            controllers[`up.${axis}`] = state.up[axis];
+          }
+        }
+
+        pathAnimationConfigGUI.load({ controllers });
+      }
+
+      function createPathAnimation() {
+        if (pathAnimation && pathAnimation.action) {
+          pathAnimation.action.stop();
+          mixer.uncacheAction(pathAnimation.action);
+
+          skinnedModel.updateMatrix();
+          skinnedModel.updateWorldMatrix(true, true);
+        }
+
+        if (!(curve && skinnedModel)) return;
+
+        const options = {
+          name: "路径动画",
+          target: skinnedModel,
+          ...pathAnimationState,
+        };
+
+        if (pathState.曲线类型 === pathTypes.折线) {
+          options.points = points;
+        } else {
+          options.curve = curve;
+        }
+
+        const clip = createCurveAnimationClip(options);
+        const action = mixer.clipAction(clip, skinnedModel);
+        action.setLoop(LoopPingPong);
+        if (pathAnimation) {
+          pathAnimation.action = action;
+        } else {
+          pathAnimation = window.pathAnimation =
+            createGuiAnimationController(action);
+          animationActionGUI(pathAnimationFolder, pathAnimation);
+        }
+      }
+
+      function setupGui() {
+        modelGUI();
+        pathGUI();
+        boneGUI();
+        boneAnimationGUI();
+        pathAnimationGUI();
+      }
+
+      function render() {
+
+        requestAnimationFrame(render);
+        mixer.update(clock.getDelta());        
+        renderer.render(scene, camera);
+      }
+
+      function setup() {
+        initScene();
+        createCameraModel();
+        setupGui();
+        createPath();
+        createCylinderModel();
+        loadModel();
+        selectModelChange();
+        render();
+        Object.assign(window, { skinnedMesh: skinnedModel });
+      }
+
+      setup();
     </script>
   </body>
 </html>
