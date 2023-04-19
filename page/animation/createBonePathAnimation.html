@@ -17,7 +17,7 @@
   </head>
 
   <body>
-    <canvas id="view" ></canvas>
+    
 
     <script type="importmap">
       {
@@ -113,11 +113,11 @@
           camera.scale
         );
         scene.add(camera);
-        const canvas = document.querySelector('#view')
-        renderer = new WebGLRenderer({ antialias: true ,canvas });
+
+        renderer = new WebGLRenderer({ antialias: true  });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // document.body.appendChild(renderer.domElement);
+        document.body.appendChild(renderer.domElement);
 
         orbit = new OrbitControls(camera, renderer.domElement);
        
