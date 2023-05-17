@@ -242,15 +242,15 @@
             轴: new Vector3(0, 0, -27.5),
             起点: new Vector3(0, 0, 81),
           },
-          boneAnimationState: {
-            enableUp: false,
-            tolerance: 0.01,
-          },
-          pathAnimationState: {
-            lookDistance: 20,
-            front: new Vector3(0, 0, 1),
-            anchor: new Vector3(0, 0, 80),
-          },
+          // boneAnimationState: {
+          //   enableUp: false,
+          //   tolerance: 0.01,
+          // },
+          // pathAnimationState: {
+          //   lookDistance: 20,
+          //   front: new Vector3(0, 0, 1),
+          //   anchor: new Vector3(0, 0, 80),
+          // },
         },
         // 地铁:{
         //   model:metroModel,
@@ -265,16 +265,16 @@
         //     enableUp:false,
         //   }
         // },
-        相机: {
-          model: camera,
-          pathAnimationState: {
-            lookDistance: 25,
-            front: new Vector3(0, 0, -1),
-            anchor: new Vector3(0, -10, 0),
-            enableUp: false,
-            up: new Vector3(0, 1, 0),
-          },
-        },
+        // 相机: {
+        //   model: camera,
+        //   pathAnimationState: {
+        //     lookDistance: 25,
+        //     front: new Vector3(0, 0, -1),
+        //     anchor: new Vector3(0, -10, 0),
+        //     enableUp: false,
+        //     up: new Vector3(0, 1, 0),
+        //   },
+        // },
       };
 
       // 模型参数
@@ -331,29 +331,30 @@
               .add(modelState, "高度分段", 1, 30, 1)
               .name("高度分段");
             modelConfigFloder.add(modelState, "高度", 1, 100).name("高度");
+
             break;
           }
           case "相机": {
             skinnedModel?.removeFromParent();
-            skeletonHelper?.removeFromParent();
-            renderCameraGUI.setValue(camera2);
-            renderCameraChanged(camera2);
-            renderCameraGUI.show();
+            // skeletonHelper?.removeFromParent();
+            // renderCameraGUI.setValue(camera2);
+            // renderCameraChanged(camera2);
+            // renderCameraGUI.show();
             cylinderModel?.removeFromParent();
             skeletonFolder.hide();
-            boneAnimationFolder.hide();
+            // boneAnimationFolder.hide();
 
             skinnedModel = model;
             skinnedMeshGUI();
-            createPathAnimation();
+            // createPathAnimation();
             return;
           }
         }
         skeletonFolder.show();
-        boneAnimationFolder.show();
-        renderCameraGUI.setValue(camera);
-        renderCameraGUI.hide();
-        camera2Helper.visible = false;
+        // boneAnimationFolder.show();
+        // renderCameraGUI.setValue(camera);
+        // renderCameraGUI.hide();
+        // camera2Helper.visible = false;
 
         createSkinnedMesh();
       }
@@ -464,6 +465,7 @@
 
       var cylinderModel;
       function createCylinderModel() {
+        console.log("createCylinderModel", modelState);
         cylinderModel?.removeFromParent();
 
         const geometry = new CylinderGeometry(
@@ -518,7 +520,7 @@
         skeletonHelper?.removeFromParent();
 
         if (!model) return;
-        console.log({ boneState });
+
         const { model: skinModel, skeleton: skelet } = createChainSkeletalModel(
           {
             target: model,
@@ -528,7 +530,7 @@
             flexible: boneState.柔性系数,
           }
         );
-        console.log({ skinModel, skelet });
+
         skinnedModel = skinModel;
         skeleton = skelet;
 
@@ -957,10 +959,10 @@
 
       function setupGui() {
         modelGUI();
-        pathGUI();
+        // pathGUI();
         boneGUI();
-        boneAnimationGUI();
-        pathAnimationGUI();
+        // boneAnimationGUI();
+        // pathAnimationGUI();
       }
 
       function render() {
@@ -971,9 +973,9 @@
 
       function setup() {
         initScene();
-        createCameraModel();
+        // createCameraModel();
         setupGui();
-        createPath();
+        // createPath();
         createCylinderModel();
         loadModel();
         selectModelChange();
