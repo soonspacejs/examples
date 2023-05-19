@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view" style="background-color: white"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          background: {
+            color: '#ccc',
+            // alpha: true,
+          },
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      ssp.flyTo(
+        {
+          x: -8.683174718428429,
+          y: 4.093909757704123,
+          z: 7.594978471862318,
+        },
+        {
+          x: -0.42684214109889496,
+          y: -0.6888066865359578,
+          z: -0.2814096720621471,
+        },
+        {
+          duration: 0,
+        }
+      );
+
+      /**
+       * 加载场景
+       */
+      await ssp.loadModel({
+        id: 'cabin',
+        url: '../../assets/model/gltf/tiny_cabin_fantasy_textured_for_challenge.glb',
+      });
+
+      const canvas3D = ssp.createCanvas3D({
+        id: 'canvas_3d',
+        name: 'canvas_3d',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        points: [
+          {
+            id: 'point',
+            position: {
+              x: -1.2,
+              y: 0.5,
+              z: 1.6,
+            },
+            radius: 0.5,
+          },
+        ],
+      });
+
+      ssp.setBloom({
+        threshold: 1.2,
+        selection: [canvas3D],
+        scalar: 1.6,
+        intensity: 1.4,
+      });
+
+      const star = effectPlugin.createSparkles({
+        id: 'testSparkles',
+        position: {
+          x: -1.2,
+          y: 0.5,
+          z: 1.6,
+        },
+        count: 100,
+        scalar: 2,
+        size: 2,
+        speed: 0.8,
+        opacity: 0.5,
+        noise: 1,
+        color: '#ff0',
+      });
+    </script>
+  </body>
+</html>

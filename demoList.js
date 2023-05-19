@@ -388,6 +388,10 @@ export default [
         demoLink: './page/plugin/weatherEffect.html',
       },
       {
+        title: '星星',
+        demoLink: './page/plugin/sparkles.html',
+      },
+      {
         title: '绘制基础图形',
         demoLink: './page/plugin/drawingShape.html',
       },
