@@ -9,12 +9,8 @@ export { default as ArrayUniformNode /* @TODO: arrayUniform */ } from './core/Ar
 export { default as AttributeNode, attribute } from './core/AttributeNode.js';
 export { default as BypassNode, bypass } from './core/BypassNode.js';
 export { default as CacheNode, cache } from './core/CacheNode.js';
-export { default as CodeNode, code } from './core/CodeNode.js';
 export { default as ConstNode } from './core/ConstNode.js';
 export { default as ContextNode, context } from './core/ContextNode.js';
-export { default as ExpressionNode, expression } from './core/ExpressionNode.js';
-export { default as FunctionCallNode, call } from './core/FunctionCallNode.js';
-export { default as FunctionNode, func, fn } from './core/FunctionNode.js';
 export { default as InstanceIndexNode, instanceIndex } from './core/InstanceIndexNode.js';
 export { default as LightingModel, lightingModel } from './core/LightingModel.js';
 export { default as Node, addNodeClass, createNodeFromType } from './core/Node.js';
@@ -35,8 +31,11 @@ export { default as UniformNode, uniform } from './core/UniformNode.js';
 export { default as VarNode, label, temp } from './core/VarNode.js';
 export { default as VaryingNode, varying } from './core/VaryingNode.js';
 
+import * as NodeUtils from './core/NodeUtils.js';
+export { NodeUtils };
+
 // math
-export { default as MathNode, EPSILON, INFINITY, radians, degrees, exp, exp2, log, log2, sqrt, inversesqrt, floor, ceil, normalize, fract, sin, cos, tan, asin, acos, atan, abs, sign, length, negate, invert, dFdx, dFdy, round, reciprocal, atan2, min, max, mod, step, reflect, distance, difference, dot, cross, pow, pow2, pow3, pow4, transformDirection, mix, clamp, refract, smoothstep, faceforward } from './math/MathNode.js';
+export { default as MathNode, EPSILON, INFINITY, radians, degrees, exp, exp2, log, log2, sqrt, inverseSqrt, floor, ceil, normalize, fract, sin, cos, tan, asin, acos, atan, abs, sign, length, negate, oneMinus, dFdx, dFdy, round, reciprocal, atan2, min, max, mod, step, reflect, distance, difference, dot, cross, pow, pow2, pow3, pow4, transformDirection, mix, clamp, saturate, refract, smoothstep, faceForward } from './math/MathNode.js';
 export { default as OperatorNode, add, sub, mul, div, remainder, equal, assign, lessThan, greaterThan, lessThanEqual, greaterThanEqual, and, or, xor, bitAnd, bitOr, bitXor, shiftLeft, shiftRight } from './math/OperatorNode.js';
 export { default as CondNode, cond } from './math/CondNode.js';
 
@@ -94,6 +93,16 @@ export { default as NormalMapNode, normalMap, TBNViewMatrix } from './display/No
 export { default as PosterizeNode, posterize } from './display/PosterizeNode.js';
 export { default as ToneMappingNode, toneMapping } from './display/ToneMappingNode.js';
 export { default as ViewportNode, viewportCoordinate, viewportResolution, viewportTopLeft, viewportBottomLeft, viewportTopRight, viewportBottomRight } from './display/ViewportNode.js';
+export { default as ViewportTextureNode, viewportTexture } from './display/ViewportTextureNode.js';
+export { default as ViewportSharedTextureNode, viewportSharedTexture } from './display/ViewportSharedTextureNode.js';
+
+// code
+export { default as ExpressionNode, expression } from './code/ExpressionNode.js';
+export { default as CodeNode, code, js } from './code/CodeNode.js';
+export { default as FunctionCallNode, call } from './code/FunctionCallNode.js';
+export { default as FunctionNode, func, fn } from './code/FunctionNode.js';
+export { default as ScriptableNode, scriptable, global } from './code/ScriptableNode.js';
+export { default as ScriptableValueNode, scriptableValue } from './code/ScriptableValueNode.js';
 
 // fog
 export { default as FogNode, fog } from './fog/FogNode.js';
@@ -107,6 +116,7 @@ export { default as RangeNode, range } from './geometry/RangeNode.js';
 export { default as ComputeNode, compute } from './gpgpu/ComputeNode.js';
 
 // lighting
+export { default as LightNode, lightTargetDirection } from './lighting/LightNode.js';
 export { default as PointLightNode } from './lighting/PointLightNode.js';
 export { default as DirectionalLightNode } from './lighting/DirectionalLightNode.js';
 export { default as SpotLightNode } from './lighting/SpotLightNode.js';
@@ -147,7 +157,7 @@ export { default as DFGApprox } from './functions/BSDF/DFGApprox.js';
 export { default as F_Schlick } from './functions/BSDF/F_Schlick.js';
 export { default as V_GGX_SmithCorrelated } from './functions/BSDF/V_GGX_SmithCorrelated.js';
 
-export { default as getDistanceAttenuation } from './functions/light/getDistanceAttenuation.js';
+export { getDistanceAttenuation } from './lighting/LightUtils.js';
 
 export { default as getGeometryRoughness } from './functions/material/getGeometryRoughness.js';
 export { default as getRoughness } from './functions/material/getRoughness.js';

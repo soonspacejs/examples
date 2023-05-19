@@ -18,17 +18,8 @@ class MeshPhongNodeMaterial extends NodeMaterial {
 
 		this.lights = true;
 
-		this.colorNode = null;
-		this.opacityNode = null;
-
 		this.shininessNode = null;
 		this.specularNode = null;
-
-		this.alphaTestNode = null;
-
-		this.lightNode = null;
-
-		this.positionNode = null;
 
 		this.setDefaultValues( defaultValues );
 
@@ -42,7 +33,7 @@ class MeshPhongNodeMaterial extends NodeMaterial {
 
 	}
 
-	constructVariants( builder, stack ) {
+	constructVariants( { stack } ) {
 
 		// SHININESS
 

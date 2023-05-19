@@ -17,17 +17,13 @@ class MeshNormalNodeMaterial extends NodeMaterial {
 
 		this.isMeshNormalNodeMaterial = true;
 
-		this.opacityNode = null;
-
-		this.positionNode = null;
-
 		this.setDefaultValues( defaultValues );
 
 		this.setValues( parameters );
 
 	}
 
-	constructDiffuseColor( builder, stack ) {
+	constructDiffuseColor( { stack } ) {
 
 		const opacityNode = this.opacityNode ? float( this.opacityNode ) : materialOpacity;
 
