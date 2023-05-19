@@ -25,36 +25,32 @@
   </head>
 
   <body>
-    <div
-      id="view"
-      style="width: 100vw; height: 100vh; background-color: #2b3d37"
-    ></div>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
 
     <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
           "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
       }
     </script>
     <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js?t=0731';
-      import SoonmanagerSyncPlugin from '../../libs/soonspacejs/plugins/soonmannager-sync.js?t=0731';
+      import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
       import { GUI } from '../../libs/gui.js';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
         options: {
           showInfo: true,
-          showGrid: true,
+          showGrid: false,
           controls: {
             enabledMousePointInteractive: true,
           },
           background: {
-            // color: '#f0f',
-            alpha: true,
+            color: '#bfdcd2',
           },
           showViewHelper: true,
           logarithmicDepthBuffer: false,
@@ -64,11 +60,6 @@
           modelClick(param) {
             const { target } = param;
 
-            // ssp.addBoxHelper({
-            //   id: target.sid,
-            //   box: target.getBoundingBox()
-            // })
-
             console.log(param);
           },
           selectPosition(p) {
@@ -77,14 +68,32 @@
         },
       }));
 
-      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+      ssp.setCameraViewpoint({
+        position: {
+          x: 20.962160829357295,
+          y: 3.2356461449196487,
+          z: 1.5954441143728775,
+        },
+        rotation: {
+          x: -1.1423147040934951,
+          y: 1.4233122557755227,
+          z: 1.138174717501053,
+        },
+      });
 
-      const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
-        SoonmanagerSyncPlugin,
-        'soonmanagerSync'
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
       ));
 
-      soonmanagerSync.setBaseUrl('../../assets/sceneData/tsp-0602/');
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/深灿A区四层');
+
+      /**
+       * 加载场景
+       */
+      await soonmanager2Sync.loadScene().then(() => {
+        console.log('加载完成');
+      });
 
       // gui
       const gui = new GUI();
@@ -93,7 +102,7 @@
         enabled: true,
         distanceScaling: true,
         depthAwareUpsampling: true,
-        samples: 16,
+        samples: 32,
         rings: 7,
         distanceThreshold: 0.02, // Render up to a distance of ~20 world units
         distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
@@ -138,48 +147,6 @@
       gui.add(ssaoParams, 'fade', 0, 1, 0.001).onChange(ssaoChanges);
       gui.addColor(ssaoParams, 'color').onChange(ssaoChanges);
       gui.add(ssaoParams, 'resolutionScale', 0, 1, 0.1).onChange(ssaoChanges);
-
-      const directionalLight = ssp.createDirectionalLight({
-        id: 'defaultDirectionalLight',
-        name: 'defaultDirectionalLight',
-        position: {
-          x: 24,
-          y: 40,
-          z: 25,
-        },
-        target: {
-          x: -20,
-          y: -20,
-          z: 0,
-        },
-        openShadow: true,
-        mapSize: 6000,
-      });
-
-      const loadloadScene = () => {
-        console.time('all');
-        console.time('main');
-
-        soonmanagerSync
-          .loadScene({
-            isIdleRest: true,
-            loadSceneAllSuccess() {
-              ssp.updateAllShadow();
-
-              console.log('all success');
-
-              console.timeEnd('all');
-
-              ssp.computeModelsBoundsTree();
-            },
-          })
-          .then(() => {
-            console.timeEnd('main');
-            // ssp.flyMainViewpoint();
-          });
-      };
-
-      loadloadScene();
     </script>
   </body>
 </html>
