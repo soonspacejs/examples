@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+          showViewHelper: false,
+          background: {
+            color: '#444546',
+          },
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+      ssp.setSSAO();
+      ssp.setEnvironment({
+        path: '../../assets/img/hdr/',
+        file: 'sunrise_1k.hdr',
+      });
+      ssp.setCameraViewpoint({
+        position: {
+          x: 106.4781017047453,
+          y: 57.72852125371203,
+          z: 81.57827206056015,
+        },
+        rotation: {
+          x: -0.5214263558373815,
+          y: 0.6758032304203201,
+          z: 0.34496849256946155,
+        },
+      });
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+      const effectPlugin = (window.plugin = ssp.registerPlugin(
+        EffectPlugin,
+        'effectPlugin'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/东方之门0525');
+      await soonmanager2Sync.loadScene();
+
+      effectPlugin.createCircleWave({
+        id: 'createCircleWave_test',
+        textureUrl: [
+          '../../assets/img/map/in-circle.png',
+          '../../assets/img/map/out-circle.png',
+        ],
+        position: { x: 0, y: -10, z: 0 },
+        width: 90,
+        height: 90,
+        isScaleAnimate: true,
+        isOpacityAnimate: true,
+      });
+
+      effectPlugin.createCylinderWave({
+        id: 'createCylinderWave_test',
+        position: { x: 0, y: -10, z: 0 },
+        topRadius: 20,
+        bottomRadius: 20,
+        height: 10,
+        texturePath: '../../assets/img/map/gradual_blue.png',
+        color: '#ff0000',
+      });
+    </script>
+  </body>
+</html>

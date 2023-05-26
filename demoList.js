@@ -392,6 +392,10 @@ export default [
         demoLink: './page/plugin/sparkles.html',
       },
       {
+        title: '波浪光圈',
+        demoLink: './page/plugin/createWave.html',
+      },
+      {
         title: '绘制基础图形',
         demoLink: './page/plugin/drawingShape.html',
       },
