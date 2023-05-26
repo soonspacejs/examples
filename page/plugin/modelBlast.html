@@ -1,78 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import ModelBlastPlugin from '../../libs/soonspacejs/plugins/model-blast.js'
-    import { GUI } from '../../libs/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-        showGrid: false
-      },
-      events: {}
-    })
-
-    const modelBlast = ssp.registerPlugin(ModelBlastPlugin, 'modelBlast')
-
-    ssp.loadModel({
-      id: 'room_01',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
-    })
-      .then(model => {
-        ssp.flyMainViewpoint()
-        return model
-      })
-      .then(model => {
-
-        const gui = new GUI()
-
-        const params = {
-          scalar: 200
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import ModelBlastPlugin from '../../libs/soonspacejs/plugins/model-blast.js';
+      import { GUI } from '../../libs/gui.js';
 
-        gui
-          .add(params, 'scalar', 100, 1000)
-          .name('间隔')
-          .onChange(val => {
-            modelBlast.start(model, val)
-          })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+        },
+        events: {},
+      }));
 
-        gui
-          .add(
-            {
-              close: function () {
-                modelBlast.stop()
-              }
-            },
-            'close'
-          )
-          .name('关闭')
-      })
+      const modelBlast = ssp.registerPlugin(ModelBlastPlugin, 'modelBlast');
 
-  </script>
-</body>
+      ssp
+        .loadModel({
+          id: 'room_01',
+          url: '../../assets/model/sbm/zhuanzheji/zhuanzheji.sbm',
+        })
+        .then((model) => {
+          ssp.flyMainViewpoint(undefined, { duration: 0 });
+          return model;
+        })
+        .then((model) => {
+          const gui = new GUI();
 
+          const params = {
+            scalar: 10,
+          };
+
+          gui
+            .add(params, 'scalar', 1, 100)
+            .name('间隔')
+            .onChange((val) => {
+              modelBlast.start(model, val);
+            });
+
+          gui
+            .add(
+              {
+                close: function () {
+                  modelBlast.stop();
+                },
+              },
+              'close'
+            )
+            .name('关闭');
+        });
+    </script>
+  </body>
 </html>
