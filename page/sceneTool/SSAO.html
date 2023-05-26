@@ -53,8 +53,6 @@
             color: '#bfdcd2',
           },
           showViewHelper: true,
-          logarithmicDepthBuffer: false,
-          // useIndexedDB: false,
         },
         events: {
           modelClick(param) {
@@ -100,22 +98,13 @@
 
       const ssaoParams = {
         enabled: true,
-        distanceScaling: true,
-        depthAwareUpsampling: true,
-        samples: 32,
-        rings: 7,
-        distanceThreshold: 0.02, // Render up to a distance of ~20 world units
-        distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
-        rangeThreshold: 0.0003, // Occlusion proximity of ~0.3 world units
-        rangeFalloff: 0.0001, // with ~0.1 units of falloff.
-        luminanceInfluence: 0.7,
-        minRadiusScale: 0.33,
-        radius: 0.1,
-        intensity: 6,
-        bias: 0.004,
-        fade: 0.05,
-        color: 0x0,
-        resolutionScale: 0.5,
+        intensity: 5,
+        aoRadius: 5,
+        aoSamples: 16,
+        denoiseSamples: 4,
+        denoiseRadius: 12,
+        distanceFalloff: 1,
+        color: '#343e93',
       };
 
       const ssaoChanges = () => {
@@ -125,28 +114,13 @@
       ssaoChanges();
 
       gui.add(ssaoParams, 'enabled').onChange(ssaoChanges);
-      gui.add(ssaoParams, 'distanceScaling').onChange(ssaoChanges);
-      gui.add(ssaoParams, 'depthAwareUpsampling').onChange(ssaoChanges);
-      gui.add(ssaoParams, 'samples', 1, 32).onChange(ssaoChanges);
-      gui.add(ssaoParams, 'rings', 1, 16).onChange(ssaoChanges);
-      gui
-        .add(ssaoParams, 'distanceThreshold', 0, 1, 0.0001)
-        .onChange(ssaoChanges);
-      gui
-        .add(ssaoParams, 'distanceFalloff', 0, 1, 0.0001)
-        .onChange(ssaoChanges);
-      gui.add(ssaoParams, 'rangeThreshold', 0, 1, 0.0001).onChange(ssaoChanges);
-      gui.add(ssaoParams, 'rangeFalloff', 0, 1, 0.0001).onChange(ssaoChanges);
-      gui
-        .add(ssaoParams, 'luminanceInfluence', 0, 1, 0.1)
-        .onChange(ssaoChanges);
-      gui.add(ssaoParams, 'minRadiusScale', 0, 1, 0.1).onChange(ssaoChanges);
-      gui.add(ssaoParams, 'radius', 0, 1, 0.1).onChange(ssaoChanges);
       gui.add(ssaoParams, 'intensity', 0, 10, 0.1).onChange(ssaoChanges);
-      gui.add(ssaoParams, 'bias', 0, 1, 0.001).onChange(ssaoChanges);
-      gui.add(ssaoParams, 'fade', 0, 1, 0.001).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'aoRadius', 0, 10, 0.1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'aoSamples', 1, 64, 1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'denoiseSamples', 1, 12, 1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'denoiseRadius', 1, 12, 0.1).onChange(ssaoChanges);
+      gui.add(ssaoParams, 'distanceFalloff', 0, 10, 0.1).onChange(ssaoChanges);
       gui.addColor(ssaoParams, 'color').onChange(ssaoChanges);
-      gui.add(ssaoParams, 'resolutionScale', 0, 1, 0.1).onChange(ssaoChanges);
     </script>
   </body>
 </html>
