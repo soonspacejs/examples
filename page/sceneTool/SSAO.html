@@ -66,6 +66,11 @@
         },
       }));
 
+      ssp.setEnvironment({
+        file: '../../assets/img/hdr/clouds_4k.hdr',
+        background: true,
+      });
+
       ssp.setCameraViewpoint({
         position: {
           x: 20.962160829357295,
@@ -99,7 +104,7 @@
       const ssaoParams = {
         enabled: true,
         intensity: 5,
-        aoRadius: 5,
+        aoRadius: 3,
         aoSamples: 16,
         denoiseSamples: 4,
         denoiseRadius: 12,
