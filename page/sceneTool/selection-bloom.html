@@ -19,8 +19,8 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js"
         }
@@ -56,21 +56,8 @@
 
       const ssaoParams = {
         enabled: true,
-        depthAwareUpsampling: true,
-        samples: 32,
-        rings: 7,
-        distanceThreshold: 0.02,
-        distanceFalloff: 0.0025,
-        rangeThreshold: 0.0003,
-        rangeFalloff: 0.0001,
-        luminanceInfluence: 0.7,
-        minRadiusScale: 0.33,
-        radius: 0.1,
-        intensity: 4,
-        bias: 0.004,
-        fade: 0.05,
-        color: 0x0,
-        resolutionScale: 0.5,
+        aoRadius: 2,
+        intensity: 3,
       };
 
       const ssaoChanges = () => {
@@ -145,188 +132,191 @@
 
       soonmanager2SyncPlugin.setPath('../../assets/sceneData/2.0/展厅');
 
-      soonmanager2SyncPlugin.loadScene({ syncProperties: true }).then(() => {
-        console.log('load scene success');
+      soonmanager2SyncPlugin
+        .loadScene({ syncProperties: true })
+        .then(async () => {
+          console.log('load scene success');
 
-        // update shadow
-        ssp.updateAllShadow();
+          // update shadow
+          ssp.updateAllShadow();
 
-        const { THREE, viewport } = ssp;
+          const { THREE, viewport } = ssp;
 
-        /**
-         * bloom
-         */
-        const selection = [];
+          /**
+           * bloom
+           */
+          const selection = [];
 
-        const stripe1 = ssp.getObjectById('4JBE24VLP38M').getObjectByName('0');
-        selection.push(stripe1);
+          const stripe1 = ssp
+            .getObjectById('4JBE24VLP38M')
+            .getObjectByName('0');
+          selection.push(stripe1);
 
-        /**
-         * 大厅灯带
-         */
-        ssp.getObjectById('4JBE14W2L3WL').traverse((child) => {
-          if (child.isMesh) {
-            selection.push(child);
-          }
-        });
+          /**
+           * 大厅灯带
+           */
+          ssp.getObjectById('4JBE14W2L3WL').traverse((child) => {
+            if (child.isMesh) {
+              selection.push(child);
+            }
+          });
 
-        /**
-         * 天花板
-         */
-        const ceilLight = ssp.getObjectById('4JF718RCVWZO');
-        const lightMeshNames = ['8', '10'];
-        ceilLight.traverse((child) => {
-          if (child.isMesh && lightMeshNames.includes(child.name)) {
-            selection.push(child);
-          }
-        });
+          /**
+           * 天花板
+           */
+          const ceilLight = ssp.getObjectById('4JF718RCVWZO');
+          const lightMeshNames = ['8', '10'];
+          ceilLight.traverse((child) => {
+            if (child.isMesh && lightMeshNames.includes(child.name)) {
+              selection.push(child);
+            }
+          });
 
-        /**
-         * 矩形大灯特殊处理
-         */
-        const rectLight = ssp.getObjectById('4JO5FNVNZVN0');
-        rectLight.traverse((child) => {
-          if (child.isMesh) {
-            child.visible = false;
+          /**
+           * 矩形大灯特殊处理
+           */
+          const rectLight = ssp.getObjectById('4JO5FNVNZVN0');
+          rectLight.traverse((child) => {
+            if (child.isMesh) {
+              child.visible = false;
 
-            const box = ssp.utils.getBoundingBox(child);
-            const center = new THREE.Vector3();
-            const size = new THREE.Vector3();
+              const box = ssp.utils.getBoundingBox(child);
+              const center = new THREE.Vector3();
+              const size = new THREE.Vector3();
 
-            box.getCenter(center);
-            box.getSize(size);
+              box.getCenter(center);
+              box.getSize(size);
 
-            const geometry = new THREE.PlaneGeometry(size.x, size.z);
-            const material = new THREE.MeshStandardMaterial({
-              // color: '#fff',
-            });
+              const geometry = new THREE.PlaneGeometry(size.x, size.z);
+              const material = new THREE.MeshStandardMaterial({
+                // color: '#fff',
+              });
 
-            material.side = THREE.BackSide;
-            // material.emissive.set('#fff');
+              material.side = THREE.BackSide;
+              // material.emissive.set('#fff');
 
-            const plane = new THREE.Mesh(geometry, material);
+              const plane = new THREE.Mesh(geometry, material);
 
-            plane.castShadow = true;
-            plane.position.copy(center);
-            plane.rotation.x -= Math.PI / 2;
+              plane.castShadow = true;
+              plane.position.copy(center);
+              plane.rotation.x -= Math.PI / 2;
 
-            child.parent.attach(plane);
+              child.parent.attach(plane);
 
-            // intersects
-            ssp.viewport.scener.intersectsList.otherObjList.push(plane);
+              // intersects
+              ssp.viewport.scener.intersectsList.otherObjList.push(plane);
 
-            selection.push(plane);
-          }
-        });
+              selection.push(plane);
+            }
+          });
 
-        ssp.setBloom({
-          enabled: true,
-          intensity: 1,
-          threshold: 1,
-          radius: 0.5,
-          opacity: 1,
-          scalar: 5,
-          selection,
-        });
+          ssp.setBloom({
+            enabled: true,
+            intensity: 1,
+            threshold: 1,
+            radius: 0.5,
+            opacity: 1,
+            scalar: 5,
+            selection,
+          });
 
-        /**
-         * SSR material
-         */
-        const hall = ssp.getObjectById('4JEC51MKK2XP');
+          /**
+           * SSR material
+           */
+          const hall = ssp.getObjectById('4JEC51MKK2XP');
 
-        const hallMesh = hall.getObjectByName('30');
-        const groundMesh = hall.getObjectByName('12');
+          const hallMesh = hall.getObjectByName('30');
+          const groundMesh = hall.getObjectByName('12');
 
-        hallMesh.material.roughness = 0;
-        groundMesh.material.roughness = 0.03;
+          hallMesh.material.roughness = 0;
+          groundMesh.material.roughness = 0.03;
 
-        /**
-         * 根据 camera 位置隐藏天花板
-         */
+          /**
+           * 根据 camera 位置隐藏天花板
+           */
 
-        /**
-         * 防抖
-         */
-        const debounce = (fn, timeout = 100) => {
-          let timer;
-          let firstExec = false;
+          /**
+           * 防抖
+           */
+          const debounce = (fn, timeout = 100) => {
+            let timer;
+            let firstExec = false;
 
-          return () => {
-            if (!firstExec) {
-              fn();
+            return () => {
+              if (!firstExec) {
+                fn();
 
-              firstExec = true;
+                firstExec = true;
+              }
+
+              clearTimeout(timer);
+
+              timer = setTimeout(() => {
+                fn();
+              }, timeout);
+            };
+          };
+          const ceil = ssp.getObjectById('4JF718RCVWZO');
+
+          const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+
+          let prevCameraAtRoom = null;
+          const debounceFn = debounce(() => {
+            const cameraAtRoom = box.containsPoint(
+              ssp.viewport.camera.position
+            );
+
+            if (cameraAtRoom === prevCameraAtRoom) {
+              return;
             }
 
-            clearTimeout(timer);
+            prevCameraAtRoom = cameraAtRoom;
 
-            timer = setTimeout(() => {
-              fn();
-            }, timeout);
+            if (cameraAtRoom) {
+              ceil.show();
+              rectLight.show();
+
+              ssp.updateAllShadow();
+            } else {
+              ceil.hide();
+              rectLight.hide();
+
+              ssp.updateAllShadow();
+            }
+          });
+
+          ssp.signals.cameraChange.add(debounceFn);
+
+          /**
+           * video plane
+           */
+
+          const createVideoTexture = async () => {
+            const video = document.createElement('video');
+
+            video.src = '../../assets/video/sintel.mp4';
+            video.crossOrigin = 'Anonymous';
+            video.loop = true;
+            video.muted = true;
+
+            await video.play();
+
+            const texture = new THREE.VideoTexture(video);
+            texture.encoding = viewport.renderer.outputEncoding;
+            texture.flipY = false;
+
+            return { texture, video };
           };
-        };
-        const ceil = ssp.getObjectById('4JF718RCVWZO');
 
-        const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
+          // mock render loop
+          ssp.signals.sceneRendered.add(() => {
+            ssp.render();
+          });
 
-        let prevCameraAtRoom = null;
-        const debounceFn = debounce(() => {
-          const cameraAtRoom = box.containsPoint(ssp.viewport.camera.position);
+          // 大屏
+          {
+            const { texture, video } = await createVideoTexture();
 
-          if (cameraAtRoom === prevCameraAtRoom) {
-            return;
-          }
-
-          prevCameraAtRoom = cameraAtRoom;
-
-          if (cameraAtRoom) {
-            ceil.show();
-            rectLight.show();
-
-            ssp.updateAllShadow();
-          } else {
-            ceil.hide();
-            rectLight.hide();
-
-            ssp.updateAllShadow();
-          }
-        });
-
-        ssp.signals.cameraChange.add(debounceFn);
-
-        /**
-         * video plane
-         */
-
-        const createVideoTexture = (path) => {
-          const video = document.createElement('video');
-
-          video.src = path;
-          video.crossOrigin = 'Anonymous';
-          video.loop = true;
-          video.muted = true;
-
-          video.play();
-
-          const texture = new THREE.VideoTexture(video);
-          texture.encoding = viewport.renderer.outputEncoding;
-          texture.flipY = false;
-
-          return { texture, video };
-        };
-
-        // mock render loop
-        ssp.signals.sceneRendered.add(() => {
-          ssp.render();
-        });
-
-        // 大屏
-        {
-          const { texture, video } = createVideoTexture(
-            '../../assets/video/screen-001.mp4'
-          );
-
-          video.addEventListener('play', () => {
             const bigScreenMesh = ssp
               .getObjectById('4JEKW051OAZ0')
               .getObjectByName('屏幕');
@@ -337,16 +327,12 @@
             material.map = texture;
 
             bigScreenMesh.material = material;
-          });
-        }
+          }
 
-        // 智慧港口
-        {
-          const { texture, video } = createVideoTexture(
-            '../../assets/video/screen-002.mp4'
-          );
+          // 智慧港口
+          {
+            const { texture, video } = await createVideoTexture();
 
-          video.addEventListener('play', () => {
             const portScreenMesh = ssp
               .getObjectById('4JEJUZO009HH')
               .getObjectByName('屏幕');
@@ -357,18 +343,14 @@
             material.map = texture;
 
             portScreenMesh.material = material;
-          });
-        }
+          }
 
-        /**
-         * 移动大屏
-         */
-        {
-          const { texture, video } = createVideoTexture(
-            '../../assets/video/screen-003.mp4'
-          );
+          /**
+           * 移动大屏
+           */
+          {
+            const { texture, video } = await createVideoTexture();
 
-          video.addEventListener('play', () => {
             // 大门
             const door = ssp.getObjectById('4JFB1DMJVU9C');
             const doorScreenMesh1 = door.getObjectByName('6');
@@ -419,29 +401,28 @@
             doorClickHandle();
 
             door.addEventListener('click', doorClickHandle);
-          });
-        }
+          }
 
-        /**
-         * 其他大屏
-         */
-        {
-          const screenMesh = ssp
-            .getObjectById('4JEJB0HWHN61')
-            .getObjectByName('屏幕');
+          /**
+           * 其他大屏
+           */
+          {
+            const screenMesh = ssp
+              .getObjectById('4JEJB0HWHN61')
+              .getObjectByName('屏幕');
 
-          const texture = new THREE.TextureLoader().load(
-            '../../assets/img/map/001.jpg'
-          );
+            const texture = new THREE.TextureLoader().load(
+              '../../assets/img/map/001.jpg'
+            );
 
-          texture.flipY = false;
-          texture.encoding = viewport.renderer.outputEncoding;
+            texture.flipY = false;
+            texture.encoding = viewport.renderer.outputEncoding;
 
-          screenMesh.material.color.set(0xffffff);
-          screenMesh.material.map = texture;
-          screenMesh.material.needsUpdate = true;
-        }
-      });
+            screenMesh.material.color.set(0xffffff);
+            screenMesh.material.map = texture;
+            screenMesh.material.needsUpdate = true;
+          }
+        });
     </script>
   </body>
 </html>
