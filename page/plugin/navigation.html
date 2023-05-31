@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			* {
+				margin: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="viewA" style="width: 100vw; height: 100vh"></div>
+		<script type="importmap">
+			{
+				"imports": {
+					"soonspacejs": "../../libs/soonspacejs/index.js",
+					"plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js",
+					"plugin-navigation": "../../libs/soonspacejs/plugins/navigation.js",
+					"three": "../../libs/three/build/three.module.js",
+					"three/examples/": "../../libs/three/examples/",
+					"three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+					"gui": "../../libs/gui.js"
+				}
+			}
+		</script>
+		<script type="module">
+			import SoonSpace from "soonspacejs";
+			import Soonmanager2SyncPlugin from "plugin-soonmanager2-sync";
+			import {
+				NavigateCamera,
+				MapCamera,
+				initTouchToRotateCamera,
+			} from "plugin-navigation";
+			import { Vector3, Object3D } from "three";
+			import { GUI } from "gui";
+
+			const ssp = (window.ssp = new SoonSpace({
+				el: "#viewA",
+				options: {
+					showInfo: true,
+					showGrid: false,
+					background: {},
+				},
+				events: {
+					selectPosition: console.log,
+					modelClick: console.log,
+				},
+			}));
+
+			const navigateCamera = new NavigateCamera(ssp);
+
+			initTouchToRotateCamera(ssp);
+
+			const cameraA = navigateCamera.nativeCamera;
+
+			const mapCamera = new MapCamera(ssp);
+
+			const cameraB = mapCamera.nativeCamera;
+
+			const soonmanager2SyncPlugin = (window.soonmanager2SyncPlugin =
+				ssp.registerPlugin(Soonmanager2SyncPlugin, "soonmanager2SyncPlugin"));
+
+			(async () => {
+				soonmanager2SyncPlugin.setPath(
+					"https://xwresources.oss-cn-shenzhen.aliyuncs.com/scene/subway-guide"
+				);
+
+				const walker = await ssp.loadModel({
+					id: "walker",
+					url: "https://xwresources.oss-cn-shenzhen.aliyuncs.com/model/male-walk.gltf",
+				});
+				const walkOperate = ssp.playModelAnimation(walker, 0);
+
+				ssp.signals.objectAdded.add((obj) => {
+					if (
+						[
+							"56A9JXM2WMK2",
+							"56A9JXM2WMK1",
+							"56A9JXM2WMK3",
+							"56A9JXM2WMJX",
+							"56A9JXM2WMJR",
+						].includes(obj.sid)
+					) {
+						obj.visible = false;
+					}
+
+					if (obj.sid === "56A9JXM2WMJL") {
+						obj.children[0].children.forEach((item) => {
+							if (item.name !== "MERGED_3_LIBENT0_0") {
+								item.visible = false;
+							} else {
+								ssp.opacityShow(item, { opacity: 0.8 });
+							}
+						});
+					}
+				});
+
+				soonmanager2SyncPlugin.loadScene().then(async () => {
+					const obj = new Object3D();
+
+					ssp.signals.beforeRender.add(() => {
+						walker.position.copy(obj.position);
+						walker.rotation.copy(obj.rotation);
+					});
+
+					const topologies = await soonmanager2SyncPlugin.getTopologies();
+
+					const [t1] = topologies;
+
+					t1.linkWidth = 0.5;
+
+					const topology = ssp.createTopology({
+						...t1,
+					});
+
+					const { x: sx, y: sy, z: sz } = t1.nodes[10].position;
+					const {
+						x: ex,
+						y: ey,
+						z: ez,
+					} = t1.nodes[t1.nodes.length - 1].position;
+
+					const shortestPath = ssp.getShortestPath(topology, {
+						start: {
+							x: sx,
+							y: sy,
+							z: sz,
+						},
+						end: {
+							x: ex,
+							y: ey,
+							z: ez,
+						},
+						id: "shortestPath",
+						linkWidth: t1.linkWidth,
+						nodeRadius: t1.nodeRadius,
+						nodeColor: "red",
+						animation: true,
+					});
+
+					var animation;
+					function createPathAnimation() {
+						if (animation) {
+							animation.stop();
+							ssp.viewport.mixer.uncacheAction(animation);
+						}
+
+						/**
+						 * 模型路径动画
+						 */
+						animation = ssp.createPathAnimationAction(obj, shortestPath, {
+							front: { x: 0, y: 0, z: 1 },
+							enableUp: true,
+							fixUp: true,
+							speed: 1,
+						});
+
+						animation.play();
+					}
+
+					createPathAnimation();
+					window.walker = walker;
+					ssp.flyToObj(walker);
+					navigateCamera.followTarget = walker;
+					navigateCamera.active();
+				});
+
+				const observer = new ResizeObserver((entries) => {
+					mapCamera.resizeCamera();
+				});
+
+				observer.observe(document.getElementById("viewA"));
+			})();
+
+			const gui = new GUI();
+
+			const folder1 = gui.addFolder("正常导航相机");
+			const folder2 = gui.addFolder("小地图正交相机");
+			const folder3 = gui.addFolder("导航配置");
+			const folder4 = gui.addFolder("相机反向配置");
+			const folder5 = gui.addFolder("陀螺仪配置");
+
+			const settings = {
+				zoom: 10,
+				fov: 80,
+				distanceToTarget: 100,
+				rotationToTargetX: 0,
+				rotationToTargetY: 0,
+				rotationToTargetZ: 0,
+				positionToTargetX: 0,
+				positionToTargetY: 200,
+				positionToTargetZ: 0,
+				isFixPositionRelativeTarget: false,
+				isFixRotationRelativeTarget: true,
+				naviSpeed: 1,
+				get vision() {
+					return navigateCamera.vision;
+				},
+				set vision(value) {
+					navigateCamera.vision = value;
+				},
+				noControl: false,
+				orientation: "相对朝向",
+				autoRecoverOrientation: true,
+				oppositeCamera: false,
+				oppositeX: false,
+				oppositeY: true,
+				oppositeZ: false,
+				gyroX: false,
+				gyroY: true,
+				gyroZ: false,
+				gyroAbsolute: true,
+				switchToNavigateCamera: () => {
+					navigateCamera.resetOptions();
+					navigateCamera.setCamera(cameraA);
+				},
+				switchToMapCamera: () => {
+					navigateCamera.setOptions({
+						vision: "up",
+					});
+					navigateCamera.setCamera(cameraB);
+				},
+			};
+
+			const orientationMap = {
+				相对朝向: "relative",
+				绝对朝向: "fixed",
+				陀螺仪朝向: "gyro",
+			};
+
+			folder1.add(settings, "switchToNavigateCamera").name("切换相机");
+			folder1
+				.add(settings, "fov", 1, 200)
+				.name("视角深度")
+				.onChange((val) => {
+					cameraA.fov = val;
+					cameraA.updateProjectionMatrix();
+				});
+			folder2.add(settings, "switchToMapCamera").name("切换相机");
+			folder2
+				.add(settings, "zoom", 1, 200)
+				.name("地图缩放")
+				.onChange((val) => {
+					mapCamera.zoom = val / 1000;
+				});
+			folder3
+				.add(settings, "vision")
+				.options(["first", "third", "up", "left"])
+				.name("视角")
+				.listen();
+			folder3
+				.add(settings, "orientation")
+				.options(["相对朝向", "绝对朝向", "陀螺仪朝向"])
+				.name("相机朝向")
+				.onChange((val) => {
+					navigateCamera.orientationType = orientationMap[val];
+				});
+			folder3
+				.add(settings, "oppositeCamera")
+				.name("相机反向")
+				.onChange((val) => {
+					navigateCamera.oppositeCamera = val;
+				});
+			folder3
+				.add(settings, "autoRecoverOrientation")
+				.name("自动恢复朝向")
+				.onChange((val) => {
+					navigateCamera.autoRestoreOrientation = val ? 1500 : false;
+				});
+			folder3
+				.add(settings, "noControl")
+				.name("禁止控制")
+				.onChange((val) => {
+					navigateCamera.fixedOrientation = val;
+				});
+
+			folder3
+				.add(settings, "positionToTargetX", -500, 500)
+				.name("位置修正X")
+				.onChange((val) => {
+					navigateCamera.targetPositionFix[0] = val / 100;
+				});
+			folder3
+				.add(settings, "positionToTargetY", -500, 500)
+				.name("位置修正Y")
+				.onChange((val) => {
+					navigateCamera.targetPositionFix[1] = val / 100;
+				});
+			folder3
+				.add(settings, "positionToTargetZ", -500, 500)
+				.name("位置修正Z")
+				.onChange((val) => {
+					navigateCamera.targetPositionFix[2] = val / 100;
+				});
+			folder3
+				.add(settings, "isFixPositionRelativeTarget")
+				.name("相对朝向修正位置")
+				.onChange((val) => {
+					navigateCamera.isFixPositionRelativeTarget = val;
+				});
+			folder3
+				.add(settings, "rotationToTargetX", -314, 314)
+				.name("角度修正X")
+				.onChange((val) => {
+					navigateCamera.targetRotationFix[0] = val / 100;
+				});
+			folder3
+				.add(settings, "rotationToTargetY", -314, 314)
+				.name("角度修正Y")
+				.onChange((val) => {
+					navigateCamera.targetRotationFix[1] = val / 100;
+				});
+			folder3
+				.add(settings, "rotationToTargetZ", -314, 314)
+				.name("角度修正Z")
+				.onChange((val) => {
+					navigateCamera.targetRotationFix[2] = val / 100;
+				});
+			folder3
+				.add(settings, "isFixRotationRelativeTarget")
+				.name("相对朝向修正角度")
+				.onChange((val) => {
+					navigateCamera.isFixRotationRelativeTarget = val;
+				});
+			folder3
+				.add(settings, "distanceToTarget", -500, 500)
+				.name("与模型距离")
+				.onChange((val) => {
+					navigateCamera.distanceToTarget = val / 100;
+				});
+
+			folder4
+				.add(settings, "oppositeX")
+				.name("启用 X 轴反向")
+				.onChange((val) => {
+					navigateCamera.oppositeType.x = val;
+				});
+			folder4
+				.add(settings, "oppositeY")
+				.name("启用 Y 轴反向")
+				.onChange((val) => {
+					navigateCamera.oppositeType.y = val;
+				});
+			folder4
+				.add(settings, "oppositeZ")
+				.name("启用 Z 轴反向")
+				.onChange((val) => {
+					navigateCamera.oppositeType.z = val;
+				});
+
+			folder5
+				.add(settings, "gyroX")
+				.name("应用陀螺仪 X 轴")
+				.onChange((val) => {
+					navigateCamera.gyroX = val;
+				});
+			folder5
+				.add(settings, "gyroY")
+				.name("应用陀螺仪 Y 轴")
+				.onChange((val) => {
+					navigateCamera.gyroY = val;
+				});
+			folder5
+				.add(settings, "gyroZ")
+				.name("应用陀螺仪 Z 轴")
+				.onChange((val) => {
+					navigateCamera.gyroZ = val;
+				});
+			folder5
+				.add(settings, "gyroAbsolute")
+				.name("是否使用绝对值")
+				.onChange((val) => {
+					navigateCamera.gyroAbsolute = val;
+				});
+
+			folder1.open();
+			folder2.open();
+			folder3.open();
+			folder4.open();
+			folder5.open();
+		</script>
+	</body>
+</html>
