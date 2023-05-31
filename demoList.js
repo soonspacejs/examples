@@ -364,6 +364,10 @@ export default [
         demoLink: './page/plugin/soonmanager2Sync.html',
       },
       {
+        title: '导航插件',
+        demoLink: './page/plugin/navigation.html',
+      },
+      {
         title: '热力图',
         demoLink: './page/plugin/heatMap.html',
       },
