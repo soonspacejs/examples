@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          background: {
+            color: '#ccc',
+          },
+          controls: {},
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: 402.14066850001166,
+          y: 32.68199523924001,
+          z: -30.844192224711186,
+        },
+        rotation: {
+          x: -2.3532774418982676,
+          y: 0.8999206448250046,
+          z: 2.4742976922274207,
+        },
+      });
+
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/cps/灵芝站');
+
+      /**
+       * 设置公钥 key（只有导出安装包时可用）
+       */
+      cpsSoonmanagerPlugin.setKey(
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCGvlczrUVGE+wXXNHEIyXjnepyOwb4r7yW/tNXhFfIyyYzl2l3tgVvqBS0IrT6koUSojE80xfSvgpVKYgxl4DqldC2VyTWo1UCRSvts6XImJLIuD1m4k0ynqFXPEP7fyfVRHk7Pqr7wgNMbTTAYdCMMAkJ9iTVIjr1DhvdmVo00QIDAQAB'
+      );
+
+      /**
+       * 加载场景
+       */
+      await cpsSoonmanagerPlugin.loadScene();
+
+      /**
+       * 应用预设效果
+       */
+      await cpsSoonmanagerPlugin.presetEffects({
+        hdr: true,
+        ssao: false,
+        directionalLightShadow: true,
+      });
+
+      /**
+       * 手动设置 ssao 效果
+       */
+      ssp.setSSAO({
+        aoRadius: 3,
+        denoiseSamples: 8,
+        intensity: 3,
+      });
+
+      /**
+       * 加载拓扑路径
+       */
+      cpsSoonmanagerPlugin.getTopologies().then(([t]) => {
+        ssp.createTopology(t);
+      });
+    </script>
+  </body>
+</html>

@@ -364,6 +364,10 @@ export default [
         demoLink: './page/plugin/soonmanager2Sync.html',
       },
       {
+        title: 'CPS SoonManager 场景',
+        demoLink: './page/plugin/cpsSoonmanager.html',
+      },
+      {
         title: '导航插件',
         demoLink: './page/plugin/navigation.html',
       },

@@ -11,16 +11,16 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
       import { GUI } from '../../libs/gui.js';
@@ -50,12 +50,12 @@
       /**
        * 加载场景
        */
-      soonmanager2Sync.loadScene().then(() => {
+      soonmanager2Sync.loadScene({ needsModelsBoundsTree: false }).then(() => {
         console.log('加载完成');
 
         sceneLoaded = true;
 
-        ssp.flyMainViewpoint();
+        ssp.flyMainViewpoint(undefined, { duration: false });
       });
 
       let tweenInstance = null,

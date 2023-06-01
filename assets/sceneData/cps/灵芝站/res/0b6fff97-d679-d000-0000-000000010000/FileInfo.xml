@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="yes"?>
+<folder name="LCD">
+<file name="LCD.xml" Extension=".xml" />
+<file name="LCD.sbm" Extension=".sbm" />
+</folder>
