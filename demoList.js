@@ -400,8 +400,12 @@ export default [
         demoLink: './page/plugin/sparkles.html',
       },
       {
-        title: '波浪光圈',
+        title: '光圈波浪',
         demoLink: './page/plugin/createWave.html',
+      },
+      {
+        title: '点波浪',
+        demoLink: './page/plugin/createPointsWave.html',
       },
       {
         title: '绘制基础图形',
