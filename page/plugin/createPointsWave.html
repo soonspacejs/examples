@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="view"
+      style="width: 100vw; height: 100vh; background-color: #cfe7ff80"
+    ></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+          showViewHelper: false,
+          background: {
+            alpha: true,
+          },
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+      ssp.setSSAO({ halfRes: true });
+      ssp.setEnvironment({
+        path: '../../assets/img/hdr/',
+        file: 'sunrise_1k.hdr',
+      });
+      ssp.setCameraViewpoint({
+        position: {
+          x: 122.31729401770049,
+          y: 31.48038247123681,
+          z: 83.50682424270661,
+        },
+        rotation: {
+          x: -0.21961243154745363,
+          y: 0.8279019755622327,
+          z: 0.1629415899769867,
+        },
+      });
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+      const effectPlugin = (window.plugin = ssp.registerPlugin(
+        EffectPlugin,
+        'effectPlugin'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/东方之门0525');
+      await soonmanager2Sync.loadScene();
+
+      const pointsWave = effectPlugin.createPointsWave({
+        id: 'pointsWave',
+        position: {
+          x: 0,
+          y: -20,
+          z: 0,
+        },
+        // xAxisCount: 100,
+        // zAxisCount: 100,
+        // showDistance: 0,
+        // separation: 20,
+        // size: 5,
+        // maxFluctua: 0.1,
+        // color: '#485c7c',
+        // opacity: 1,
+      });
+
+      effectPlugin.createBuilds({
+        id: 'builds',
+        position: {
+          x: 0,
+          y: -50,
+          z: 0,
+        },
+        // buildWidth: 100,
+        // buildDepth: 100,
+        // buildHeigh: 200,
+        // count: 12,
+        // gapX: 2,
+        // gapZ: 2,
+        // showDistance: 1000,
+        // randShift: 0.5,
+        // color: '#485c7c',
+      });
+    </script>
+  </body>
+</html>
