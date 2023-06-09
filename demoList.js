@@ -116,17 +116,30 @@ export default [
   },
   //VolumeMesh
   {
-    title: "VolumeMesh",
+    title: "体积材质",
     key: "VolumeMesh",
     children: [
       {
-        title: "gradient",
+        title: "梯度体积材质",
         demoLink: "./page/volumeMesh/gradient/index.html",
       },
+      {
+        title: "图像体积材质",
+        demoLink: "./page/volumeMesh/image/index.html",
+      },
+      {
+        title: "球形雾体积材质",
+        demoLink: "./page/volumeMesh/sphere/index.html",
+      },
       // {
-      //   title: "image",
-      //   demoLink: "./page/volumeMesh/image/index.html",
+      //   title: "颜色雾点材质",
+      //   demoLink: "./page/volumeMesh/colorFogPoints/index.html",
       // },
+      // {
+      //   title: "梯度雾点材质",
+      //   demoLink: "./page/volumeMesh/gradientFogPoints/index.html",
+      // },
+      // 梯度雾点材质,
     ],
   },
   // canvas3D
