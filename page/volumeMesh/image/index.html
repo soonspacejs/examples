@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VolumeFogMaterial</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        position: relative;
+      }
+
+      #valueBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 20px;
+        background-color: darkgray;
+        z-index: 20;
+        height: 50px;
+        width: 350px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      #left-top {
+        position: absolute;
+        padding: 10px;
+        top: 200px;
+        left: 0;
+        z-index: 10;
+      }
+    </style>
+    <script type="module" crossorigin src="./index-abd96115.js"></script>
+  </head>
+  <body>
+    <div id="viewHelper"></div>
+    <div id="valueBox"><span>当前颜色值：</span><span id="value"></span></div>
+
+    <div id="left-top"></div>
+  </body>
+</html>
