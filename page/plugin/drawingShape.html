@@ -1,120 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import DrawingShapePlugin from '../../libs/soonspacejs/plugins/drawing-shape.js'
-    import { GUI } from '../../libs/gui.js'
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import DrawingShapePlugin from '../../libs/soonspacejs/plugins/drawing-shape.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true
-      },
-      events: {}
-    })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {},
+      }));
 
-    ssp.addGroundHelper({
-      id: 'ground',
-      imgUrl: '../../assets/img/ground/001.jpg',
-      width: 10000,
-      height: 10000
-    })
-    ssp.flyMainViewpoint()
+      ssp.addGroundHelper({
+        id: 'ground',
+        imgUrl: '../../assets/img/ground/001.jpg',
+        width: 10000,
+        height: 10000,
+      });
+      ssp.flyMainViewpoint();
 
-    const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin')
+      const drawingShapePlugin = ssp.registerPlugin(
+        DrawingShapePlugin,
+        'drawingShapePlugin'
+      );
 
-    const gui = new GUI()
+      const gui = new GUI();
 
-    const fns = {
-      绘制点: function () {
-        drawingShapePlugin.drawingPoint(
-          {
-            color: 'red',
-            opacity: 0.5
-          },
-          {
-            onCancel() {
-              console.log('drawPoint onCancel')
-            }
-          }
-        )
-          .then(res => console.log('drawPoint done', res))
-      },
-      绘制线: function () {
-        drawingShapePlugin.drawingLine(
-          {
-            color: 'red',
-            opacity: 0.5
-          },
-          {
-            onCancel() {
-              console.log('drawingLine onCancel')
-            },
-            onCancelPrev() {
-              console.log('drawingLine onCancelPrev')
-            },
-          }
-        )
-          .then(res => console.log('drawLine done', res))
-      },
-      绘制面: function () {
-        drawingShapePlugin.drawingPolygon(
-          {
-            yHeight: 200,
-            color: 'blue',
-            opacity: 0.1
-          },
-          {
-            onCancel() {
-              console.log('drawingPolygon onCancel')
-            },
-            onCancelPrev() {
-              console.log('drawingPolygon onCancelPrev')
-            },
-          }
-        )
-          .then(res => console.log('drawPolygon done', res))
-      },
-      绘制圆: function () {
-        drawingShapePlugin.drawingCircle(
-          {
-            color: 'blue',
-            opacity: 0.5
-          },
-          {
-            onCancel() {
-              console.log('drawingCircle onCancel')
-            }
-          }
-        )
-          .then(res => console.log('drawingCircle done', res))
-      }
-    }
+      const fns = {
+        绘制点: function () {
+          drawingShapePlugin
+            .drawingPoint(
+              {
+                color: 'red',
+                opacity: 0.8,
+                offsetY: 1,
+              },
+              {
+                onCancel() {
+                  console.log('drawPoint onCancel');
+                },
+              }
+            )
+            .then((res) => console.log('drawPoint done', res));
+        },
+        绘制线: function () {
+          drawingShapePlugin
+            .drawingLine(
+              {
+                color: 'red',
+                opacity: 0.8,
+                offsetY: 1,
+              },
+              {
+                onCancel() {
+                  console.log('drawingLine onCancel');
+                },
+                onCancelPrev() {
+                  console.log('drawingLine onCancelPrev');
+                },
+              }
+            )
+            .then((res) => console.log('drawLine done', res));
+        },
+        绘制面: function () {
+          drawingShapePlugin
+            .drawingPolygon(
+              {
+                yHeight: 200,
+                color: 'blue',
+                opacity: 0.8,
+                offsetY: 1,
+              },
+              {
+                onCancel() {
+                  console.log('drawingPolygon onCancel');
+                },
+                onCancelPrev() {
+                  console.log('drawingPolygon onCancelPrev');
+                },
+              }
+            )
+            .then((res) => console.log('drawPolygon done', res));
+        },
+        绘制圆: function () {
+          drawingShapePlugin
+            .drawingCircle(
+              {
+                color: 'blue',
+                opacity: 0.8,
+                offsetY: 1,
+              },
+              {
+                onCancel() {
+                  console.log('drawingCircle onCancel');
+                },
+              }
+            )
+            .then((res) => console.log('drawingCircle done', res));
+        },
+      };
 
-    for (let i in fns) gui.add(fns, i)
-
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>

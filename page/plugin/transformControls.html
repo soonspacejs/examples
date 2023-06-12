@@ -1,71 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import TransformControlsPlugin from '../../libs/soonspacejs/plugins/transform-controls.js'
-    import { GUI } from '../../libs/gui.js'
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import TransformControlsPlugin from '../../libs/soonspacejs/plugins/transform-controls.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-        showGrid: true
-      },
-      events: {}
-    })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+          controls: {
+            type: 'orbit',
+          },
+        },
+        events: {},
+      }));
 
-    ssp.loadModel({
-      id: 'v1_1',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-      position: {
-        x: 100,
-        y: 0,
-        z: 100
-      }
-    })
-      .then(sbm => {
-        ssp.flyToObj(sbm, "leftFrontTop", { padding: 100 })
-
-        const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls')
-
-        transformControls.start(sbm, {
-          mode: 'translate',
-          onUpdate(object) { console.log('onUpdate', object) },
-          onClose() { console.log('onClose') }
+      ssp
+        .loadModel({
+          id: 'v1_1',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          position: {
+            x: 100,
+            y: 0,
+            z: 100,
+          },
         })
-        console.log(transformControls)
+        .then((sbm) => {
+          ssp.flyToObj(sbm, 'leftFrontTop', { padding: 100 });
 
-        const gui = new GUI()
-        gui
-          .add({ mode: 'translate' }, 'mode')
-          .options(['translate', 'rotate', 'scale'])
-          .name('操作模式')
-          .onChange(val => transformControls.changeMode(val))
+          const transformControls = ssp.registerPlugin(
+            TransformControlsPlugin,
+            'transformControls'
+          );
 
-      })
+          transformControls.start(sbm, {
+            mode: 'translate',
+            onUpdate(object) {
+              console.log('onUpdate', object);
+            },
+            onClose() {
+              console.log('onClose');
+            },
+          });
+          console.log(transformControls);
 
-  </script>
-</body>
-
+          const gui = new GUI();
+          gui
+            .add({ mode: 'translate' }, 'mode')
+            .options(['translate', 'rotate', 'scale'])
+            .name('操作模式')
+            .onChange((val) => transformControls.changeMode(val));
+        });
+    </script>
+  </body>
 </html>
