@@ -1,90 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css" />
-</head>
+  <body>
+    <p id="tips">
+      由于键盘事件无法直接跨过 iframe，完整功能体验请点
+      <a href="./firstPersonControls.html" target="_blank"> 这里</a>
+    </p>
+    <div id="view"></div>
 
-<body>
-  <p id="tips">
-    由于键盘事件无法直接跨过 iframe，完整功能体验请点
-    <a href="./firstPersonControls.html" target="_blank"> 这里</a>
-  </p>
-  <div id="view"></div>
-
-  <script>
-    const tips = document.querySelector('#tips');
-    if (globalThis === globalThis.parent) {
-      tips.setAttribute('hidden', true);
-    }
-  </script>
-  <script type="importmap">
+    <script>
+      const tips = document.querySelector('#tips');
+      if (globalThis === globalThis.parent) {
+        tips.setAttribute('hidden', true);
+      }
+    </script>
+    <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-cps-soonmanager": "../../libs/soonspacejs/plugins/cps-soonmanager.js",
           "@soonspacejs/plugin-first-person-controls": "../../libs/soonspacejs/plugins/first-person-controls.js"
         }
       }
     </script>
-  <script type="module">
-    import SoonSpace from 'soonspacejs';
-    import FirstPersonControlsPlugin from '@soonspacejs/plugin-first-person-controls';
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import CpsSoonmanagerPlugin from '@soonspacejs/plugin-cps-soonmanager';
+      import FirstPersonControlsPlugin from '@soonspacejs/plugin-first-person-controls';
 
-    const ssp = (window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true,
-        showGrid: false,
-      },
-      events: {
-        selectPosition(position) {
-          console.log(position);
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
         },
-      },
-    }));
-
-    ssp
-      .loadModel({
-        id: 'room',
-        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-        position: {
-          x: 100,
-          y: 120,
-          z: 100,
+        events: {
+          selectPosition(position) {
+            console.log(position);
+          },
         },
-      })
-      .then((sbm) => {
-        return ssp.flyToObj(sbm, 'leftFrontTop', { padding: 100 });
-      })
-      .then((sbm) => {
-        const firstPersonControls = ssp.registerPlugin(
-          FirstPersonControlsPlugin,
-          'firstPersonControls'
-        );
-        console.log(firstPersonControls);
+      }));
 
-        firstPersonControls.start({
-          position: { x: 260, y: 50, z: 100 },
-          rotation: { x: 0, y: 0, z: 0 },
-          moveSpeed: 30,
-          enableClash: true,
-        });
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+      ssp.setEnvironment({
+        path: '../../assets/img/hdr/',
+        file: 'sunrise_1k.hdr',
+      });
+      ssp.setCameraViewpoint({
+        position: { x: 37, y: 8, z: 4 },
+        rotation: { x: 0, y: Math.PI / 2, z: 0 },
       });
 
-    ssp.addGroundHelper({
-      id: 'ground',
-      imgUrl: '../../assets/img/ground/001.jpg',
-      width: 10000,
-      height: 10000,
-    });
-  </script>
-</body>
+      /**
+       * load scene
+       */
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
 
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/2.0/东方之门0525');
+
+      await cpsSoonmanagerPlugin.loadScene();
+
+      /**
+       * 第一人称
+       */
+      const firstPersonControls = ssp.registerPlugin(
+        FirstPersonControlsPlugin,
+        'firstPersonControls'
+      );
+
+      firstPersonControls.start({
+        position: { x: 37, y: 5, z: 4 },
+        rotation: { x: 0, y: Math.PI / 2, z: 0 },
+        eyeHeight: 1.5,
+        kneeHeight: 0.5,
+        jumpHeight: 1,
+        moveSpeed: 0.4,
+        gravitySpeed: 0.5,
+        enableClash: true,
+        clashCheckDistance: 5,
+        searchRadiusFactor: 1,
+        clashDistance: 0.1,
+        enableGravity: true,
+        rotateSpeed: 0.5,
+        horizontalRotate: true,
+        verticalRotate: true,
+        dblClickForward: true,
+      });
+    </script>
+  </body>
 </html>
