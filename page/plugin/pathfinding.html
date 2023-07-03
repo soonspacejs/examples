@@ -218,17 +218,9 @@
             },
         };
 
-        let debugMesh = null;
 
         const helperChange = () => {
-            if (debugMesh) {
-                ssp.removeObject(debugMesh);
-                debugMesh = null;
-            }
-
-            if (naviParams.helper) {
-                debugMesh = pathfindingPlugin.createDebugNavMesh();
-            }
+            pathfindingPlugin.createDebugNavMesh();
         };
 
         const conditionerYChange = () => {
