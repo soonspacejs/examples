@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ColorFogPointsMaterial</title>
   </head>
-  <script type="importmap">
-    {
-      "imports": {
-        "soonspacejs": "/libs/soonspacejs/index.js",
-        "plugin-heat-cloud": "/libs/soonspacejs/plugins/heat-cloud.js",
-        "plugin-transform-controls": "/libs/soonspacejs/plugins/transform-controls.js",
-        "three": "/libs/three/build/three.module.js",
-        "three/": "/libs/three/",
-        "three/addons/": "/libs/three/examples/jsm/",
-        "three-mesh-bvh": "/libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
+
   <body>
     <div id="viewHelper"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../../../libs/soonspacejs/index.js",
+          "plugin-heat-cloud": "../../../../libs/soonspacejs/plugins/heat-cloud.js",
+          "plugin-transform-controls": "../../../../libs/soonspacejs/plugins/transform-controls.js",
+          "three": "../../../../libs/three/build/three.module.js",
+          "three/": "../../../../libs/three/",
+          "three/addons/": "../../../../libs/three/examples/jsm/",
+          "three-mesh-bvh": "../../../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
     <script type="module">
       import * as THREE from "three";
       window.THREE = THREE;

@@ -38,24 +38,24 @@
         transform: scale(6);
       }
     </style>
-    <script type="importmap">
-      {
-        "imports": {
-          "soonspacejs": "/libs/soonspacejs/index.js",
-          "plugin-heat-cloud": "/libs/soonspacejs/plugins/heat-cloud.js",
-          "plugin-transform-controls": "/libs/soonspacejs/plugins/transform-controls.js",
-          "three": "/libs/three/build/three.module.js",
-          "three/": "/libs/three/",
-          "three/addons/": "/libs/three/examples/jsm/",
-          "three-mesh-bvh": "/libs/three-mesh-bvh/build/index.module.js"
-        }
-      }
-    </script>
   </head>
   <body>
     <div id="viewHelper"></div>
     <p id="valueBox">当前热力值：<span id="value"></span></p>
     <div id="left-top"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../../../libs/soonspacejs/index.js",
+          "plugin-heat-cloud": "../../../../libs/soonspacejs/plugins/heat-cloud.js",
+          "plugin-transform-controls": "../../../../libs/soonspacejs/plugins/transform-controls.js",
+          "three": "../../../../libs/three/build/three.module.js",
+          "three/": "../../../../libs/three/",
+          "three/addons/": "../../../../libs/three/examples/jsm/",
+          "three-mesh-bvh": "../../../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
     <script type="module">
       import {
         SphereGeometry,
