@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>createHeatCloud</title>
+    <style>
+     * {
+        margin: 0;
+      }
+      #valueBox {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 20px;
+        background-color: darkgray;
+        z-index: 20;
+        height: 50px;
+        width: 350px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      #left-top {
+        position: absolute;
+        padding: 10px;
+        top: 200px;
+        left: 0;
+        z-index: 10;
+      }
+      #left-top canvas {
+        max-width: 200px;
+        max-height: 200px;
+        box-shadow: 0 0 6px 6px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="viewA" style="width: 100vw; height: 100vh"></div>
+    <div id="valueBox"><span>当前颜色值：</span><span id="value"></span></div>
+    <div id="left-top"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "../../../libs/soonspacejs/index.js",
+          "plugin-soonmanager2-sync": "../../../libs/soonspacejs/plugins/cps-soonmanager.js",
+          "plugin-heat-cloud": "../../../libs/soonspacejs/plugins/heat-cloud.js",
+          "plugin-transform-controls": "../../../libs/soonspacejs/plugins/transform-controls.js",
+          "three": "../../../libs/three/build/three.module.js",
+          "three/": "../../../libs/three/",
+          "three/addons/": "../../../libs/three/examples/jsm/",
+          "three-mesh-bvh": "../../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+   import SoonSpace from "soonspacejs";
+    import HeatCloudPlugin, { VolumeFit } from "plugin-heat-cloud";
+    import Soonmanager2SyncPlugin from "plugin-soonmanager2-sync";
+    import TransformControlsPlugin from "plugin-transform-controls";
+
+    import { Color, FrontSide, BackSide, DoubleSide, SphereGeometry, MeshBasicMaterial, Mesh } from 'three'
+    import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+    const ssp = (window.ssp = new SoonSpace({
+      el: "#viewA",
+      options: {
+        showInfo: true,
+        showGrid: false,
+        background: {
+          color: new Color(0x444444)
+        },
+      },
+      events: {
+        selectPosition: console.log,
+        modelClick: console.log,
+      },
+    }));
+
+    const soonmanager2SyncPlugin = (window.soonmanager2SyncPlugin =
+      ssp.registerPlugin(Soonmanager2SyncPlugin, "soonmanager2SyncPlugin"));
+    const heatCloudPlugin = window.heatCloudPlugin = ssp.registerPlugin(
+      HeatCloudPlugin,
+      "heatCloudPlugin"
+    );
+    const transformControls = window.transformControls = ssp.registerPlugin(
+      TransformControlsPlugin,
+      "transformControls"
+    );
+    (async () => {
+      soonmanager2SyncPlugin.setPath(
+        "https://xwresources.oss-cn-shenzhen.aliyuncs.com/scene/subway-guide"
+      );
+      soonmanager2SyncPlugin.loadScene().then(() => {
+        ssp.flyMainViewpoint()
+      })
+
+
+    })();
+
+    var linePoints = [
+      { x: 50, y: 0, z: 50, value: 50, radius: 20 },
+      { x: 50, y: 70, z: 50, value: 50, radius: 20 },
+      // { x: 70, y: 70, z: 0, value: 50, radius: 40 },
+      // { x: 70, y: 70, z: 70, value: 50, radius: 10 },
+    ];
+
+    const mesh = heatCloudPlugin.createLineHeat(linePoints, {
+      range: { x: 0, y: 50, },
+      voidRange: { x: -100, y: -50, },
+      size: { x: 90, y: 30, z: 60, },
+      steps: 100,
+      opacity: 1,
+      accFactor: 2,
+      depthTest: false,
+      // side: BackSide,
+      side: FrontSide,
+
+      discardOut: false,
+      fit: VolumeFit.Fill,
+    })
+    window.material = mesh.material
+
+    ssp.addObject(mesh)
+    console.log(mesh)
+    const sliceMesh = heatCloudPlugin.createSliceMesh(mesh.material, {
+      depth: 20,
+      // opacity: 0.8,
+    })
+    ssp.addObject(sliceMesh)
+    sliceMesh.position.set(-500, -500, -500)
+    const imageSlice = heatCloudPlugin.createImageSlice(mesh.material)
+    imageSlice.depth = sliceMesh.depth
+    document.getElementById('left-top').appendChild(imageSlice.canvas)
+    Object.assign(window, { mesh, sliceMesh, })
+    transformControls.start(mesh, {
+      mode: 'translate',
+      // onUpdate(object) {
+      //   console.log('onUpdate', object);
+      // },
+      // onDragStart(object) {
+      //   console.log('onDragStart', object);
+      // },
+      // onDragEnd(object) {
+      //   console.log('onDragEnd', object);
+      // },
+      // onClose() {
+      //   console.log('onClose');
+      // },
+    });
+
+
+    const gui = new GUI();
+    const folder1 = gui.addFolder('控制器')
+    folder1.add({ mode: 'translate' }, 'mode', ['translate', 'rotate', 'scale']).name('操作模式').onChange((value) => {
+      transformControls.changeMode(value)
+    })
+    const materialFolder = gui.addFolder('材质')
+    // materialFolder.add( material, 'gradient', gradientMap ).listen()
+    materialFolder.add(material, 'steps', 0, 100, 1).onChange(() => {
+      ssp.render()
+    })
+    materialFolder.add(material, 'opacity', 0, 1).onChange(() => {
+      ssp.render()
+    })
+    materialFolder.add(material, 'accFactor', 0, 100).listen().onChange(() => {
+      ssp.render()
+    })
+    materialFolder.add(material, 'atomize').listen().onChange(() => {
+      ssp.render()
+    })
+    materialFolder
+      .add(material, 'fit', {
+        充满: VolumeFit.Fill,
+        对齐: VolumeFit.Align,
+        原始: VolumeFit.Raw,
+      })
+      .listen().onChange(() => {
+        ssp.render()
+      })
+    materialFolder
+      .add(material, 'side', { FrontSide, BackSide, DoubleSide, })
+      .listen().onChange(() => {
+        ssp.render()
+      })
+    materialFolder.add(material, 'depthTest').listen()
+    materialFolder
+      .add(material.alphaRange, 'x', 0, 1)
+      .name('alphaRange.x')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.alphaRange, 'y', 0, 1)
+      .name('alphaRange.y')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.containerMin, 'x', -500, 500)
+
+      .name('containerMin.x')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.containerMin, 'y', -500, 500)
+      .name('containerMin.y')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.containerMin, 'z', -500, 500)
+      .name('containerMin.z')
+      .listen()
+      .onChange(() => {
+        ssp.render()
+        // console.log('material.containerMin', material.containerMin)
+      })
+
+    materialFolder
+      .add(material.containerMax, 'x', -500, 500)
+      .name('containerMax.x')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.containerMax, 'y', -500, 500)
+      .name('containerMax.y')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+    materialFolder
+      .add(material.containerMax, 'z', -500, 500)
+      .name('containerMax.z')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+    materialFolder.add(material, 'discardOut').listen()
+    materialFolder.add(material.range, 'x', -500, 500).name('range.x').listen()
+    materialFolder.add(material.range, 'y', -500, 500).name('range.y').listen()
+
+    materialFolder
+      .add(material.voidRange, 'x', -500, 500)
+      .name('voidRange.x')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+
+    materialFolder
+      .add(material.voidRange, 'y', -500, 500)
+      .name('voidRange.y')
+      .listen().onChange(() => {
+        ssp.render()
+      })
+    materialFolder.open()
+
+    const sliceFolder = gui.addFolder('切片')
+
+    sliceFolder.add(sliceMesh, 'depth', 0, 200).listen().onChange((value) => {
+
+      const depth = mesh.toMapDepth(sliceMesh.axis, value)
+
+      sliceMesh.depth = depth
+      imageSlice.depth = depth
+      ssp.render()
+
+
+    })
+
+    sliceFolder.add(sliceMesh, 'axis', { x: 0, y: 1, z: 2, }).listen().onChange((value) => {
+      imageSlice.axis = value
+      ssp.render()
+      // 
+
+    })
+    sliceFolder.add(sliceMesh.material, 'opacity', 0, 1).listen().onChange(() => {
+
+      ssp.render()
+    })
+    var cursor
+    function creatCursor() {
+
+      const geometry = new SphereGeometry(1, 32, 32)
+      const material = new MeshBasicMaterial({ color: 0xffff00, })
+
+      cursor = new Mesh(geometry, material)
+      ssp.addObject(cursor)
+      cursor.position.set(10, 10, 10)
+      cursor.scale.multiplyScalar(2)
+      console.log('cursor', cursor)
+
+
+    }
+
+    function cursorGui() {
+
+      var poiFolder = gui.addFolder('数据拾取')
+      poiFolder.add(cursor, 'visible').listen()
+      poiFolder.add(cursor.position, 'x', -100, 100).listen().onChange(pickValue)
+      poiFolder.add(cursor.position, 'y', -100, 100).listen().onChange(pickValue)
+      poiFolder.add(cursor.position, 'z', -100, 100).listen().onChange(pickValue)
+
+    }
+
+    // 拾取热力值
+    function pickValue() {
+
+      const value = mesh.getItem(cursor.position.clone())
+      const vlaueBoxDom = document.getElementById('valueBox')
+      const valueDom = document.getElementById('value')
+
+      vlaueBoxDom.hidden = value == null
+      valueDom.textContent = value ?? '空'
+      ssp.render()
+
+    }
+
+    creatCursor()
+
+    cursorGui()
+
+
+
+
+
+    </script>
+  </body>
+</html>

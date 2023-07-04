@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SphereFogMaterial</title>
+  </head>
+  <script type="importmap">
+    {
+      "imports": {
+        "soonspacejs": "/libs/soonspacejs/index.js",
+        "plugin-soonmanager2-sync": "/libs/soonspacejs/plugins/cps-soonmanager.js",
+        "plugin-heat-cloud": "/libs/soonspacejs/plugins/heat-cloud.js",
+        "plugin-transform-controls": "/libs/soonspacejs/plugins/transform-controls.js",
+        "three": "/libs/three/build/three.module.js",
+        "three/": "/libs/three/",
+        "three/addons/": "/libs/three/examples/jsm/",
+        "three-mesh-bvh": "/libs/three-mesh-bvh/build/index.module.js"
+      }
+    }
+  </script>
+  <body>
+    <div id="viewHelper"></div>
+    <script type="module">
+      import {
+        Color,
+        SphereGeometry,
+        Mesh,
+        BufferAttribute,
+        FrontSide,
+        BackSide,
+        DoubleSide,
+      } from "three";
+      import * as THREE from "three";
+      window.THREE = THREE;
+
+      import { gui, scene, render, gltfLoader } from "./initScene.js";
+
+      import { SphereFogMaterial } from "plugin-heat-cloud";
+
+      var mesh;
+      var metroModel;
+      var material;
+      function createHeatmap3D() {
+        gltfLoader.load("../assets/floor.glb", (gltf) => {
+          metroModel = gltf.scene;
+          scene.add(metroModel);
+        });
+
+        const geometry = new SphereGeometry(100, 50, 50);
+        const positions = geometry.getAttribute("position");
+        const count = positions.count;
+        const colorArray = [];
+        for (let i = 0; i < count; i++) {
+          const p = i / count;
+          if (p >= 0.5) {
+            colorArray.push(255, 0, 0, 255);
+          } else {
+            colorArray.push(0, 0, 255, 255);
+          }
+        }
+
+        geometry.setAttribute(
+          "color",
+          new BufferAttribute(new Uint8ClampedArray(colorArray), 4, true)
+        );
+        material = new SphereFogMaterial({
+          color: new Color(1, 1, 0, 1),
+          exp: 2,
+          solid: 0.3,
+        });
+        const fog = new Mesh(geometry, material);
+        scene.add(fog);
+        window.fog = mesh = fog;
+      }
+
+      function setupGui() {
+        gui
+          .add(material.color, "r", 0, 1)
+          .name("color.r")
+          .onFinishChange(updateUniforms);
+        gui
+          .add(material.color, "g", 0, 1)
+          .name("color.g")
+          .onFinishChange(updateUniforms);
+        gui
+          .add(material.color, "b", 0, 1)
+          .name("color.b")
+          .onFinishChange(updateUniforms);
+        gui.add(material, "vertexColors");
+        gui.add(material, "exp", 0, 5, 1);
+        gui.add(material, "solid", 0, 1);
+        gui.add(material, "side", { FrontSide, BackSide, DoubleSide });
+        gui.add(material, "opacity", 0, 1);
+      }
+
+      function updateUniforms() {
+        material.color = material.color;
+      }
+
+      function setup() {
+        createHeatmap3D();
+        setupGui();
+        render();
+      }
+
+      setup();
+    </script>
+  </body>
+</html>

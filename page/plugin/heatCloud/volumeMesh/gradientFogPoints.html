@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GradientFogPointsMaterial</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "soonspacejs": "/libs/soonspacejs/index.js",
+          "plugin-heat-cloud": "/libs/soonspacejs/plugins/heat-cloud.js",
+          "three": "/libs/three/build/three.module.js",
+          "three/": "/libs/three/",
+          "three/addons/": "/libs/three/examples/jsm/",
+          "three-mesh-bvh": "/libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="viewHelper"></div>
+    <script type="module">
+      import * as THREE from "three";
+      window.THREE = THREE;
+
+      import {
+        createLinearGradientTexture,
+        createGradientFogPoints,
+      } from "plugin-heat-cloud";
+
+      import { render, gui, scene, gltfLoader } from "./initScene.js";
+
+      var heatData = [
+        { x: 0, y: 0, z: 0, value: 50, radius: 10000 },
+        { x: 10, y: 0, z: 0, value: 100, radius: 10000 },
+        { x: 20, y: 0, z: 0, value: 80, radius: 10000 },
+        // {x:50,y:0,z:50,value:25,radius:10},
+        // {x:0,y:100,z:100,value:50,radius:50},
+      ];
+
+      let pointCount = 100;
+      while (pointCount-- > 0) {
+        heatData.push({
+          x: Math.random() * 50,
+          y: Math.random() * 50,
+          z: Math.random() * 50,
+          value: Math.random() * 100,
+          radius: Math.random() * 10000,
+        });
+      }
+
+      var gradientMap = {
+        图片: createLinearGradientTexture("../assets/gradient.png"),
+        自定义: createLinearGradientTexture([
+          [0, "rgba(0,255,0,0)"],
+          [0.5, "rgba(64,255,255,0.5)"],
+          [1, "rgba(255,64,255,1)"],
+        ]),
+      };
+
+      var mesh, model, material;
+      function createHeatmap3D() {
+        gltfLoader.load("../assets/floor.glb", (gltf) => {
+          model = gltf.scene;
+          model.scale.multiplyScalar(2);
+          model.position.copy({
+            x: 48.49175763627945,
+            y: 6.059975879290931,
+            z: 25.089185142637064,
+          });
+          scene.add(model);
+        });
+
+        const fog = createGradientFogPoints({
+          points: heatData,
+          gradient: gradientMap.自定义,
+        });
+        material = fog.material;
+        // fog.scale.set(10,10,10)
+        scene.add(fog);
+        window.fog = mesh = fog;
+      }
+
+      function setupGui() {
+        gui.add(material, "map", gradientMap);
+        gui.add(material, "star");
+        gui.add(material, "vertexColors");
+        gui.add(material, "sizeAttenuation");
+        gui.add(material, "size", 0, 1000);
+        gui.add(material, "exp", 0, 5, 1);
+        gui.add(material, "solid", 0, 1);
+        gui.add(material, "scale", 0, 10000);
+        gui.add(material, "opacity", 0, 1);
+        gui
+          .add(material.range, "x", -500, 500)
+          .name("range.x")
+          .listen()
+          .onFinishChange(updateUniforms);
+        gui
+          .add(material.range, "y", -500, 500)
+          .name("range.y")
+          .listen()
+          .onFinishChange(updateUniforms);
+      }
+
+      function updateUniforms() {
+        material.range = material.range;
+      }
+
+      function setup() {
+        createHeatmap3D();
+        setupGui();
+        render();
+      }
+
+      setup();
+    </script>
+  </body>
+</html>

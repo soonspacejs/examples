@@ -399,9 +399,55 @@ export default [
         demoLink: "./page/plugin/navigation.html",
       },
       {
+        title: "热力云",
+        key: "heatCloud",
+        children:[
+          {
+            title: "随机热力云",
+            demoLink: "./page/plugin/heatCloud/createHeatCloud.html",
+          },
+          {
+            title: "线性热力云",
+            demoLink: "./page/plugin/heatCloud/creatLineCloud.html",
+          },
+          {
+            title: "图片挤压",
+            demoLink: "./page/plugin/heatCloud/createImageExtrusion.html",
+          },
+          {
+            title: "深入梯度体积材质",
+            children:[
+              {
+                title:'梯度立体材质',
+                demoLink: "./page/plugin/heatCloud/volumeMesh/gradient.html",
+              },
+              {
+                title:'图像立体材质',
+                demoLink: "./page/plugin/heatCloud/volumeMesh/image.html",
+              },
+              {
+                title: "球形雾立体材质",
+                demoLink: "./page/plugin/heatCloud/volumeMesh/sphere.html",
+              },
+              {
+                title: "颜色雾点材质",
+                demoLink: "./page/plugin/heatCloud/volumeMesh/colorFogPoints.html",
+              },
+              {
+                title: "梯度雾点材质",
+                demoLink: "./page/plugin/heatCloud/volumeMesh/gradientFogPoints.html",
+              },
+            ]
+            
+          }
+        ]
+
+      },
+      {
         title: "热力图",
         demoLink: "./page/plugin/heatMap.html",
       },
+      
       {
         title: "多边形热力图",
         demoLink: "./page/plugin/polygonHeatMap.html",
