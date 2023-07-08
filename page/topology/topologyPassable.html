@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "gui": "../../libs/gui.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+      import { GUI } from 'gui';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          background: {
+            color: '#ccc',
+          },
+          controls: {},
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('/libs/soonspacejs/draco/');
+
+      /**
+       * 设置初始视角
+       */
+      ssp.setCameraViewpoint({
+        position: {
+          x: 38.31469498861384,
+          y: 25.27696448567069,
+          z: -6.822840166875439,
+        },
+        rotation: {
+          x: -1.3874456726527782,
+          y: -0.2066584043233509,
+          z: -0.8359339408134049,
+        },
+      });
+
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+      cpsSoonmanagerPlugin.setPath(
+        '../../assets/sceneData/cps/养正-建模-首层平面图讯维视图'
+      );
+
+      /**
+       * 加载场景
+       */
+      await cpsSoonmanagerPlugin.loadScene();
+
+      /**
+       * 加载拓扑路径数据
+       */
+      const [t] = await cpsSoonmanagerPlugin.getTopologies();
+
+      /**
+       * 渲染拓扑路径
+       */
+      const topology = ssp.createTopology({
+        ...t,
+        linkColor: ['#0f0', '#f60', '#f0f'],
+      });
+
+      const gui = new GUI();
+
+      let shortestPath;
+
+      const passable = ['双向通行', '单向正向通行', '单向反向通行', '禁止通行'];
+
+      const guiParams = {
+        passable: passable[0],
+        compute: () => {
+          // 删除之前的路径
+          if (shortestPath) {
+            ssp.removeObject(shortestPath);
+          }
+
+          shortestPath = ssp.getShortestPathByMultipleEndPoints(topology, {
+            id: 'shortestPath',
+            start: {
+              x: 31.247325622027375,
+              y: 0.001577258110048546,
+              z: -9.724049214985927,
+            }, // 世界坐标
+            end: [
+              {
+                x: 49.66070499060169,
+                y: 0.0015772581100473445,
+                z: -4.313195079276883,
+              }, // 世界坐标
+            ],
+            linkColor: '#f00',
+            imgUrl: '../../assets/img/topology/arrow.png',
+            animation: true,
+          });
+
+          console.log(shortestPath);
+        },
+      };
+
+      guiParams.compute();
+
+      gui
+        .add(guiParams, 'passable')
+        .options(passable)
+        .onChange((val) => {
+          ssp.setTopologyPassable(topology, [
+            {
+              sourceNodeId: '8NM2FFLB40ZD',
+              targetNodeId: '8NM2Z1GHW1OK',
+              passable: passable.indexOf(val),
+            },
+          ]);
+        });
+      gui.add(guiParams, 'compute').name('重新计算最短路径');
+    </script>
+  </body>
+</html>

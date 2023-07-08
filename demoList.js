@@ -174,6 +174,10 @@ export default [
         demoLink: "./page/topology/getShortestPath.html",
       },
       {
+        title: "设置路径 passable",
+        demoLink: "./page/topology/topologyPassable.html"
+      },
+      {
         title: "沿路径移动",
         demoLink: "./page/topology/pathAnimation.html",
       },
