@@ -70,6 +70,10 @@ export default [
         title: "Poi 多图层",
         demoLink: "./page/poi/poiLevel.html",
       },
+      {
+        title: "Poi 缩放固定",
+        demoLink: "./page/poi/poiScaleFixed.html",
+      },
     ],
   },
   // poiNode
