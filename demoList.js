@@ -102,6 +102,10 @@ export default [
         demoLink: "./page/poiNode/poiNodePosition.html",
       },
       {
+        title: "PoiNode 缩放固定",
+        demoLink: "./page/poiNode/poiNodeScaleFixed.html",
+      },
+      {
         title: "空间视频",
         demoLink: "./page/poiNode/createPoiNodeForVideo.html",
       },
