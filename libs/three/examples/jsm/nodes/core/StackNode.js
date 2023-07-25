@@ -3,6 +3,7 @@ import { assign } from '../math/OperatorNode.js';
 import { bypass } from '../core/BypassNode.js';
 import { expression } from '../code/ExpressionNode.js';
 import { cond } from '../math/CondNode.js';
+import { loop } from '../utils/LoopNode.js';
 import { nodeProxy, shader } from '../shadernode/ShaderNode.js';
 
 class StackNode extends Node {
@@ -71,11 +72,17 @@ class StackNode extends Node {
 
 	}
 
+	loop( ...params ) {
+
+		return this.add( loop( ...params ) );
+
+	}
+
 	build( builder, ...params ) {
 
 		for ( const node of this.nodes ) {
 
-			node.build( builder );
+			node.build( builder, 'void' );
 
 		}
 
