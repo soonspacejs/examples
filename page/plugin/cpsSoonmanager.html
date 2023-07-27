@@ -22,7 +22,9 @@
     </script>
     <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
-      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+      import CpsSoonmanagerPlugin, {
+        LoadSceneAlgorithm,
+      } from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
@@ -68,7 +70,9 @@
       /**
        * 加载场景
        */
-      await cpsSoonmanagerPlugin.loadScene();
+      await cpsSoonmanagerPlugin.loadScene({
+        loadSceneAlgorithm: LoadSceneAlgorithm.DFS,
+      });
 
       /**
        * 应用预设效果
