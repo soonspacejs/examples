@@ -11,16 +11,16 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import { GUI } from '../../libs/gui.js';
 
@@ -40,63 +40,36 @@
       }));
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
-
       ssp.setCameraViewpoint({
         position: {
-          x: 297.3357816880956,
-          y: 100.17340258892642,
-          z: 511.2519617508467,
+          x: -5.679722610802539,
+          y: 6.444990637372682,
+          z: 2.8930788814052257,
         },
         rotation: {
-          x: -0.15893055895332486,
-          y: 0.48599320932297635,
-          z: 0.07472636980024795,
+          x: -1.0850321127185598,
+          y: -0.7160985524153416,
+          z: -0.8934578386927206,
         },
       });
 
-      ssp
-        .loadModel(
-          // sbmInfo
-          {
-            id: 'room_01',
-            url: '../../assets/model/gltf/lambo.glb',
-          }
-        )
-        .then((model) => {
-          // console.log(model);
-          model.traverse((child) => {
-            if (child.isMesh) {
-              child.material.roughness = 0.5;
-              child.material.metalness = 0.5;
-
-              // if (
-              //   child.name.toLowerCase().includes('emitbrake') ||
-              //   child.name.toLowerCase().includes('light')
-              // ) {
-              //   console.log(child);
-              //   child.material.emissiveIntensity = 3;
-              //   child.material.color.multiplyScalar(3);
-              //   child.material.toneMapped = false;
-              // }
-            }
-          });
-          // ssp.flyMainViewpoint();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      const model = await ssp.loadModel({
+        id: 'model',
+        url: '../../assets/model/gltf/PrimaryIonDrive.glb',
+      });
+      ssp.playModelAnimation(model, 0);
 
       const gui = new GUI();
 
       const params = {
         enabled: true,
-        intensity: 3,
-        threshold: 0.5,
-        radius: 0.1,
-        smoothing: 0,
-        scalar: 2,
+        intensity: 15,
+        threshold: 0,
+        radius: 0.8,
+        smoothing: 0.01,
+        // scalar: 2,
         opacity: 1,
-        selection: [],
+        // selection: [],
       };
 
       const changeHandle = () => {
@@ -108,7 +81,7 @@
       gui.add(params, 'enabled').name('开启泛光').onChange(changeHandle);
 
       gui
-        .add(params, 'intensity', 0, 3, 0.01)
+        .add(params, 'intensity', 0, 20, 0.01)
         .name('强度')
         .onChange(changeHandle);
 

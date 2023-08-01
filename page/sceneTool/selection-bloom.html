@@ -52,7 +52,11 @@
         },
       }));
 
-      ssp.setToneMapping({ exposure: 0.6 });
+      ssp.setToneMapping({ exposure: 1 });
+      ssp.setEnvironment({
+        file: '../../assets/img/hdr/puresky_1k.hdr',
+        background: true,
+      });
 
       const ssaoParams = {
         enabled: true,
