@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/three-mesh-bvh.svg?style=flat-square)](https://www.npmjs.com/package/three-mesh-bvh)
 [![build](https://img.shields.io/github/actions/workflow/status/gkjohnson/three-mesh-bvh/node.js.yml?style=flat-square&label=build&branch=master)](https://github.com/gkjohnson/three-mesh-bvh/actions)
 [![github](https://flat.badgen.net/badge/icon/github?icon=github&label)](https://github.com/gkjohnson/three-mesh-bvh/)
-[![twitter](https://flat.badgen.net/twitter/follow/garrettkjohnson)](https://twitter.com/garrettkjohnson)
+[![twitter](https://flat.badgen.net/badge/twitter/@garrettkjohnson/?icon&label)](https://twitter.com/garrettkjohnson)
 [![sponsors](https://img.shields.io/github/sponsors/gkjohnson?style=flat-square&color=1da1f2)](https://github.com/sponsors/gkjohnson/)
 
 A BVH implementation to speed up raycasting and enable spatial queries against three.js meshes.
@@ -203,7 +203,7 @@ worker.generate( geometry ).then( bvh => {
 
 ## BVH Queries in a Shader
 
-See the shader implementation in the [simple GPU Path Tracing example](https://github.com/gkjohnson/three-mesh-bvh/blob/master/example/gpuPathTracingSimple.js) for an example on how to perform BVH ray queries in a shader. Or the [GPU SDF Generation example](https://github.com/gkjohnson/three-mesh-bvh/blob/master/example/gpuPathTracingSimple.js) for how to perform distance and closest point to point queries in a shader.
+See the shader implementation in the [simple GPU Path Tracing example](https://github.com/gkjohnson/three-mesh-bvh/blob/master/example/gpuPathTracingSimple.js) for an example on how to perform BVH ray queries in a shader. Or the [GPU SDF Generation example](https://github.com/gkjohnson/three-mesh-bvh/blob/master/example/sdfGeneration.js) for how to perform distance and closest point to point queries in a shader.
 
 # Exports
 
@@ -870,7 +870,7 @@ Returns an array of materials for the meshes to be merged. These can be used alo
 generate( target = new BufferGeometry() : BufferGeometry ) : BufferGeometry
 ```
 
-Generates a single, static geometry for the passes meshes. When generating for the first time an empty target geometry is expected. The same generated geometry can be passed into the function on subsequent calls to update the geometry in place to save memory. An error will be thrown if the attributes or geometry on the meshes to bake has been changed and are incompatible lengths, types, etc.
+Generates a single, static geometry for the passed meshes. When generating for the first time an empty target geometry is expected. The same generated geometry can be passed into the function on subsequent calls to update the geometry in place to save memory. An error will be thrown if the attributes or geometry on the meshes to bake has been changed and are incompatible lengths, types, etc.
 
 On subsequent calls the "index" buffer will not be modified so any BVH generated for the geometry is unaffected. Once the geometry is updated the `MeshBVH.refit` function can be called to update the BVH.
 

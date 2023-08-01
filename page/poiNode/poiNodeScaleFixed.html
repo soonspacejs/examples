@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="tips">相机距离 PoiNode 超过阈值时缩放比例将固定</div>
+    <div id="view"></div>
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js",
+        "three/examples/": "../../libs/three/examples/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import SoonSpace from '../../libs/soonspacejs/index.js';
+
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true,
+        scaleFixedEnabled: true,
+        background: {
+          color: '#ccc',
+        },
+      },
+      events: {
+        modelClick() {
+          console.log('model click');
+        },
+      },
+    }));
+
+    const el = document.createElement('div');
+    el.innerHTML = '一段文字';
+
+    const poiNode = ssp.createPoiNode({
+      type: '3d',
+      element: el,
+      elementAutoDisplay: true,
+      id: '2dtest',
+      name: '2dtest',
+      position: { x: 100, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+      userData: {},
+      scaleFixed: {
+        originScale: 1,
+        fixedScale: 1,
+        distance: 600,
+      },
+    });
+
+    ssp.loadModel({
+      id: 'changjing1',
+      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+      scale: {
+        x: 0.1,
+        y: 0.1,
+        z: 0.1,
+      },
+    });
+  </script>
+</html>

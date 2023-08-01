@@ -32,7 +32,7 @@
         "imports": {
           "three": "../../libs/three/build/three.module.js",
           "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
         }
@@ -130,7 +130,7 @@
         elementAutoDisplay: false,
         occlude: true,
         onChange(visible) {
-          console.log('change1');
+          console.log('change1',visible);
           poiNodeContent1.style.opacity = visible ? 1 : 0;
           poiNodeContent1.style.scale = visible ? 1 : 0.5;
         },
@@ -164,7 +164,7 @@
         elementAutoDisplay: false,
         occlude: true,
         onChange(visible) {
-          console.log('change2');
+          console.log('change2',visible);
           poiNodeContent2.style.opacity = visible ? 1 : 0;
           poiNodeContent2.style.scale = visible ? 1 : 0.5;
         },

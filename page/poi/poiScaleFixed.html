@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          levelEnabled: true,
+          scaleFixedEnabled: true,
+        },
+        events: {
+          modelClick(p) {
+            console.log('click', p);
+          },
+        },
+      }));
+
+      ssp.setEnvironment({
+        // path: './img/skybox/blueSky/',
+        file: '../../assets/img/hdr/puresky_1k.hdr',
+        background: true,
+      });
+
+      const poi = ssp.createPoi({
+        url: '../../assets/img/poi/poi_test.png',
+        id: 'test_poi_001',
+        name: 'test_poi_001',
+        namePosition: { x: 0, y: 10, z: 0 },
+        nameScale: { x: 16, y: 16, z: 1 },
+        position: {
+          x: 20,
+          y: 10,
+          z: 0,
+        },
+        scale: {
+          x: 1,
+          y: 1,
+          z: 1,
+        },
+        level: {
+          min: 0,
+          max: 2000,
+        },
+        scaleFixed: {
+          originScale: 1,
+          fixedScale: 4,
+          distance: 300,
+        },
+      });
+      console.log(poi);
+
+      ssp.clonePoi(poi, {
+        id: 'poi2',
+        position: {
+          x: 0,
+          y: 10,
+          z: 0,
+        },
+        level: {
+          min: 0,
+          max: 800,
+        },
+      });
+
+      await ssp.loadModel({
+        id: 'new2',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      await ssp.flyMainViewpoint('leftFrontTop', { duration: 0 });
+    </script>
+  </body>
+</html>

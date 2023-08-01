@@ -70,6 +70,10 @@ export default [
         title: "Poi 多图层",
         demoLink: "./page/poi/poiLevel.html",
       },
+      {
+        title: "Poi 缩放固定",
+        demoLink: "./page/poi/poiScaleFixed.html",
+      },
     ],
   },
   // poiNode
@@ -98,6 +102,10 @@ export default [
         demoLink: "./page/poiNode/poiNodePosition.html",
       },
       {
+        title: "PoiNode 缩放固定",
+        demoLink: "./page/poiNode/poiNodeScaleFixed.html",
+      },
+      {
         title: "空间视频",
         demoLink: "./page/poiNode/createPoiNodeForVideo.html",
       },
@@ -114,33 +122,7 @@ export default [
       },
     ],
   },
-  //VolumeMesh
-  {
-    title: "立体材质",
-    key: "VolumeMesh",
-    children: [
-      {
-        title: "梯度立体材质",
-        demoLink: "./page/volumeMesh/gradient/index.html",
-      },
-      {
-        title: "图像立体材质",
-        demoLink: "./page/volumeMesh/image/index.html",
-      },
-      {
-        title: "球形雾立体材质",
-        demoLink: "./page/volumeMesh/sphere/index.html",
-      },
-      {
-        title: "颜色雾点材质",
-        demoLink: "./page/volumeMesh/colorFogPoints/index.html",
-      },
-      {
-        title: "梯度雾点材质",
-        demoLink: "./page/volumeMesh/gradientFogPoints/index.html",
-      },
-    ],
-  },
+
   // canvas3D
   {
     title: "空间画布",
@@ -172,6 +154,10 @@ export default [
       {
         title: "最短路径计算",
         demoLink: "./page/topology/getShortestPath.html",
+      },
+      {
+        title: "设置路径 passable",
+        demoLink: "./page/topology/topologyPassable.html"
       },
       {
         title: "沿路径移动",
