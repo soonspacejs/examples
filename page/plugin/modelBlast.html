@@ -36,40 +36,53 @@
 
       const modelBlast = ssp.registerPlugin(ModelBlastPlugin, 'modelBlast');
 
-      ssp
-        .loadModel({
-          id: 'room_01',
-          url: '../../assets/model/sbm/zhuanzheji/zhuanzheji.sbm',
-        })
-        .then((model) => {
-          ssp.flyMainViewpoint(undefined, { duration: 0 });
-          return model;
-        })
-        .then((model) => {
-          const gui = new GUI();
+      ssp.setCameraViewpoint({
+        position: {
+          x: 0.7862358093261719,
+          y: 250.35474175829097,
+          z: 220.37448622900655,
+        },
+        rotation: {
+          x: -0.7853981633974484,
+          y: 0,
+          z: 0,
+        },
+      });
 
-          const params = {
-            scalar: 10,
-          };
+      const model = await ssp.loadModel({
+        id: 'room_01',
+        url: '../../assets/model/sbm/zhuanzheji/zhuanzheji.sbm',
+      });
 
-          gui
-            .add(params, 'scalar', 1, 100)
-            .name('间隔')
-            .onChange((val) => {
-              modelBlast.start(model, val);
-            });
+      const gui = new GUI();
 
-          gui
-            .add(
-              {
-                close: function () {
-                  modelBlast.stop();
-                },
-              },
-              'close'
-            )
-            .name('关闭');
+      const params = {
+        scalar: 10,
+        play: () => {
+          ssp.animation(
+            { scalar: 0 },
+            { scalar: 100 },
+            { duration: 1200, mode: 'Quadratic.InOut' },
+            ({ scalar }) => {
+              modelBlast.start(model, scalar);
+            },
+            (tween) => {}
+          );
+        },
+        close: () => {
+          modelBlast.stop();
+        },
+      };
+
+      gui
+        .add(params, 'scalar', 1, 100)
+        .name('间隔')
+        .onChange((val) => {
+          modelBlast.start(model, val);
         });
+
+      gui.add(params, 'play').name('爆炸动画');
+      gui.add(params, 'close').name('关闭');
     </script>
   </body>
 </html>
