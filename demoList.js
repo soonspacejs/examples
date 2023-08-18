@@ -381,6 +381,10 @@ export default [
         demoLink: "./page/plugin/cpsSoonmanager.html",
       },
       {
+        title: "CPS 预案八卦盘",
+        demoLink: "./page/plugin/cpsScheme.html",
+      },
+      {
         title: "导航插件",
         demoLink: "./page/plugin/navigation.html",
       },
