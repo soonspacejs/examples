@@ -61,8 +61,9 @@
           .surroundOnTarget(
             { x: 0, y: 0, z: 0 },
             { 
-              angle: 180,
-              speed: 1,
+              startAngle: 0,
+              endAngle: 180,
+              duration: 1000,
               onStart: t => tween = t
             }
           )
@@ -75,10 +76,11 @@
 
         ssp
           .surroundOnObject(
-            ssp.getSbmById('room_01'),
+            ssp.getObjectById('room_01'),
             {
-              angle: -360,
-              speed: 3,
+              startAngle: 0,
+              endAngle: -360,
+              duration: 3000,
               onStart: t => tween = t
             }
           )

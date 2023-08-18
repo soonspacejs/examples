@@ -12,16 +12,16 @@
     <div id="view"></div>
     <div id="tips">点击模型，查看效果</div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import { GUI } from '../../libs/gui.js';
 
@@ -65,7 +65,7 @@
             }
             // emissive
             else if (mode === 'emissive') {
-              ssp.emissiveShow(model);
+              ssp.emissiveShow(model, { color: '#f00', yoyo: true });
             }
           },
         },
