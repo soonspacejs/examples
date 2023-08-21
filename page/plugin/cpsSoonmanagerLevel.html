@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          background: {
+            color: '#ccc',
+          },
+          controls: {},
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: -2.575953786580753,
+          y: 16.884680642478198,
+          z: 111.41349821836386,
+        },
+        rotation: {
+          x: -0.014073664741661508,
+          y: 0.031645031296380216,
+          z: 0.0004453166054369061,
+        },
+      });
+
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/cps/智慧园区');
+
+      //   await cpsSoonmanagerPlugin.loadScene();
+
+      const gui = new GUI();
+
+      const guiParams = {
+        '1F': () => {
+          cpsSoonmanagerPlugin.loadScene({
+            loadTargetId: '8M626VCDV6N6',
+            loadLevel: 1,
+          });
+        },
+        '2F': () => {
+          cpsSoonmanagerPlugin.loadScene({
+            loadTargetId: '8M626VCDV6N8',
+            loadLevel: 1,
+          });
+        },
+        '3F': () => {
+          cpsSoonmanagerPlugin.loadScene({
+            loadTargetId: '8M626VCDV6NA',
+            loadLevel: 1,
+          });
+        },
+        '4F': () => {
+          cpsSoonmanagerPlugin.loadScene({
+            loadTargetId: '8M626VCDV6N9',
+            loadLevel: 1,
+          });
+        },
+        '5F': () => {
+          cpsSoonmanagerPlugin.loadScene({
+            loadTargetId: '8M626VCDV6N7',
+            loadLevel: 1,
+          });
+        },
+        加载全部: () => {
+          cpsSoonmanagerPlugin.loadScene();
+        },
+        清空: () => {
+          ssp.getAllModel().forEach((model) => ssp.removeObject(model));
+        },
+      };
+
+      guiParams['1F']();
+
+      for (let i in guiParams) {
+        gui.add(guiParams, i);
+      }
+    </script>
+  </body>
+</html>

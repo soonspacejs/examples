@@ -381,6 +381,10 @@ export default [
         demoLink: "./page/plugin/cpsSoonmanager.html",
       },
       {
+        title: "CPS SoonManager 分层加载",
+        demoLink: "./page/plugin/cpsSoonmanagerLevel.html",
+      },
+      {
         title: "CPS 预案八卦盘",
         demoLink: "./page/plugin/cpsScheme.html",
       },
