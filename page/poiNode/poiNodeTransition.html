@@ -62,19 +62,6 @@
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: 5.352097122756677,
-          y: 0.5799543043151857,
-          z: 0.018257239884585615,
-        },
-        rotation: {
-          x: -1.7448902200336136,
-          y: 1.4613183354734582,
-          z: 1.7459175064965298,
-        },
-      });
-
       const model = await ssp.loadModel({
         id: 'laptop',
         url: '../../assets/model/gltf/earth.gltf',
@@ -84,6 +71,8 @@
           z: 0.01,
         },
       });
+
+      ssp.flyToObj(model, 'right', { enableTransition: false });
 
       const shadows = effectPlugin.createContactShadows({
         id: 'shadows',
@@ -130,7 +119,7 @@
         elementAutoDisplay: false,
         occlude: true,
         onChange(visible) {
-          console.log('change1',visible);
+          console.log('change1', visible);
           poiNodeContent1.style.opacity = visible ? 1 : 0;
           poiNodeContent1.style.scale = visible ? 1 : 0.5;
         },
@@ -164,7 +153,7 @@
         elementAutoDisplay: false,
         occlude: true,
         onChange(visible) {
-          console.log('change2',visible);
+          console.log('change2', visible);
           poiNodeContent2.style.opacity = visible ? 1 : 0;
           poiNodeContent2.style.scale = visible ? 1 : 0.5;
         },

@@ -32,19 +32,6 @@
         events: {},
       }));
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: 595.5534956179567,
-          y: 202.9488357604006,
-          z: 845.3618488154422,
-        },
-        rotation: {
-          x: -0.10659538721288835,
-          y: 0.7153660332718685,
-          z: 0.0700663799269567,
-        },
-      });
-
       ssp.setToneMapping({ exposure: 2 });
       ssp.setEnvironment({
         file: '../../assets/img/hdr/puresky_1k.hdr',
@@ -61,6 +48,8 @@
           console.log('model self click', this);
         },
       });
+
+      ssp.flyToObj(gltf, 'rightTop');
 
       const bloomNames = ['Object_28', 'Object_37'];
 

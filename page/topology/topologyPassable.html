@@ -17,6 +17,7 @@
           "three": "../../libs/three/build/three.module.js",
           "three/examples/": "../../libs/three/examples/",
           "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
           "gui": "../../libs/gui.js"
         }
       }
@@ -44,22 +45,6 @@
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      /**
-       * 设置初始视角
-       */
-      ssp.setCameraViewpoint({
-        position: {
-          x: 38.31469498861384,
-          y: 25.27696448567069,
-          z: -6.822840166875439,
-        },
-        rotation: {
-          x: -1.3874456726527782,
-          y: -0.2066584043233509,
-          z: -0.8359339408134049,
-        },
-      });
-
       const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
         ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
 
@@ -84,6 +69,8 @@
         ...t,
         linkColor: ['#0f0', '#f60', '#f0f'],
       });
+
+      ssp.flyToObj(topology, 'top');
 
       const gui = new GUI();
 

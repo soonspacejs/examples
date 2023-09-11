@@ -40,19 +40,6 @@
         },
       }));
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: -12.366142303648925,
-          y: 11.465746266780819,
-          z: -3.6987486107899645,
-        },
-        rotation: {
-          x: -0.9141267294641843,
-          y: -0.904374293547057,
-          z: -0.7951974968300518,
-        },
-      });
-
       /**
        * 加载场景
        */
@@ -67,6 +54,8 @@
       await soonmanager2Sync.loadScene().then(() => {
         console.log('加载完成');
       });
+
+      ssp.flyMainViewpoint();
 
       /**
        * 地面阴影

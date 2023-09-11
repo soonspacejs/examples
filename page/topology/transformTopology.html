@@ -1,71 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import TransformControlsPlugin from '../../libs/soonspacejs/plugins/transform-controls.js'
-    import { GUI } from '../../libs/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true
-      },
-      events: {}
-    })
-
-    ssp.createTopologyFromGml(
-      // topologyInfo
+    <script type="importmap">
       {
-        url: '../../assets/gml/tuobutujinzui.gml',
-        id: 'gml_for_topology_001',
-        name: 'gml_for_topology_name_001',
-        linkWidth: 20,
-        linkColor: 0xff0000,
-        renderNode: true,
-        nodeColor: 0x0000ff
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    )
-      .then(topology => {
-        const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls')
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import TransformControlsPlugin from '../../libs/soonspacejs/plugins/transform-controls.js';
+      import { GUI } from '../../libs/gui.js';
 
-        transformControls.start(topology, {
-          mode: 'translate',
-          onUpdate(object) { console.log('onUpdate', object) },
-          onClose() { console.log('onClose') }
-        })
-        console.log(transformControls)
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+        events: {},
+      }));
 
-        const gui = new GUI()
-        gui
-          .add({ mode: 'translate' }, 'mode')
-          .options(['translate', 'rotate', 'scale'])
-          .name('操作模式')
-          .onChange(val => transformControls.changeMode(val))
-      })
+      ssp
+        .createTopologyFromGml(
+          // topologyInfo
+          {
+            url: '../../assets/gml/tuobutujinzui.gml',
+            id: 'gml_for_topology_001',
+            name: 'gml_for_topology_name_001',
+            linkWidth: 20,
+            linkColor: 0xff0000,
+            renderNode: true,
+            nodeColor: 0x0000ff,
+            scale: {
+              x: 0.1,
+              y: 0.1,
+              z: 0.1,
+            },
+          }
+        )
+        .then((topology) => {
+          const transformControls = ssp.registerPlugin(
+            TransformControlsPlugin,
+            'transformControls'
+          );
 
-  </script>
-</body>
+          transformControls.start(topology, {
+            mode: 'translate',
+            onUpdate(object) {
+              console.log('onUpdate', object);
+            },
+            onClose() {
+              console.log('onClose');
+            },
+          });
+          console.log(transformControls);
 
+          const gui = new GUI();
+          gui
+            .add({ mode: 'translate' }, 'mode')
+            .options(['translate', 'rotate', 'scale'])
+            .name('操作模式')
+            .onChange((val) => transformControls.changeMode(val));
+        });
+    </script>
+  </body>
 </html>

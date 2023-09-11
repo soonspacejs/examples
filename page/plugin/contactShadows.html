@@ -15,8 +15,8 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
           "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js",
@@ -56,23 +56,11 @@
         '../../assets/sceneData/2.0/卫生间防水样板1121s'
       );
 
-      ssp.flyTo(
-        {
-          x: -4.608798421544587,
-          y: 2.9177787530871777,
-          z: 4.572776607113965,
-        },
-        {
-          x: -0.42684214109889485,
-          y: -0.6888066865359577,
-          z: -0.281409672062147,
-        }
-      );
-
       /**
        * 加载场景
        */
       await soonmanager2Sync.loadScene();
+      ssp.flyMainViewpoint();
       const box = ssp.utils.getBoundingBox(ssp.viewport.scene);
 
       const size = new ssp.THREE.Vector3(),

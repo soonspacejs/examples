@@ -1,106 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {},
-      events: {}
-    })
-
-    ssp.setCameraViewpoint({
-      position: {
-        x: 1590.133737849201,
-        y: 872.3450547965435,
-        z: 1454.0707925200213
-      },
-      rotation: {
-        x: -0.4636476090008061,
-        y: 0.7297276562269661,
-        z: 0.3217505543966421
-      }
-    })
-
-    ssp.loadModel({
-      id: 'test001',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-      position: {
-        x: 1000,
-        y: 0,
-        z: 0
-      },
-      scale: { x: 0.4, y: 0.4, z: 0.4 },
-    }).then(sbm => {
-      const gui = new GUI()
-
-      const helper = {
-        坐标轴辅助器: function () {
-          ssp.addAxesHelper({
-            id: 'test_axesHelper',
-            axesLength: 1000,
-          });
-        },
-        网格辅助器: function () {
-          ssp.addGridHelper({
-            id: 'test_gridHelper',
-            size: 1000,
-            divisions: 20,
-            color: '#fff'
-          })
-        },
-        面辅助器: function () {
-          ssp.addPlaneHelper({
-            id: 'test_planeHelper',
-            width: 500,
-            height: 500,
-            color: '#00ff00',
-            opacity: 0.2,
-            position: { x: 0, y: 0, z: 0 },
-            rotation: { x: 0, y: 0, z: 0 },
-          });
-        },
-        包围盒辅助器: function () {
-          ssp.addBoxHelper({
-            id: 'test_boxHelper',
-            box: sbm.getBoundingBox(),
-            color: '#ffff00',
-          });
-        },
-        清空辅助器: function () {
-          ssp.clearHelper()
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
       }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-      for (let i in helper) {
-        gui.add(helper, i)
-      }
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {},
+        events: {},
+      }));
 
-    })
+      ssp.setCameraViewpoint({
+        position: {
+          x: 1870.384738267569,
+          y: 634.3400903118184,
+          z: 1265.84576866705,
+        },
+        target: {
+          x: 235.35985319790672,
+          y: -7.31984049151709,
+          z: -106.22749394796206,
+        },
+      });
 
-  </script>
-</body>
+      ssp
+        .loadModel({
+          id: 'test001',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          position: {
+            x: 1000,
+            y: 0,
+            z: 0,
+          },
+          scale: { x: 0.4, y: 0.4, z: 0.4 },
+        })
+        .then((sbm) => {
+          const gui = new GUI();
 
+          const helper = {
+            坐标轴辅助器: function () {
+              ssp.addAxesHelper({
+                id: 'test_axesHelper',
+                axesLength: 1000,
+              });
+            },
+            网格辅助器: function () {
+              ssp.addGridHelper({
+                id: 'test_gridHelper',
+                size: 1000,
+                divisions: 20,
+                color: '#fff',
+              });
+            },
+            面辅助器: function () {
+              ssp.addPlaneHelper({
+                id: 'test_planeHelper',
+                width: 500,
+                height: 500,
+                color: '#00ff00',
+                opacity: 0.2,
+                position: { x: 0, y: 0, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 },
+              });
+            },
+            包围盒辅助器: function () {
+              ssp.addBoxHelper({
+                id: 'test_boxHelper',
+                box: sbm.getBoundingBox(),
+                color: '#ffff00',
+              });
+            },
+            清空辅助器: function () {
+              ssp.clearHelper();
+            },
+          };
+
+          for (let i in helper) {
+            gui.add(helper, i);
+          }
+        });
+    </script>
+  </body>
 </html>

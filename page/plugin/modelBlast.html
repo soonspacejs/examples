@@ -36,23 +36,11 @@
 
       const modelBlast = ssp.registerPlugin(ModelBlastPlugin, 'modelBlast');
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: 0.7862358093261719,
-          y: 250.35474175829097,
-          z: 220.37448622900655,
-        },
-        rotation: {
-          x: -0.7853981633974484,
-          y: 0,
-          z: 0,
-        },
-      });
-
       const model = await ssp.loadModel({
         id: 'room_01',
         url: '../../assets/model/sbm/zhuanzheji/zhuanzheji.sbm',
       });
+      ssp.flyMainViewpoint();
 
       const gui = new GUI();
 

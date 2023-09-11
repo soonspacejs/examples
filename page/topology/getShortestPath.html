@@ -1,131 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true
-      },
-      events: {}
-    })
-
-    ssp.createTopologyFromGml(
-      // topologyInfo
+    <script type="importmap">
       {
-        url: '../../assets/gml/tuobutujinzui.gml',
-        id: 'gml_for_topology',
-        name: 'gml_for_topology_name',
-        linkWidth: 100,
-        linkColor: ['green', 'yellow', 'orange'],
-        renderNode: true,
-        nodeColor: 0x0000ff
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    )
-      .then(topology => {
-        ssp.flyToObj(topology)
-      })
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const gui = new GUI()
-    const fns = {
-      最短路径: function () {
-        ssp.removeTopologyById('shortestPath');
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+        events: {},
+      }));
 
-        const shortestPath = ssp.getShortestPath(
-          ssp.getTopologyById('gml_for_topology'),
-          {
-            start: { x: 1563.6311622384083, y: 0, z: -17106.08566307645 },
-            end: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
-            id: 'shortestPath',
-            linkColor: 'red',
-            renderNode: false,
-            linkWidth: 100,
-            nodeColor: 'orange',
-            imgUrl: '../../assets/img/topology/arrow.png',
-            animation: true
-          }
-        )
+      ssp.setCameraViewpoint({
+        position: {
+          x: 7682.268748067445,
+          y: 7833.612004489801,
+          z: 5961.3529379306165,
+        },
+        target: {
+          x: -2020.407369879114,
+          y: -2807.9771465420426,
+          z: -21285.60825622381,
+        },
+      });
 
-        ssp.flyToObj(shortestPath)
-      },
-      多起点最短路径: function () {
-        ssp.removeTopologyById('shortestPath');
+      ssp.createTopologyFromGml(
+        // topologyInfo
+        {
+          url: '../../assets/gml/tuobutujinzui.gml',
+          id: 'gml_for_topology',
+          name: 'gml_for_topology_name',
+          linkWidth: 100,
+          linkColor: ['green', 'yellow', 'orange'],
+          renderNode: true,
+          nodeColor: 0x0000ff,
+        }
+      );
 
-        const shortestPath = ssp.getShortestPathByMultipleStartPoints(
-          ssp.getTopologyById('gml_for_topology'),
-          {
-            start: [
-              { x: 9100.739711768267, y: -999.9999999999989, z: -5002.467030340575 },
-              { x: -8211.277145285165, y: -999.999999999993, z: -39744.52792059595 },
-              { x: -3611.0467766071397, y: -999.999999999992, z: -39681.224285910626 },
-              { x: -1056.3651306436868, y: -999.9999999999932, z: -30648.19293291531 }
-            ],
-            end: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
-            id: 'shortestPath',
-            linkColor: 'red',
-            renderNode: false,
-            linkWidth: 100,
-            nodeColor: 'orange',
-            imgUrl: '../../assets/img/topology/arrow.png',
-            animation: true
-          }
-        )
+      const gui = new GUI();
+      const fns = {
+        最短路径: function () {
+          ssp.removeTopologyById('shortestPath');
 
-        ssp.flyToObj(shortestPath)
-      },
-      多终点最短路径: function () {
-        ssp.removeTopologyById('shortestPath');
+          const shortestPath = ssp.getShortestPath(
+            ssp.getTopologyById('gml_for_topology'),
+            {
+              start: { x: 1563.6311622384083, y: 0, z: -17106.08566307645 },
+              end: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
+              id: 'shortestPath',
+              linkColor: 'red',
+              renderNode: false,
+              linkWidth: 100,
+              nodeColor: 'orange',
+              imgUrl: '../../assets/img/topology/arrow.png',
+              animation: true,
+            }
+          );
 
-        const shortestPath = ssp.getShortestPathByMultipleEndPoints(
-          ssp.getTopologyById('gml_for_topology'),
-          {
-            start: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
-            end: [
-              { x: 9100.739711768267, y: -999.9999999999989, z: -5002.467030340575 },
-              { x: -8211.277145285165, y: -999.999999999993, z: -39744.52792059595 },
-              { x: -3611.0467766071397, y: -999.999999999992, z: -39681.224285910626 },
-              { x: -1056.3651306436868, y: -999.9999999999932, z: -30648.19293291531 }
-            ],
-            id: 'shortestPath',
-            linkColor: 'red',
-            renderNode: false,
-            linkWidth: 100,
-            nodeColor: 'orange',
-            imgUrl: '../../assets/img/topology/arrow.png',
-            animation: true
-          }
-        )
+          console.log(shortestPath);
 
-        ssp.flyToObj(shortestPath)
-      }
-    }
+          ssp.flyToObj(shortestPath);
+        },
+        多起点最短路径: function () {
+          ssp.removeTopologyById('shortestPath');
 
-    for (let i in fns) gui.add(fns, i)
+          const shortestPath = ssp.getShortestPathByMultipleStartPoints(
+            ssp.getTopologyById('gml_for_topology'),
+            {
+              start: [
+                {
+                  x: 9100.739711768267,
+                  y: -999.9999999999989,
+                  z: -5002.467030340575,
+                },
+                {
+                  x: -8211.277145285165,
+                  y: -999.999999999993,
+                  z: -39744.52792059595,
+                },
+                {
+                  x: -3611.0467766071397,
+                  y: -999.999999999992,
+                  z: -39681.224285910626,
+                },
+                {
+                  x: -1056.3651306436868,
+                  y: -999.9999999999932,
+                  z: -30648.19293291531,
+                },
+              ],
+              end: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
+              id: 'shortestPath',
+              linkColor: 'red',
+              renderNode: false,
+              linkWidth: 100,
+              nodeColor: 'orange',
+              imgUrl: '../../assets/img/topology/arrow.png',
+              animation: true,
+            }
+          );
 
-  </script>
-</body>
+          ssp.flyToObj(shortestPath);
+        },
+        多终点最短路径: function () {
+          ssp.removeTopologyById('shortestPath');
 
+          const shortestPath = ssp.getShortestPathByMultipleEndPoints(
+            ssp.getTopologyById('gml_for_topology'),
+            {
+              start: { x: -706.3335980435609, y: 0, z: -24899.24520986819 },
+              end: [
+                {
+                  x: 9100.739711768267,
+                  y: -999.9999999999989,
+                  z: -5002.467030340575,
+                },
+                {
+                  x: -8211.277145285165,
+                  y: -999.999999999993,
+                  z: -39744.52792059595,
+                },
+                {
+                  x: -3611.0467766071397,
+                  y: -999.999999999992,
+                  z: -39681.224285910626,
+                },
+                {
+                  x: -1056.3651306436868,
+                  y: -999.9999999999932,
+                  z: -30648.19293291531,
+                },
+              ],
+              id: 'shortestPath',
+              linkColor: 'red',
+              renderNode: false,
+              linkWidth: 100,
+              nodeColor: 'orange',
+              imgUrl: '../../assets/img/topology/arrow.png',
+              animation: true,
+            }
+          );
+
+          ssp.flyToObj(shortestPath);
+        },
+      };
+
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>

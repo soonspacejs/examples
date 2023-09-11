@@ -45,22 +45,6 @@
 
       const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
 
-      ssp.flyTo(
-        {
-          x: -8.683174718428429,
-          y: 4.093909757704123,
-          z: 7.594978471862318,
-        },
-        {
-          x: -0.42684214109889496,
-          y: -0.6888066865359578,
-          z: -0.2814096720621471,
-        },
-        {
-          duration: 0,
-        }
-      );
-
       /**
        * 加载场景
        */
@@ -68,6 +52,7 @@
         id: 'cabin',
         url: '../../assets/model/gltf/tiny_cabin_fantasy_textured_for_challenge.glb',
       });
+      ssp.flyMainViewpoint();
 
       const canvas3D = ssp.createCanvas3D({
         id: 'canvas_3d',

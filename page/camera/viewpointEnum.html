@@ -1,76 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
-
-    let model
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {},
-      events: {}
-    })
-
-    ssp.loadModel(
+    <script type="importmap">
       {
-        id: 'room_01',
-        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    )
-      .then(sbm => {
-        ssp.flyToObj(sbm, 'frontTop')
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-        model = sbm
-      })
+      let model;
 
-    const gui = new GUI();
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showViewHelper: true,
+        },
+        events: {},
+      }));
 
-    gui
-      .add({ 飞向角度: 'frontTop' }, '飞向角度')
-      .options([
-        'current',
-        'top',
-        'bottom',
-        'front',
-        'back',
-        'left',
-        'right',
-        'frontTop',
-        'backTop',
-        'leftTop',
-        'rightTop',
-        'leftFrontTop',
-        'rightFrontTop',
-        'leftBackTop',
-        'rightBackTop',
-      ])
-      .onChange(value => {
-        ssp.flyToObj(model, value)
-      })
+      ssp
+        .loadModel({
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        })
+        .then((sbm) => {
+          ssp.flyToObj(sbm, 'frontTop');
 
-  </script>
-</body>
+          model = sbm;
+        });
 
+      const gui = new GUI();
+
+      gui
+        .add({ 飞向角度: 'frontTop' }, '飞向角度')
+        .options([
+          'current',
+          'top',
+          'bottom',
+          'front',
+          'back',
+          'left',
+          'right',
+          'frontTop',
+          'backTop',
+          'leftTop',
+          'rightTop',
+          'leftFrontTop',
+          'rightFrontTop',
+          'leftBackTop',
+          'rightBackTop',
+        ])
+        .onChange((value) => {
+          ssp.flyToObj(model, value);
+        });
+    </script>
+  </body>
 </html>

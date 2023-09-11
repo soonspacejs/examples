@@ -11,16 +11,16 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import { GUI } from '../../libs/gui.js';
 
@@ -31,30 +31,15 @@
         },
       }));
 
-      ssp.hideAllLight();
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      ssp.setEnvironment();
-
-      ssp.setColorSpace('sRGB');
-
-      ssp.flyTo(
-        {
-          x: -53,
-          y: 181,
-          z: 1185,
-        },
-        {
-          x: 0,
-          y: 0,
-          z: 0,
-        }
-      );
-
-      ssp.loadModel({
+      await ssp.loadModel({
         id: 'gltf_room',
         name: 'gltf_room',
-        url: '../../assets/model/gltf/Hospital_Room.gltf',
+        url: '../../assets/model/gltf/Hospital_Room.glb',
       });
+
+      ssp.flyMainViewpoint();
 
       const gui = new GUI();
 

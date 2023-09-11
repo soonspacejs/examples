@@ -15,16 +15,16 @@
   <body>
     <div id="view" style="width: 100vw; height: 100vh"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import SoonmanagerSyncPlugin from '../../libs/soonspacejs/plugins/soonmannager-sync.js';
       import { GUI } from '../../libs/gui.js';
@@ -42,8 +42,17 @@
         },
       }));
 
-      ssp.setControlsOptions({
-        zoomMinDistance: 0,
+      ssp.setCameraViewpoint({
+        position: {
+          x: 44.392467284067266,
+          y: 8.389106571693702,
+          z: -14.435991240742617,
+        },
+        target: {
+          x: 0.8758346947495957,
+          y: -0.7433338736826993,
+          z: 2.217284017474451,
+        },
       });
 
       const directionalLight = ssp.createDirectionalLight({
@@ -72,10 +81,6 @@
 
       ssp.viewport.scene.add(cameraHelper);
 
-      ssp.setColorSpace('sRGB');
-
-      ssp.setEnvironment();
-
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
       const soonmanagerSync = (window.soonmanagerSync = ssp.registerPlugin(
@@ -89,19 +94,6 @@
         isIdleRest: true,
         loadSceneAllSuccess() {
           ssp.updateAllShadow();
-
-          ssp.flyTo(
-            {
-              x: 100,
-              y: 52,
-              z: -32,
-            },
-            {
-              x: -2.119246181324833,
-              y: 0.915883541043294,
-              z: 2.227201853353406,
-            }
-          );
         },
       });
 

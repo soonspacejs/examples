@@ -1,65 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true
-      },
-      events: {}
-    })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+        events: {},
+      }));
 
-    const gui = new GUI()
-    const fns = {
-      加载路径: function () {
-        ssp.createTopologyFromGml(
-          // topologyInfo
-          {
-            url: '../../assets/gml/tuobutujinzui.gml',
-            id: 'gml_for_topology',
-            name: 'gml_for_topology_name',
-            linkWidth: 100,
-            linkColor: ['green', 'yellow', 'orange'],
-            renderNode: true,
-            nodeColor: 0x0000ff
-          }
-        )
-          .then(topology => {
-            ssp.flyToObj(topology)
-          })
-      },
-      清除路径: function () {
-        ssp.removeTopologyById('gml_for_topology')
-      },
-    }
+      const gui = new GUI();
+      const fns = {
+        load: function () {
+          ssp
+            .createTopologyFromGml(
+              // topologyInfo
+              {
+                url: '../../assets/gml/tuobutujinzui.gml',
+                id: 'gml_for_topology',
+                name: 'gml_for_topology_name',
+                linkWidth: 100,
+                linkColor: ['green', 'yellow', 'orange'],
+                renderNode: true,
+                nodeColor: 0x0000ff,
+                scale: {
+                  x: 0.1,
+                  y: 0.1,
+                  z: 0.1,
+                },
+              }
+            )
+            .then((topology) => {
+              ssp.flyToObj(topology);
+            });
+        },
+        clear: function () {
+          ssp.removeTopologyById('gml_for_topology');
+        },
+      };
 
-    for (let i in fns) gui.add(fns, i)
+      fns.load();
 
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>

@@ -50,13 +50,14 @@
       /**
        * 加载场景
        */
-      soonmanager2Sync.loadScene({ needsModelsBoundsTree: false }).then(() => {
-        console.log('加载完成');
+      await soonmanager2Sync
+        .loadScene({ needsModelsBoundsTree: false })
+        .then(() => {
+          console.log('加载完成');
 
-        sceneLoaded = true;
-
-        ssp.flyMainViewpoint(undefined, { duration: false });
-      });
+          sceneLoaded = true;
+        });
+      ssp.flyMainViewpoint();
 
       let tweenInstance = null,
         topology = null;

@@ -40,23 +40,12 @@
       }));
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
-      ssp.setCameraViewpoint({
-        position: {
-          x: -5.679722610802539,
-          y: 6.444990637372682,
-          z: 2.8930788814052257,
-        },
-        rotation: {
-          x: -1.0850321127185598,
-          y: -0.7160985524153416,
-          z: -0.8934578386927206,
-        },
-      });
 
       const model = await ssp.loadModel({
         id: 'model',
         url: '../../assets/model/gltf/PrimaryIonDrive.glb',
       });
+      ssp.flyToObj(model, 'rightFrontTop');
       ssp.playModelAnimation(model, 0);
 
       const gui = new GUI();

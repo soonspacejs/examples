@@ -1,48 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {},
-      events: {}
-    })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {},
+        events: {},
+      }));
 
-    ssp.setSkyBackground('../../assets/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+      ssp.controls.rotatePolarTo(Math.PI / 2, true);
 
-    const gui = new GUI();
+      ssp.setSkyBackground('../../assets/img/skybox/sunny/', [
+        'px.jpg',
+        'nx.jpg',
+        'py.jpg',
+        'ny.jpg',
+        'pz.jpg',
+        'nz.jpg',
+      ]);
 
-    gui
-      .add({ 天空盒风格: 'sunny' }, '天空盒风格')
-      .options(['sunny', 'blueSky', 'clouds', 'night', 'rainy', 'starry', 'sun'])
-      .onChange(value => {
-        ssp.setSkyBackground(`../../assets/img/skybox/${value}/`, ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
-      })
+      const gui = new GUI();
 
-  </script>
-</body>
-
+      gui
+        .add({ 天空盒风格: 'sunny' }, '天空盒风格')
+        .options([
+          'sunny',
+          'blueSky',
+          'clouds',
+          'night',
+          'rainy',
+          'starry',
+          'sun',
+        ])
+        .onChange((value) => {
+          ssp.setSkyBackground(`../../assets/img/skybox/${value}/`, [
+            'px.jpg',
+            'nx.jpg',
+            'py.jpg',
+            'ny.jpg',
+            'pz.jpg',
+            'nz.jpg',
+          ]);
+        });
+    </script>
+  </body>
 </html>

@@ -57,18 +57,6 @@
         path: '../../assets/img/hdr/',
         file: 'sunrise_1k.hdr',
       });
-      ssp.setCameraViewpoint({
-        position: {
-          x: 122.31729401770049,
-          y: 31.48038247123681,
-          z: 83.50682424270661,
-        },
-        rotation: {
-          x: -0.21961243154745363,
-          y: 0.8279019755622327,
-          z: 0.1629415899769867,
-        },
-      });
 
       const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
         Soonmanager2SyncPlugin,
@@ -80,7 +68,8 @@
       ));
 
       soonmanager2Sync.setPath('../../assets/sceneData/2.0/东方之门0525');
-      await soonmanager2Sync.loadScene();
+      await soonmanager2Sync.loadScene({ needsModelsBoundsTree: false });
+      ssp.flyMainViewpoint();
 
       const pointsWave = effectPlugin.createPointsWave({
         id: 'pointsWave',

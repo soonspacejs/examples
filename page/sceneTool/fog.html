@@ -30,8 +30,8 @@
       options: {
         fog: {
           color: 0xcce0ff,
-          near: 50000,
-          far: 100000
+          near: 50,
+          far: 1000
         }
       },
       events: {}
@@ -40,8 +40,8 @@
     ssp.addGroundHelper({
       id: 'ground',
       imgUrl: '../../assets/img/ground/001.jpg',
-      width: 50000,
-      height: 50000,
+      width: 500,
+      height: 500,
       position: { x: 0, y: 0, z: 0 }
     })
     ssp.setSkyBackground('../../assets/img/skybox/sunny/', ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
@@ -53,8 +53,8 @@
       开启雾化: function () {
         ssp.openSceneFog({
           color: 0xcce0ff,
-          near: 50000,
-          far: 100000
+          near: 50,
+          far: 1000
         })
       },
       关闭雾化: function () {

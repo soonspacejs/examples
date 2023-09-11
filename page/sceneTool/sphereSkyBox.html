@@ -11,16 +11,16 @@
   <body>
     <div id="view"></div>
 
-     <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
       }
-    }
-  </script>
-  <script type="module">
+    </script>
+    <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import { GUI } from '../../libs/gui.js';
 
@@ -29,6 +29,8 @@
         options: {},
         events: {},
       }));
+
+      ssp.controls.rotatePolarTo(Math.PI / 2, true);
 
       ssp.setSphereSkyBackground('../../assets/img/skybox/天空球3.jpg');
 

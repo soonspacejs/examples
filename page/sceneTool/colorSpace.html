@@ -31,11 +31,13 @@
         },
       }));
 
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
       ssp
         .loadModel({
           id: 'gltf_room',
           name: 'gltf_room',
-          url: '../../assets/model/gltf/Hospital_Room.gltf',
+          url: '../../assets/model/gltf/Hospital_Room.glb',
         })
         .then(() => {
           ssp.flyMainViewpoint();

@@ -41,14 +41,14 @@
 
       ssp.setCameraViewpoint({
         position: {
-          x: -0.17452960001701623,
-          y: 12.596326957288422,
-          z: -5.757240959574857,
+          x: -5.968063816479098,
+          y: 21.019227169064955,
+          z: -3.7536314406657034,
         },
-        rotation: {
-          x: -1.0185843716792895,
-          y: -0.4973201828089441,
-          z: -0.6588573352182446,
+        target: {
+          x: 4.466446487351656,
+          y: 6.345840722057472,
+          z: -10.820649369945066,
         },
       });
 
@@ -108,31 +108,28 @@
 
       var animation;
 
-
       var state = {
-        运动速度:1,
-        暂停:false,
-        播放速度:1,
-        get 进度(){
-          return animation.progress
+        运动速度: 1,
+        暂停: false,
+        播放速度: 1,
+        get 进度() {
+          return animation.progress;
         },
-        set 进度(value){
-          animation.progress = value
+        set 进度(value) {
+          animation.progress = value;
         },
-        前进:function(){
-          animation.forward()
-          walkOperate.forward()
+        前进: function () {
+          animation.forward();
+          walkOperate.forward();
         },
-        后退:function(){
-          animation.backward()
-          walkOperate.backward()
-        }
+        后退: function () {
+          animation.backward();
+          walkOperate.backward();
+        },
       };
 
-
-      function createPathAnimation(){
-
-        if (animation){
+      function createPathAnimation() {
+        if (animation) {
           animation.stop();
           ssp.viewport.mixer.uncacheAction(animation);
         }
@@ -140,37 +137,30 @@
         /**
          * 模型路径动画
          */
-         animation = ssp.createPathAnimationAction(walker, shortestPath, {
-          front:{x:0,y:0,z:1},
-          speed:state.运动速度
+        animation = ssp.createPathAnimationAction(walker, shortestPath, {
+          front: { x: 0, y: 0, z: 1 },
+          speed: state.运动速度,
         });
-  
+
         animation.play();
       }
 
-      createPathAnimation()
-
-
-
-
-
-
+      createPathAnimation();
 
       var gui = new GUI();
-      gui.title("控制器");
+      gui.title('控制器');
 
-      gui.add(state,"暂停").onFinishChange(function(paused){
-        animation.paused = walkOperate.paused = paused
-      })
-      gui.add(state,"播放速度",-3,3).onFinishChange(function(timeScale){
-        animation.timeScale = walkOperate.timeScale = timeScale
-      })
-      gui.add(state,"运动速度",0,5).onFinishChange(createPathAnimation)
-      
+      gui.add(state, '暂停').onFinishChange(function (paused) {
+        animation.paused = walkOperate.paused = paused;
+      });
+      gui.add(state, '播放速度', -3, 3).onFinishChange(function (timeScale) {
+        animation.timeScale = walkOperate.timeScale = timeScale;
+      });
+      gui.add(state, '运动速度', 0, 5).onFinishChange(createPathAnimation);
 
-      gui.add(state,"前进")
-      gui.add(state,"后退")
-      gui.add(state,"进度",0,1).listen()
+      gui.add(state, '前进');
+      gui.add(state, '后退');
+      gui.add(state, '进度', 0, 1).listen();
     </script>
   </body>
 </html>

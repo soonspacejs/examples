@@ -35,7 +35,7 @@
         "imports": {
           "three": "../../libs/three/build/three.module.js",
           "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
         }
@@ -76,23 +76,12 @@
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: -3.812333206765856,
-          y: 1.8369383893967037,
-          z: 20.179048918572718,
-        },
-        rotation: {
-          x: -0.12104911815171095,
-          y: -0.18079825782128092,
-          z: -0.021869885466349572,
-        },
-      });
-
       const model = await ssp.loadModel({
         id: 'laptop',
         url: '../../assets/model/gltf/mac-draco.glb',
       });
+
+      ssp.flyToObj(model, 'front', { enableTransition: false });
 
       let screen = null;
 

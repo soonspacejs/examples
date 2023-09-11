@@ -1,162 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-
-  <div id="poiTemplate"
-    style="display: none; width: 160px; height: auto; padding: 8px; background-color: rgba(0, 0, 0, 0.6); color: #ccc;">
-    <h3 style="text-align: center;">标题</h3>
-    <div>
-      <label>数据一：</label>
-      <span>10</span>
+    <div
+      id="poiTemplate"
+      style="
+        display: none;
+        width: 160px;
+        height: auto;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #ccc;
+      "
+    >
+      <h3 style="text-align: center">标题</h3>
+      <div>
+        <label>数据一：</label>
+        <span>10</span>
+      </div>
+      <div>
+        <label>数据二：</label>
+        <span>20</span>
+      </div>
+      <div>
+        <label>数据三：</label>
+        <span>30</span>
+      </div>
     </div>
-    <div>
-      <label>数据二：</label>
-      <span>20</span>
-    </div>
-    <div>
-      <label>数据三：</label>
-      <span>30</span>
-    </div>
-  </div>
 
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import { GUI } from '../../libs/gui.js'
-
-    let lastEnd = true
-    let model = null
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showGrid: true
-      },
-      events: {}
-    })
-
-    // createPoi
-    const poi = ssp.createPoi({
-      id: "icon1",
-      name: "icon1",
-      url: "../../assets/img/poi/poi_test.png",
-      position: {
-        x: 0,
-        y: 700,
-        z: 0
-      },
-      scale: {
-        x: 5,
-        y: 5,
-        z: 1
-      }
-    });
-
-    // loadModel
-    ssp
-      .loadModel(
-        {
-          id: 'room_01',
-          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm'
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
-      )
-      .then(sbm => {
-        model = sbm
-      })
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
 
-    const gui = new GUI();
-    const fns = {
-      飞向主场景: function () {
-        if (!lastEnd) return alert('请等待上一次结束！')
+      let lastEnd = true;
+      let model = null;
 
-        lastEnd = false
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+        },
+        events: {},
+      }));
 
-        ssp
-          .flyMainViewpoint()
-          .then(() => lastEnd = true)
-      },
-      飞向一点: function () {
-        if (!lastEnd) return alert('请等待上一次结束！')
+      // createPoi
+      const poi = ssp.createPoi({
+        id: 'icon1',
+        name: 'icon1',
+        url: '../../assets/img/poi/poi_test.png',
+        position: {
+          x: 0,
+          y: 700,
+          z: 0,
+        },
+        scale: {
+          x: 5,
+          y: 5,
+          z: 1,
+        },
+      });
 
-        lastEnd = false
+      // loadModel
+      ssp
+        .loadModel({
+          id: 'room_01',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        })
+        .then((sbm) => {
+          model = sbm;
+        });
 
-        // flyTo
-        ssp
-          .flyTo(
-            // position
-            {
-              x: 500,
-              y: 500,
-              z: 500
-            },
-            // rotation
-            {
-              x: -1.561157219504513,
-              y: 1.3269478591684332,
-              z: 1.5608633816668858
-            },
-            // options
-            {
-              duration: 2000
-            }
-          )
-          .then(() => lastEnd = true)
-      },
-      '飞向 Poi': function () {
-        if (!lastEnd) return alert('请等待上一次结束！')
+      const gui = new GUI();
+      const fns = {
+        飞向主场景: function () {
+          ssp.flyMainViewpoint();
+        },
+        飞向一点: async function () {
+          ssp.controls.setTarget(500, 500, 500, true);
+          ssp.controls.dollyTo(100, true);
+        },
+        '飞向 Poi': function () {
+          // flyToObj
+          ssp.flyToObj(poi, 'front');
+        },
+        飞向模型: function () {
+          // flyToObj
+          ssp.flyToObj(model, 'frontTop');
+        },
+      };
 
-        lastEnd = false
-
-        // flyToObj
-        ssp.flyToObj(
-          poi,
-          "front",
-          {
-            padding: 100,
-            duration: 2000
-          }
-        )
-          .then(() => lastEnd = true)
-      },
-      飞向模型: function () {
-        if (!lastEnd) return alert('请等待上一次结束！')
-
-        lastEnd = false
-
-        // flyToObj
-        ssp.flyToObj(
-          model,
-          "frontTop",
-          {
-            padding: -1000,
-            duration: 2000
-          }
-        )
-          .then(() => lastEnd = true)
-      },
-    }
-
-    for (let i in fns) gui.add(fns, i)
-
-  </script>
-</body>
-
+      for (let i in fns) gui.add(fns, i);
+    </script>
+  </body>
 </html>
