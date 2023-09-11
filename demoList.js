@@ -51,6 +51,10 @@ export default [
         title: "加载 fbx",
         demoLink: "./page/model/loadFbx.html",
       },
+      {
+        title: "加载 dxf",
+        demoLink: "./page/model/loadDxf.html",
+      },
     ],
   },
   // poi
