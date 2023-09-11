@@ -257,7 +257,7 @@ export default [
     key: 'controls',
     children: [
       {
-        title: '控制器配置（旧版）',
+        title: '控制器配置（弃用）',
         demoLink: './page/controls/setOptions.html',
       },
     ],
