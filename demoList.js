@@ -263,6 +263,10 @@ export default [
       {
         title: '基础',
         demoLink: './page/controls/basic.html',
+      },
+      {
+        title: '无限 dolly',
+        demoLink: './page/controls/infinity-dolly.html',
       }
     ],
   },

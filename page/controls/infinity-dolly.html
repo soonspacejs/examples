@@ -70,6 +70,9 @@
 
         controls.saveState()
 
+        controls.dollyToCursor = true
+        controls.infinityDolly = true
+
         // helper
         const point = ssp.createCanvas3D({
             id: 'helper',
@@ -86,7 +89,6 @@
 
         document.querySelectorAll('#tips input')[1].addEventListener('change', (event) => {
 
-            console.log(enabled)
             const enabled = event.target.checked;
             document.querySelectorAll('#tips input[name="range"]').forEach((inputEl) => {
 
