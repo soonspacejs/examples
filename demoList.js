@@ -260,6 +260,10 @@ export default [
         title: '控制器配置（弃用）',
         demoLink: './page/controls/setOptions.html',
       },
+      {
+        title: '基础',
+        demoLink: './page/controls/basic.html',
+      }
     ],
   },
   // camera

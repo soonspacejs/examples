@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { MathUtils } from 'three';
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          showInfo: true,
+          showViewHelper: true,
+        },
+        events: {},
+      }));
+
+      const model = await ssp.loadModel({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.01,
+          y: 0.01,
+          z: 0.01,
+        },
+      });
+      ssp.flyToObj(model);
+
+      const { DEG2RAD } = MathUtils;
+      const { controls } = ssp;
+
+      const gui = new GUI();
+
+      gui.width = 300;
+
+      const guiParams = {
+        theta45deg: () => {
+          controls.rotate(45 * DEG2RAD, 0, true);
+        },
+        'theta-90deg': () => {
+          controls.rotate(-90 * DEG2RAD, 0, true);
+        },
+        theta360deg: () => {
+          controls.rotate(360 * DEG2RAD, 0, true);
+        },
+        phi20deg: () => {
+          controls.rotate(0, 20 * DEG2RAD, true);
+        },
+        'truck(10,0)': () => {
+          controls.truck(10, 0, true);
+        },
+        'truck(0,10)': () => {
+          controls.truck(0, 10, true);
+        },
+        'truck(-10,-10)': () => {
+          controls.truck(-10, -10, true);
+        },
+        dolly10: () => {
+          controls.dolly(10, true);
+        },
+        'dolly-10': () => {
+          controls.dolly(-10, true);
+        },
+        'zoom0.5': () => {
+          controls.zoom(0.5, true);
+        },
+        'zoom-0.5': () => {
+          controls.zoom(-0.5, true);
+        },
+        'moveTo(target)': () => {
+          controls.moveTo(3, 5, 2, true);
+        },
+        fitToBox: () => {
+          controls.fitToBox(model, true);
+        },
+        'setPosition (-5,2,1)': () => {
+          controls.setPosition(-5, 2, 1, true);
+        },
+        'setTarget(3,0,-3)': () => {
+          controls.setTarget(3, 0, -3, true);
+        },
+        setLookAt: () => {
+          controls.setLookAt(1, 2, 3, 1, 1, 0, true);
+        },
+        saveState: () => {
+          controls.saveState();
+        },
+        reset: () => {
+          controls.reset(true);
+        },
+      };
+
+      gui.add(controls, 'enabled');
+      for (let i in guiParams) {
+        gui.add(guiParams, i);
+      }
+    </script>
+  </body>
+</html>
