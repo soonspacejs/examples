@@ -11,6 +11,10 @@
         #tips {
             padding-left: 1rem;
             text-align: left;
+        }
+
+        #tips input,
+        #tips button {
             pointer-events: all
         }
     </style>
@@ -24,8 +28,8 @@
             tocursor</label><br>
         <label><input type="checkbox" onchange="controls.infinityDolly = this.checked" checked>infinitydolly</label><br>
         <label><input type="radio" name="range" onchange="setRange( 0 )">distance: min: 5, max: 5</label><br>
-        <label><input type="radio" name="range" onchange="setRange( 1 )" checked>distance: min: 3, max: 7</label><br>
-        <label><input type="radio" name="range" onchange="setRange( 2 )">distance: min: 1, max: 10</label>
+        <label><input type="radio" name="range" onchange="setRange( 1 )">distance: min: 3, max: 7</label><br>
+        <label><input type="radio" name="range" onchange="setRange( 2 )" checked>distance: min: 1, max: 10</label>
         <br>
         <button onclick="controls.dolly(   1, true )">dolly 1</button>
         <button onclick="controls.dolly( - 1, true )">dolly -1</button><br>
@@ -131,7 +135,7 @@
 
         }
 
-        setRange(1)
+        setRange(2)
 
         globalThis.setRange = setRange;
         globalThis.controls = controls;
