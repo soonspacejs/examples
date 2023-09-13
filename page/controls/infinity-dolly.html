@@ -7,11 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>SoonSpace Example</title>
     <link rel="stylesheet" href="../../assets/css/base.css" />
+    <style>
+        #tips {
+            padding-left: 1rem;
+            text-align: left;
+            pointer-events: all
+        }
+    </style>
 </head>
 
 <body>
     <div id="view"></div>
-    <div id="tips" style="pointer-events: all;">
+    <div id="tips">
         <p>如果要启用 infinityDolly, 你必须设置 minDistance 和 maxDistance</p>
         <label><input type="checkbox" onchange="controls.dollyToCursor = this.checked" checked>dolly
             tocursor</label><br>
