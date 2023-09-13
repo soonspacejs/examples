@@ -1,56 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-    <style>
-      * {
-        margin: 0;
-      }
 
-      #app {
-        width: 100vw;
-        height: 100vh;
-      }
-      #platter {
-        position: absolute;
-        left: 0;
-        width: 50vw;
-        height: 100vh;
-        z-index: 1;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <style>
+    * {
+      margin: 0;
+    }
 
-      dialog {
-        margin-left: auto;
-      }
-      dialog img {
-        display: block;
-        max-width: 20rem;
-      }
-      dialog::backdrop {
-        background: rgba(0, 0, 0, 0.25);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="platter"></div>
-    <div id="app"></div>
-    <dialog id="dialog">
-      <div>
-        <button id="close" aria-label="close">X</button>
-      </div>
-      <div>
-        <p id="dialogTitle" style="font-weight: bolder"></p>
-        <p id="dialogContent"></p>
-      </div>
-      <div>
-        <button id="notReady">未就绪</button>
-        <button id="ready">就绪</button>
-      </div>
-    </dialog>
-    <script type="importmap">
+    #app {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #platter {
+      position: absolute;
+      left: 0;
+      width: 50vw;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    dialog {
+      margin-left: auto;
+    }
+
+    dialog img {
+      display: block;
+      max-width: 20rem;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="platter"></div>
+  <div id="app"></div>
+  <dialog id="dialog">
+    <div>
+      <button id="close" aria-label="close">X</button>
+    </div>
+    <div>
+      <p id="dialogTitle" style="font-weight: bolder"></p>
+      <p id="dialogContent"></p>
+    </div>
+    <div>
+      <button id="notReady">未就绪</button>
+      <button id="ready">就绪</button>
+    </div>
+  </dialog>
+  <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
@@ -62,90 +67,93 @@
         }
       }
     </script>
-    <script type="module">
-      import SoonSpace from 'soonspacejs';
-      import CpsSoonmanagerPlugin from '@soonspacejs/plugin-cps-soonmanager';
-      import CpsSchemePlugin from '@soonspacejs/plugin-cps-scheme';
+  <script type="module">
+    import SoonSpace from 'soonspacejs';
+    import CpsSoonmanagerPlugin from '@soonspacejs/plugin-cps-soonmanager';
+    import CpsSchemePlugin from '@soonspacejs/plugin-cps-scheme';
 
-      const ssp = new SoonSpace({
-        el: '#app',
-        options: {
-          showGrid: false,
-        },
-      });
+    const ssp = new SoonSpace({
+      el: '#app',
+      options: {
+        showGrid: false,
+      },
+    });
 
-      window.ssp = ssp;
+    window.ssp = ssp;
 
-      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+    ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      const cpsSoonmanagerPlugin = ssp.registerPlugin(
-        CpsSoonmanagerPlugin,
-        'cpsSoonmanagerPlugin'
-      );
-      const cpsSchemePlugin = ssp.registerPlugin(
-        CpsSchemePlugin,
-        'cpsSchemePlugin'
-      );
+    const cpsSoonmanagerPlugin = ssp.registerPlugin(
+      CpsSoonmanagerPlugin,
+      'cpsSoonmanagerPlugin'
+    );
+    const cpsSchemePlugin = ssp.registerPlugin(
+      CpsSchemePlugin,
+      'cpsSchemePlugin'
+    );
 
-      const path = '../../assets/sceneData/cps/智慧园区';
+    const path = '../../assets/sceneData/cps/智慧园区';
 
-      cpsSoonmanagerPlugin.setPath(path);
-      await cpsSoonmanagerPlugin.loadScene();
-      await ssp.flyMainViewpoint(undefined, { duration: 0 });
+    cpsSoonmanagerPlugin.setPath(path);
+    await cpsSoonmanagerPlugin.loadScene();
+    await ssp.flyMainViewpoint(undefined, { duration: 0 });
 
-      const dialog = document.querySelector('#dialog');
-      const dialogTitle = document.querySelector('#dialogTitle');
-      const dialogContent = document.querySelector('#dialogContent');
-      const close = document.querySelector('#close');
-      const notReady = document.querySelector('#notReady');
-      const ready = document.querySelector('#ready');
+    const dialog = document.querySelector('#dialog');
+    const dialogTitle = document.querySelector('#dialogTitle');
+    const dialogContent = document.querySelector('#dialogContent');
+    const close = document.querySelector('#close');
+    const notReady = document.querySelector('#notReady');
+    const ready = document.querySelector('#ready');
 
-      // 八卦盘预案按钮id
-      let btnId;
+    // 八卦盘预案按钮id
+    let btnId;
 
-      dialog.addEventListener('close', (e) => {
-        if (dialog.returnValue) {
-          cpsSchemePlugin.setBtnReady(
-            btnId,
-            dialog.returnValue === 'ready' ? true : false
-          );
-        }
-      });
-      // 关闭按钮
-      close.addEventListener('click', (e) => {
-        dialog.returnValue = '';
-        dialog.close();
-      });
-      // 未就绪按钮
-      notReady.addEventListener('click', (e) => {
-        dialog.returnValue = 'notReady';
-        dialog.close();
-      });
-      // 就绪按钮
-      ready.addEventListener('click', (e) => {
-        dialog.returnValue = 'ready';
-        dialog.close();
-      });
+    dialog.addEventListener('close', (e) => {
+      if (dialog.returnValue) {
+        cpsSchemePlugin.setBtnReady(
+          btnId,
+          dialog.returnValue === 'ready' ? true : false
+        );
+      }
+    });
+    // 关闭按钮
+    close.addEventListener('click', (e) => {
+      dialog.returnValue = '';
+      dialog.close();
+    });
+    // 未就绪按钮
+    notReady.addEventListener('click', (e) => {
+      dialog.returnValue = 'notReady';
+      dialog.close();
+    });
+    // 就绪按钮
+    ready.addEventListener('click', (e) => {
+      dialog.returnValue = 'ready';
+      dialog.close();
+    });
 
-      cpsSchemePlugin.setPath(path);
-      await cpsSchemePlugin.init({
-        el: '#platter',
-        schemeId: '8SPBFEXLC850',
-        placeholder: '占位符',
-        // 执行回调（只有配置过数据才会触发）
-        execCallback: (content, origin) => {
-          // console.log(content, origin);
+    await cpsSchemePlugin.init({
+      el: '#platter',
+      schemeId: '8SPBFEXLC850',
+      dependentPlugins: {
+        cpsSoonmanagerPlugin: cpsSoonmanagerPlugin
+      },
+      placeholder: '占位符',
+      // 执行回调（只有配置过数据才会触发）
+      execCallback: (content, origin) => {
+        // console.log(content, origin);
 
-          btnId = origin.btnId;
-          dialogTitle.innerText = origin.name || '占位符';
-          // cps 平台配置的弹窗内容
-          dialogContent.innerHTML = content;
-          dialog.showModal();
-        },
-      });
+        btnId = origin.btnId;
+        dialogTitle.innerText = origin.name || '占位符';
+        // cps 平台配置的弹窗内容
+        dialogContent.innerHTML = content;
+        dialog.showModal();
+      },
+    });
 
-      // 卸载
-      // cpsSchemePlugin.dispose()
-    </script>
-  </body>
+    // 卸载
+    // cpsSchemePlugin.dispose()
+  </script>
+</body>
+
 </html>
