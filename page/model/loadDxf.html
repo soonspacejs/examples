@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-    <style>
-      #view {
-        background-color: burlywood;
-      }
-    </style>
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+  <style>
+    #view {
+      background-color: burlywood;
+    }
+  </style>
+</head>
 
-    <script type="importmap">
+<body>
+  <div id="view"></div>
+
+  <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
@@ -25,60 +26,63 @@
         }
       }
     </script>
-    <script type="module">
-      import * as THREE from 'three';
-      window.THREE = THREE;
-    </script>
-    <script defer src="../../libs/three-dxf-loader.js"></script>
-    <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
-      import { GUI } from '../../libs/gui.js';
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+  </script>
+  <script defer src="../../libs/three-dxf-loader.js"></script>
+  <script type="module">
+    import SoonSpace from '../../libs/soonspacejs/index.js';
+    import { GUI } from '../../libs/gui.js';
 
-      const ssp = (window.ssp = new SoonSpace({
-        el: '#view',
-        options: {
-          showInfo: true,
-          showViewHelper: true,
-          background: {
-            alpha: true,
-          },
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+        showViewHelper: true,
+        background: {
+          alpha: true,
         },
-      }));
+      },
+    }));
 
-      ssp.setCameraViewpoint({
-        position: {
-          x: 3097.559192183903,
-          y: 18871.65532919503,
-          z: -1116.8850252758903,
-        },
-        target: {
-          x: 3096.3438690392477,
-          y: -669.9643861418365,
-          z: -1252.0309766822256,
-        },
-      });
+    ssp.setCameraViewpoint({
+      position: {
+        x: 3097.559192183903,
+        y: 18871.65532919503,
+        z: -1116.8850252758903,
+      },
+      target: {
+        x: 3096.3438690392477,
+        y: -669.9643861418365,
+        z: -1252.0309766822256,
+      },
+    });
 
-      const { DXFLoader } = window.ThreeDxfLoader;
+    const { DXFLoader } = window.ThreeDxfLoader;
 
-      const loader = new DXFLoader();
-      loader.setEnableLayer(true); // set EnableLayer
+    const loader = new DXFLoader();
+    loader.setEnableLayer(true); // set EnableLayer
 
-      const group = ssp.createGroup({ id: 'dxf-group' });
-      group.rotation.x = -Math.PI / 2;
-      group.scale.setScalar(0.05);
+    const group = ssp.createGroup({ id: 'dxf-group' });
+    group.rotation.x = -Math.PI / 2;
+    group.scale.setScalar(0.05);
 
-      const onLoad = (data) => {
-        if (data && data.entities) {
-          data.entities.forEach((ent) => ssp.addObject(ent, group));
-        }
-      };
-      const onError = (error) => {
-        console.log(error);
-      };
-      const onProgress = (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-      };
-      loader.load('../../assets/chuli.dxf', onLoad, onProgress, onError);
-    </script>
-  </body>
+    const onLoad = (data) => {
+      if (data && data.entities) {
+        data.entities.forEach((ent) => {
+          ssp.addObject(ent, group)
+        });
+      }
+    };
+    const onError = (error) => {
+      console.log(error);
+    };
+    const onProgress = (xhr) => {
+      console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+    };
+    loader.load('../../assets/revit.dxf', onLoad, onProgress, onError);
+  </script>
+</body>
+
 </html>
