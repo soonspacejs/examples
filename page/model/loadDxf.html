@@ -8,21 +8,33 @@
   <title>SoonSpace Example</title>
   <link rel="stylesheet" href="../../assets/css/base.css" />
   <style>
+    body {
+      display: flex;
+    }
+
     #view {
-      background-color: burlywood;
+      position: static;
+      width: 50vw;
+      background-color: rgb(50, 50, 50);
+    }
+
+    #view2 {
+      width: 50vw;
     }
   </style>
 </head>
 
 <body>
   <div id="view"></div>
+  <div id="view2"></div>
 
   <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
           "three/examples/": "../../libs/three/examples/",
-          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
         }
       }
     </script>
@@ -32,13 +44,30 @@
   </script>
   <script defer src="../../libs/three-dxf-loader.js"></script>
   <script type="module">
+    import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+    import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+    import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+    import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
+    import { Line2 } from 'three/examples/jsm/lines/Line2.js';
     import SoonSpace from '../../libs/soonspacejs/index.js';
+    import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
     import { GUI } from '../../libs/gui.js';
 
     const ssp = (window.ssp = new SoonSpace({
       el: '#view',
       options: {
-        showInfo: true,
+        // showInfo: true,
+        // showViewHelper: true,
+        background: {
+          alpha: true,
+        },
+      },
+    }));
+
+    const ssp2 = (window.ssp2 = new SoonSpace({
+      el: '#view2',
+      options: {
+        // showInfo: true,
         showViewHelper: true,
         background: {
           alpha: true,
@@ -46,16 +75,37 @@
       },
     }));
 
+    ssp2.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+    const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+      ssp2.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+    cpsSoonmanagerPlugin.setPath('../../assets/sceneData/cps/养正二三维联动_2');
+
+    cpsSoonmanagerPlugin.loadScene({
+      key: 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO0R1vcfWt4v2SoWDdODBA6NoMhRW1jBXta5AJNCRcIhdipCDni/ef23Vnqop2Cjbb8G3iMm62tuZn47RXeKRs1/41kuQL2/Vhra2kdenJIQ5txNxUReRtrsih/seOnU/vpNmSZcX8l/iWPmwp5ERFHosYXqnpEsyMaw/8Z7npSQIDAQAB'
+    }).then(() => {
+      ssp2.flyMainViewpoint()
+    })
+
+    // controls
+
+    const { controls } = ssp;
+
+    controls.maxPolarAngle = 0;
+    controls.minAzimuthAngle = 0;
+    controls.maxAzimuthAngle = 0;
+
     ssp.setCameraViewpoint({
       position: {
-        x: 3097.559192183903,
-        y: 18871.65532919503,
-        z: -1116.8850252758903,
+        x: 2511.9515365980656,
+        y: 4443.667913199991,
+        z: -469.9427406108831,
       },
       target: {
-        x: 3096.3438690392477,
-        y: -669.9643861418365,
-        z: -1252.0309766822256,
+        x: 2511.9515365980656,
+        y: -674.049152369236,
+        z: -469.94785832794867,
       },
     });
 
@@ -71,7 +121,7 @@
     const onLoad = (data) => {
       if (data && data.entities) {
         data.entities.forEach((ent) => {
-          ssp.addObject(ent, group)
+          ssp.addObject(ent, group);
         });
       }
     };
@@ -82,6 +132,116 @@
       console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
     };
     loader.load('../../assets/revit.dxf', onLoad, onProgress, onError);
+
+    /**
+     * pickup lines
+     */
+    const { viewport } = ssp;
+    viewport.raycaster.params.Line.threshold = 20;
+    viewport.raycaster.params.Line2 = {};
+    viewport.raycaster.params.Line2.threshold = 0;
+
+    const outLines = new Set();
+
+    const moveHandler = (event) => {
+      const [intersect] = viewport.getIntersects(event, group);
+
+      console.log(intersect)
+      if (intersect) {
+        const { object } = intersect;
+
+        // 排除轮廓线段
+        if (object.isLineSegments2) return;
+
+        // 向上查找 revit_id
+        let revitId;
+        let blockObject;
+        let found = false;
+        object.traverseAncestors((parent) => {
+          const { RevitId } = parent.userData;
+          if (RevitId && !found) {
+            revitId = RevitId;
+            blockObject = parent;
+            found = true;
+          }
+        });
+
+        if (revitId && blockObject) {
+          ssp2.unEdgeShow()
+
+          // 右侧联动
+          const [model] = ssp2.getObjectByUserDataProperty(
+            userData => userData.properties?.find(({ key, value }) => key === "revitId" && value === revitId)
+          )
+
+          if (model) {
+            ssp2.flyToObj(model, 'front')
+            ssp2.edgeShow(model)
+          }
+
+          outLines.forEach((line) => line.removeFromParent());
+          outLines.clear();
+
+          blockObject.traverse((child) => {
+            switch (child.type) {
+              case 'Line':
+                {
+                  const lineGeometry = new LineGeometry();
+                  lineGeometry.fromLine(child);
+                  const line2 = new Line2(
+                    lineGeometry,
+                    new LineMaterial({
+                      color: child.material.color,
+                      linewidth: 5,
+                      worldUnits: true,
+                      depthWrite: false,
+                    })
+                  );
+                  line2.position.y += 0.01;
+                  child.parent.add(line2);
+                  outLines.add(line2);
+                }
+                break;
+              case 'LineSegments':
+                {
+                  const segmentsGeometry = new LineSegmentsGeometry();
+                  segmentsGeometry.fromLineSegments(child);
+                  const segments = new LineSegments2(
+                    segmentsGeometry,
+                    new LineMaterial({
+                      color: child.material.color,
+                      linewidth: 5,
+                      worldUnits: true,
+                      depthWrite: false,
+                    })
+                  );
+                  segments.position.y += 0.01;
+                  child.parent.add(segments);
+                  outLines.add(segments);
+                }
+                break;
+              default:
+                break;
+            }
+          });
+
+        }
+      } else {
+        outLines.forEach((line) => {
+          line.geometry.dispose()
+          line.material.dispose()
+          line.removeFromParent()
+        });
+        outLines.clear();
+
+        ssp2.unEdgeShow()
+      }
+
+      ssp.render();
+
+    };
+    ssp.signals.click.add(moveHandler);
+
   </script>
 </body>
 
