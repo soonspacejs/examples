@@ -261,8 +261,12 @@ export default [
         demoLink: './page/controls/setOptions.html',
       },
       {
-        title: '基础',
-        demoLink: './page/controls/basic.html',
+        title: '属性',
+        demoLink: './page/controls/properties.html',
+      },
+      {
+        title: '方法',
+        demoLink: './page/controls/methods.html',
       },
       {
         title: '无限 dolly',

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
+
+<body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+        import { MathUtils } from 'three';
+        import SoonSpace from '../../libs/soonspacejs/index.js';
+        import { GUI } from '../../libs/gui.js';
+
+        const ssp = (window.ssp = new SoonSpace({
+            el: '#view',
+            options: {
+                showGrid: true,
+                showInfo: true,
+                showViewHelper: true,
+            },
+            events: {},
+        }));
+
+        const model = await ssp.loadModel({
+            id: 'room_01',
+            url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+            position: {
+                x: 0,
+                y: 0,
+                z: 0,
+            },
+            scale: {
+                x: 0.01,
+                y: 0.01,
+                z: 0.01,
+            },
+        });
+        ssp.flyToObj(model);
+
+        const { DEG2RAD } = MathUtils;
+        const { controls } = ssp;
+
+        const gui = new GUI();
+
+        gui.width = 300;
+
+        gui.add(controls, 'enabled');
+        gui.add(controls, 'minDistance');
+        gui.add(controls, 'maxDistance');
+        gui.add(controls, 'minPolarAngle', 0, Math.PI);
+        gui.add(controls, 'maxPolarAngle', 0, Math.PI);
+        gui.add(controls, 'minAzimuthAngle');
+        gui.add(controls, 'maxAzimuthAngle');
+        gui.add(controls, 'draggingSmoothTime', 0, 1);
+        gui.add(controls, 'maxSpeed');
+        gui.add(controls, 'azimuthRotateSpeed', 0, 1);
+        gui.add(controls, 'polarRotateSpeed', 0, 1);
+        gui.add(controls, 'dollySpeed', 0, 1);
+        gui.add(controls, 'truckSpeed', 0, 1);
+        gui.add(controls, 'verticalDragToForward');
+        gui.add(controls, 'dollyToCursor');
+
+    </script>
+</body>
+
+</html>
