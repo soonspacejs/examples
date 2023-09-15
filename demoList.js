@@ -52,7 +52,7 @@ export default [
         demoLink: './page/model/loadFbx.html',
       },
       {
-        title: '加载 dxf',
+        title: 'dxf 二三维联动',
         demoLink: './page/model/loadDxf.html',
       },
     ],

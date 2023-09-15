@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
 
-    <script type="importmap">
+<body>
+  <div id="view"></div>
+
+  <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
@@ -20,119 +21,119 @@
         }
       }
     </script>
-    <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
-      import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
-      import { GUI } from '../../libs/gui.js';
+  <script type="module">
+    import SoonSpace from '../../libs/soonspacejs/index.js';
+    import Soonmanager2SyncPlugin from '../../libs/soonspacejs/plugins/soonmanager2-sync.js';
+    import { GUI } from '../../libs/gui.js';
 
-      const ssp = (window.ssp = new SoonSpace({
-        el: '#view',
-        options: {
-          showInfo: true,
-          controls: {},
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showInfo: true,
+      },
+      events: {
+        modelClick(params) {
+          console.log(params);
         },
-        events: {
-          modelClick(params) {
-            console.log(params);
+      },
+    }));
+
+    const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+      Soonmanager2SyncPlugin,
+      'soonmanager2Sync'
+    ));
+
+    soonmanager2Sync.setPath('../../assets/sceneData/2.0/AutoSave_0');
+
+    let sceneLoaded = false;
+
+    /**
+     * 加载场景
+     */
+    await soonmanager2Sync
+      .loadScene({ needsModelsBoundsTree: false })
+      .then(() => {
+        console.log('加载完成');
+
+        sceneLoaded = true;
+      });
+    await ssp.flyMainViewpoint();
+
+    let tweenInstance = null,
+      topology = null;
+
+    const paramFn = {
+      playAnimation() {
+        if (!sceneLoaded) {
+          alert('请等待场景加载完成');
+
+          return;
+        }
+
+        if (tweenInstance) {
+          alert('动画正在播放');
+
+          return;
+        }
+
+        /**
+         * 根据 id 播放对应模型的补间动画, 动画由平台上配置
+         */
+        soonmanager2Sync.playAnimationById('4H6T1H53CSFW', 0, {
+          /**
+           * 由于包含多个 tween 实例，所以 onStart 会执行多次
+           */
+          onStart: (tween) => {
+            tweenInstance = tween;
+
+            console.log('on tween start', tween);
           },
-        },
-      }));
-
-      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
-        Soonmanager2SyncPlugin,
-        'soonmanager2Sync'
-      ));
-
-      soonmanager2Sync.setPath('../../assets/sceneData/2.0/AutoSave_0');
-
-      let sceneLoaded = false;
-
-      /**
-       * 加载场景
-       */
-      await soonmanager2Sync
-        .loadScene({ needsModelsBoundsTree: false })
-        .then(() => {
-          console.log('加载完成');
-
-          sceneLoaded = true;
         });
-      ssp.flyMainViewpoint();
+      },
+      stopAnimation() {
+        tweenInstance?.stop();
 
-      let tweenInstance = null,
-        topology = null;
+        tweenInstance = null;
+      },
+      showTopology() {
+        /**
+         * 获取拓扑路径数据，并展示
+         */
+        soonmanager2Sync.getTopologies().then((topologies) => {
+          const [t1] = topologies;
 
-      const paramFn = {
-        playAnimation() {
-          if (!sceneLoaded) {
-            alert('请等待场景加载完成');
-
-            return;
-          }
-
-          if (tweenInstance) {
-            alert('动画正在播放');
-
-            return;
-          }
-
-          /**
-           * 根据 id 播放对应模型的补间动画, 动画由平台上配置
-           */
-          soonmanager2Sync.playAnimationById('4H6T1H53CSFW', 0, {
-            /**
-             * 由于包含多个 tween 实例，所以 onStart 会执行多次
-             */
-            onStart: (tween) => {
-              tweenInstance = tween;
-
-              console.log('on tween start', tween);
-            },
-          });
-        },
-        stopAnimation() {
-          tweenInstance?.stop();
-
-          tweenInstance = null;
-        },
-        showTopology() {
-          /**
-           * 获取拓扑路径数据，并展示
-           */
-          soonmanager2Sync.getTopologies().then((topologies) => {
-            const [t1] = topologies;
-
-            if (topology) {
-              alert('拓扑路径已存在');
-
-              return;
-            }
-
-            topology = ssp.createTopology({
-              ...t1,
-              /**
-               * 覆盖平台导出的配置
-               */
-              linkWidth: 10,
-              nodeRadius: 5,
-            });
-          });
-        },
-        clearTopology() {
           if (topology) {
-            ssp.removeObject(topology);
+            alert('拓扑路径已存在');
 
-            topology = null;
+            return;
           }
-        },
-      };
 
-      const gui = new GUI();
+          topology = ssp.createTopology({
+            ...t1,
+            /**
+             * 覆盖平台导出的配置
+             */
+            linkWidth: 10,
+            nodeRadius: 5,
+          });
+        });
+      },
+      clearTopology() {
+        if (topology) {
+          ssp.removeObject(topology);
 
-      gui.add(paramFn, 'playAnimation').name('播放动画');
-      gui.add(paramFn, 'stopAnimation').name('停止动画');
-      gui.add(paramFn, 'showTopology').name('显示拓扑路径');
-      gui.add(paramFn, 'clearTopology').name('删除拓扑路径');
-    </script>
-  </body>
+          topology = null;
+        }
+      },
+    };
+
+    const gui = new GUI();
+
+    gui.add(paramFn, 'playAnimation').name('播放动画');
+    gui.add(paramFn, 'stopAnimation').name('停止动画');
+    gui.add(paramFn, 'showTopology').name('显示拓扑路径');
+    gui.add(paramFn, 'clearTopology').name('删除拓扑路径');
+  </script>
+</body>
+
 </html>
