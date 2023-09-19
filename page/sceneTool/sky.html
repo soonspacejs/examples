@@ -51,7 +51,7 @@
         rayleigh: 3,
         elevation: 2,
         azimuth: 180,
-        exposure: 0.5,
+        exposure: 0.8,
       };
 
       ssp.setSky(params);
@@ -84,7 +84,7 @@
       gui
         .add(params, 'exposure', 0, 1, 0.01)
         .name('曝光')
-        .onChange(() => ssp.setSky(params));
+        .onChange(() => ssp.setToneMapping({exposure:params.exposure}));
     </script>
   </body>
 </html>
