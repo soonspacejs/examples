@@ -3763,7 +3763,7 @@
 	/* This file is generated from "closestPointToGeometry.template.js". */
 	/*********************************************************************/
 
-	const tempMatrix$3 = /* @__PURE__ */ new three.Matrix4();
+	const tempMatrix$1 = /* @__PURE__ */ new three.Matrix4();
 	const obb$3 = /* @__PURE__ */ new OrientedBox();
 	const obb2$2 = /* @__PURE__ */ new OrientedBox();
 	const temp1$1 = /* @__PURE__ */ new three.Vector3();
@@ -3813,8 +3813,8 @@
 		let closestDistance = Infinity;
 		let closestDistanceTriIndex = null;
 		let closestDistanceOtherTriIndex = null;
-		tempMatrix$3.copy( geometryToBvh ).invert();
-		obb2$2.matrix.copy( tempMatrix$3 );
+		tempMatrix$1.copy( geometryToBvh ).invert();
+		obb2$2.matrix.copy( tempMatrix$1 );
 		bvh.shapecast(
 			{
 
@@ -3997,133 +3997,14 @@
 
 			if ( ! target2.point ) target2.point = tempTargetDest2.clone();
 			else target2.point.copy( tempTargetDest2 );
-			target2.point.applyMatrix4( tempMatrix$3 );
-			tempTargetDest1.applyMatrix4( tempMatrix$3 );
+			target2.point.applyMatrix4( tempMatrix$1 );
+			tempTargetDest1.applyMatrix4( tempMatrix$1 );
 			target2.distance = tempTargetDest1.sub( target2.point ).length();
 			target2.faceIndex = closestDistanceOtherTriIndex;
 
 		}
 
 		return target1;
-
-	}
-
-	/******************************************************/
-	/* This file is generated from "bvhcast.template.js". */
-	/******************************************************/
-
-	const tempMatrix$2 = new three.Matrix4();
-	const aabb$1 = /* @__PURE__ */ new three.Box3();
-	const aabb2$1 = /* @__PURE__ */ new three.Box3();
-	function bvhcast( bvh, otherBvh, matrixToLocal, callbacks ) {
-
-		// BVHCast function for intersecting two BVHs against each other. Ultimately just uses two recursive shapecast calls rather
-		// than an approach that walks down the tree (see bvhcast.js file for more info).
-
-		let {
-			intersectsRanges,
-			intersectsTriangles,
-		} = callbacks;
-
-		const indexAttr = bvh.geometry.index;
-		const positionAttr = bvh.geometry.attributes.position;
-
-		const otherIndexAttr = otherBvh.geometry.index;
-		const otherPositionAttr = otherBvh.geometry.attributes.position;
-
-		tempMatrix$2.copy( matrixToLocal ).invert();
-
-		const triangle = ExtendedTrianglePool.getPrimitive();
-		const triangle2 = ExtendedTrianglePool.getPrimitive();
-
-		if ( intersectsTriangles ) {
-
-			const iterateOverDoubleTriangles = ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) => {
-
-				for ( let i2 = offset2, l2 = offset2 + count2; i2 < l2; i2 ++ ) {
-
-
-					setTriangle( triangle2, i2 * 3, otherIndexAttr, otherPositionAttr );
-
-
-					triangle2.a.applyMatrix4( matrixToLocal );
-					triangle2.b.applyMatrix4( matrixToLocal );
-					triangle2.c.applyMatrix4( matrixToLocal );
-					triangle2.needsUpdate = true;
-
-					for ( let i1 = offset1, l1 = offset1 + count1; i1 < l1; i1 ++ ) {
-
-
-						setTriangle( triangle, i1 * 3, indexAttr, positionAttr );
-
-						triangle.needsUpdate = true;
-
-						if ( intersectsTriangles( triangle, triangle2, i1, i2, depth1, index1, depth2, index2 ) ) {
-
-							return true;
-
-						}
-
-					}
-
-				}
-
-				return false;
-
-			};
-
-			if ( intersectsRanges ) {
-
-				const originalIntersectsRanges = intersectsRanges;
-				intersectsRanges = function ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) {
-
-					if ( ! originalIntersectsRanges( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) ) {
-
-						return iterateOverDoubleTriangles( offset1, count1, offset2, count2, depth1, index1, depth2, index2 );
-
-					}
-
-					return true;
-
-				};
-
-			} else {
-
-				intersectsRanges = iterateOverDoubleTriangles;
-
-			}
-
-		}
-
-		otherBvh.getBoundingBox( aabb2$1 );
-		aabb2$1.applyMatrix4( matrixToLocal );
-		const result = bvh.shapecast( {
-
-			intersectsBounds: box => aabb2$1.intersectsBox( box ),
-
-			intersectsRange: ( offset1, count1, contained, depth1, nodeIndex1, box ) => {
-
-				aabb$1.copy( box );
-				aabb$1.applyMatrix4( tempMatrix$2 );
-				return otherBvh.shapecast( {
-
-					intersectsBounds: box => aabb$1.intersectsBox( box ),
-
-					intersectsRange: ( offset2, count2, contained, depth2, nodeIndex2 ) => {
-
-						return intersectsRanges( offset1, count1, offset2, count2, depth1, nodeIndex1, depth2, nodeIndex2 );
-
-					},
-
-				} );
-
-			}
-
-		} );
-
-		ExtendedTrianglePool.releasePrimitive( triangle );
-		ExtendedTrianglePool.releasePrimitive( triangle2 );
-		return result;
 
 	}
 
@@ -4604,7 +4485,7 @@
 	/* This file is generated from "closestPointToGeometry.template.js". */
 	/*********************************************************************/
 
-	const tempMatrix$1 = /* @__PURE__ */ new three.Matrix4();
+	const tempMatrix = /* @__PURE__ */ new three.Matrix4();
 	const obb$1 = /* @__PURE__ */ new OrientedBox();
 	const obb2 = /* @__PURE__ */ new OrientedBox();
 	const temp1 = /* @__PURE__ */ new three.Vector3();
@@ -4654,8 +4535,8 @@
 		let closestDistance = Infinity;
 		let closestDistanceTriIndex = null;
 		let closestDistanceOtherTriIndex = null;
-		tempMatrix$1.copy( geometryToBvh ).invert();
-		obb2.matrix.copy( tempMatrix$1 );
+		tempMatrix.copy( geometryToBvh ).invert();
+		obb2.matrix.copy( tempMatrix );
 		bvh.shapecast(
 			{
 
@@ -4838,8 +4719,8 @@
 
 			if ( ! target2.point ) target2.point = tempTargetDest2.clone();
 			else target2.point.copy( tempTargetDest2 );
-			target2.point.applyMatrix4( tempMatrix$1 );
-			tempTargetDest1.applyMatrix4( tempMatrix$1 );
+			target2.point.applyMatrix4( tempMatrix );
+			tempTargetDest1.applyMatrix4( tempMatrix );
 			target2.distance = tempTargetDest1.sub( target2.point ).length();
 			target2.faceIndex = closestDistanceOtherTriIndex;
 
@@ -4849,128 +4730,317 @@
 
 	}
 
-	/******************************************************/
-	/* This file is generated from "bvhcast.template.js". */
-	/******************************************************/
+	function isSharedArrayBufferSupported() {
 
-	const tempMatrix = new three.Matrix4();
-	const aabb = /* @__PURE__ */ new three.Box3();
-	const aabb2 = /* @__PURE__ */ new three.Box3();
-	function bvhcast_indirect( bvh, otherBvh, matrixToLocal, callbacks ) {
+		return typeof SharedArrayBuffer !== 'undefined';
 
-		// BVHCast function for intersecting two BVHs against each other. Ultimately just uses two recursive shapecast calls rather
-		// than an approach that walks down the tree (see bvhcast.js file for more info).
+	}
 
-		let {
-			intersectsRanges,
-			intersectsTriangles,
-		} = callbacks;
+	const _bufferStack1 = new BufferStack.constructor();
+	const _bufferStack2 = new BufferStack.constructor();
+	const _boxPool = new PrimitivePool( () => new three.Box3() );
+	const _leftBox1 = new three.Box3();
+	const _rightBox1 = new three.Box3();
 
-		const indexAttr = bvh.geometry.index;
-		const positionAttr = bvh.geometry.attributes.position;
+	const _leftBox2 = new three.Box3();
+	const _rightBox2 = new three.Box3();
 
-		const otherIndexAttr = otherBvh.geometry.index;
-		const otherPositionAttr = otherBvh.geometry.attributes.position;
+	let _active = false;
 
-		tempMatrix.copy( matrixToLocal ).invert();
+	function bvhcast( bvh, otherBvh, matrixToLocal, intersectsRanges ) {
 
-		const triangle = ExtendedTrianglePool.getPrimitive();
-		const triangle2 = ExtendedTrianglePool.getPrimitive();
+		if ( _active ) {
 
-		if ( intersectsTriangles ) {
+			throw new Error( 'MeshBVH: Recursive calls to bvhcast not supported.' );
 
-			const iterateOverDoubleTriangles = ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) => {
+		}
 
-				for ( let i2 = offset2, l2 = offset2 + count2; i2 < l2; i2 ++ ) {
+		_active = true;
 
-					const ti2 = otherBvh.resolveTriangleIndex( i2 );
-					setTriangle( triangle2, ti2 * 3, otherIndexAttr, otherPositionAttr );
+		const roots = bvh._roots;
+		const otherRoots = otherBvh._roots;
+		let result;
+		let offset1 = 0;
+		let offset2 = 0;
+		const invMat = new three.Matrix4().copy( matrixToLocal ).invert();
 
+		// iterate over the first set of roots
+		for ( let i = 0, il = roots.length; i < il; i ++ ) {
 
-					triangle2.a.applyMatrix4( matrixToLocal );
-					triangle2.b.applyMatrix4( matrixToLocal );
-					triangle2.c.applyMatrix4( matrixToLocal );
-					triangle2.needsUpdate = true;
+			_bufferStack1.setBuffer( roots[ i ] );
+			offset2 = 0;
 
-					for ( let i1 = offset1, l1 = offset1 + count1; i1 < l1; i1 ++ ) {
+			// prep the initial root box
+			const localBox = _boxPool.getPrimitive();
+			arrayToBox( BOUNDING_DATA_INDEX( 0 ), _bufferStack1.float32Array, localBox );
+			localBox.applyMatrix4( invMat );
 
-						const ti1 = bvh.resolveTriangleIndex( i1 );
-						setTriangle( triangle, ti1 * 3, indexAttr, positionAttr );
+			// iterate over the second set of roots
+			for ( let j = 0, jl = otherRoots.length; j < jl; j ++ ) {
 
-						triangle.needsUpdate = true;
+				_bufferStack2.setBuffer( otherRoots[ i ] );
 
-						if ( intersectsTriangles( triangle, triangle2, i1, i2, depth1, index1, depth2, index2 ) ) {
+				result = _traverse(
+					0, 0, matrixToLocal, invMat, intersectsRanges,
+					offset1, offset2, 0, 0,
+					localBox,
+				);
 
-							return true;
+				_bufferStack2.clearBuffer();
+				offset2 += otherRoots[ j ].length;
 
-						}
+				if ( result ) {
 
-					}
+					break;
 
 				}
 
-				return false;
+			}
 
-			};
+			// release stack info
+			_boxPool.releasePrimitive( localBox );
+			_bufferStack1.clearBuffer();
+			offset1 += roots[ i ].length;
 
-			if ( intersectsRanges ) {
+			if ( result ) {
 
-				const originalIntersectsRanges = intersectsRanges;
-				intersectsRanges = function ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) {
-
-					if ( ! originalIntersectsRanges( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) ) {
-
-						return iterateOverDoubleTriangles( offset1, count1, offset2, count2, depth1, index1, depth2, index2 );
-
-					}
-
-					return true;
-
-				};
-
-			} else {
-
-				intersectsRanges = iterateOverDoubleTriangles;
+				break;
 
 			}
 
 		}
 
-		otherBvh.getBoundingBox( aabb2 );
-		aabb2.applyMatrix4( matrixToLocal );
-		const result = bvh.shapecast( {
-
-			intersectsBounds: box => aabb2.intersectsBox( box ),
-
-			intersectsRange: ( offset1, count1, contained, depth1, nodeIndex1, box ) => {
-
-				aabb.copy( box );
-				aabb.applyMatrix4( tempMatrix );
-				return otherBvh.shapecast( {
-
-					intersectsBounds: box => aabb.intersectsBox( box ),
-
-					intersectsRange: ( offset2, count2, contained, depth2, nodeIndex2 ) => {
-
-						return intersectsRanges( offset1, count1, offset2, count2, depth1, nodeIndex1, depth2, nodeIndex2 );
-
-					},
-
-				} );
-
-			}
-
-		} );
-
-		ExtendedTrianglePool.releasePrimitive( triangle );
-		ExtendedTrianglePool.releasePrimitive( triangle2 );
+		_active = false;
 		return result;
 
 	}
 
-	function isSharedArrayBufferSupported() {
+	function _traverse(
+		node1Index32,
+		node2Index32,
+		matrix2to1,
+		matrix1to2,
+		intersectsRangesFunc,
 
-		return typeof SharedArrayBuffer !== 'undefined';
+		// offsets for ids
+		node1IndexByteOffset = 0,
+		node2IndexByteOffset = 0,
+
+		// tree depth
+		depth1 = 0,
+		depth2 = 0,
+
+		currBox = null,
+		reversed = false,
+
+	) {
+
+		// get the buffer stacks associated with the current indices
+		let bufferStack1, bufferStack2;
+		if ( reversed ) {
+
+			bufferStack1 = _bufferStack2;
+			bufferStack2 = _bufferStack1;
+
+		} else {
+
+			bufferStack1 = _bufferStack1;
+			bufferStack2 = _bufferStack2;
+
+		}
+
+		// get the local instances of the typed buffers
+		const
+			float32Array1 = bufferStack1.float32Array,
+			uint32Array1 = bufferStack1.uint32Array,
+			uint16Array1 = bufferStack1.uint16Array,
+			float32Array2 = bufferStack2.float32Array,
+			uint32Array2 = bufferStack2.uint32Array,
+			uint16Array2 = bufferStack2.uint16Array;
+
+		const node1Index16 = node1Index32 * 2;
+		const node2Index16 = node2Index32 * 2;
+		const isLeaf1 = IS_LEAF( node1Index16, uint16Array1 );
+		const isLeaf2 = IS_LEAF( node2Index16, uint16Array2 );
+		let result = false;
+		if ( isLeaf2 && isLeaf1 ) {
+
+			// if both bounds are leaf nodes then fire the callback if the boxes intersect
+			if ( reversed ) {
+
+				result = intersectsRangesFunc(
+					OFFSET( node2Index32, uint32Array2 ), COUNT( node2Index32 * 2, uint16Array2 ),
+					OFFSET( node1Index32, uint32Array1 ), COUNT( node1Index32 * 2, uint16Array1 ),
+					depth2, node2IndexByteOffset + node2Index32,
+					depth1, node1IndexByteOffset + node1Index32,
+				);
+
+			} else {
+
+				result = intersectsRangesFunc(
+					OFFSET( node1Index32, uint32Array1 ), COUNT( node1Index32 * 2, uint16Array1 ),
+					OFFSET( node2Index32, uint32Array2 ), COUNT( node2Index32 * 2, uint16Array2 ),
+					depth1, node1IndexByteOffset + node1Index32,
+					depth2, node2IndexByteOffset + node2Index32,
+				);
+
+			}
+
+		} else if ( isLeaf2 ) {
+
+			// SWAP
+			// If we've traversed to the leaf node on the other bvh then we need to swap over
+			// to traverse down the first one
+
+			// get the new box to use
+			const newBox = _boxPool.getPrimitive();
+			arrayToBox( BOUNDING_DATA_INDEX( node2Index32 ), float32Array2, newBox );
+			newBox.applyMatrix4( matrix2to1 );
+
+			// get the child bounds to check before traversal
+			const cl1 = LEFT_NODE( node1Index32 );
+			const cr1 = RIGHT_NODE( node1Index32, uint32Array1 );
+			arrayToBox( BOUNDING_DATA_INDEX( cl1 ), float32Array1, _leftBox1 );
+			arrayToBox( BOUNDING_DATA_INDEX( cr1 ), float32Array1, _rightBox1 );
+
+			// precompute the intersections otherwise the global boxes will be modified during traversal
+			const intersectCl1 = newBox.intersectsBox( _leftBox1 );
+			const intersectCr1 = newBox.intersectsBox( _rightBox1 );
+			result = (
+				intersectCl1 && _traverse(
+					node2Index32, cl1, matrix1to2, matrix2to1, intersectsRangesFunc,
+					node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+					newBox, ! reversed,
+				)
+			) || (
+				intersectCr1 && _traverse(
+					node2Index32, cr1, matrix1to2, matrix2to1, intersectsRangesFunc,
+					node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+					newBox, ! reversed,
+				)
+			);
+
+			_boxPool.releasePrimitive( newBox );
+
+		} else {
+
+			// if neither are leaves then we should swap if one of the children does not
+			// intersect with the current bounds
+
+			// get the child bounds to check
+			const cl2 = LEFT_NODE( node2Index32 );
+			const cr2 = RIGHT_NODE( node2Index32, uint32Array2 );
+			arrayToBox( BOUNDING_DATA_INDEX( cl2 ), float32Array2, _leftBox2 );
+			arrayToBox( BOUNDING_DATA_INDEX( cr2 ), float32Array2, _rightBox2 );
+
+			const leftIntersects = currBox.intersectsBox( _leftBox2 );
+			const rightIntersects = currBox.intersectsBox( _rightBox2 );
+			if ( leftIntersects && rightIntersects ) {
+
+				// continue to traverse both children if they both intersect
+				result = _traverse(
+					node1Index32, cl2, matrix2to1, matrix1to2, intersectsRangesFunc,
+					node1IndexByteOffset, node2IndexByteOffset, depth1, depth2 + 1,
+					currBox, reversed,
+				) || _traverse(
+					node1Index32, cr2, matrix2to1, matrix1to2, intersectsRangesFunc,
+					node1IndexByteOffset, node2IndexByteOffset, depth1, depth2 + 1,
+					currBox, reversed,
+				);
+
+			} else if ( leftIntersects ) {
+
+				if ( isLeaf1 ) {
+
+					// if the current box is a leaf then just continue
+					result = _traverse(
+						node1Index32, cl2, matrix2to1, matrix1to2, intersectsRangesFunc,
+						node1IndexByteOffset, node2IndexByteOffset, depth1, depth2 + 1,
+						currBox, reversed,
+					);
+
+				} else {
+
+					// SWAP
+					// if only one box intersects then we have to swap to the other bvh to continue
+					const newBox = _boxPool.getPrimitive();
+					newBox.copy( _leftBox2 ).applyMatrix4( matrix2to1 );
+
+					const cl1 = LEFT_NODE( node1Index32 );
+					const cr1 = RIGHT_NODE( node1Index32, uint32Array1 );
+					arrayToBox( BOUNDING_DATA_INDEX( cl1 ), float32Array1, _leftBox1 );
+					arrayToBox( BOUNDING_DATA_INDEX( cr1 ), float32Array1, _rightBox1 );
+
+					// precompute the intersections otherwise the global boxes will be modified during traversal
+					const intersectCl1 = newBox.intersectsBox( _leftBox1 );
+					const intersectCr1 = newBox.intersectsBox( _rightBox1 );
+					result = (
+						intersectCl1 && _traverse(
+							cl2, cl1, matrix1to2, matrix2to1, intersectsRangesFunc,
+							node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+							newBox, ! reversed,
+						)
+					) || (
+						intersectCr1 && _traverse(
+							cl2, cr1, matrix1to2, matrix2to1, intersectsRangesFunc,
+							node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+							newBox, ! reversed,
+						)
+					);
+
+					_boxPool.releasePrimitive( newBox );
+
+				}
+
+			} else if ( rightIntersects ) {
+
+				if ( isLeaf1 ) {
+
+					// if the current box is a leaf then just continue
+					result = _traverse(
+						node1Index32, cr2, matrix2to1, matrix1to2, intersectsRangesFunc,
+						node1IndexByteOffset, node2IndexByteOffset, depth1, depth2 + 1,
+						currBox, reversed,
+					);
+
+				} else {
+
+					// SWAP
+					// if only one box intersects then we have to swap to the other bvh to continue
+					const newBox = _boxPool.getPrimitive();
+					newBox.copy( _rightBox2 ).applyMatrix4( matrix2to1 );
+
+					const cl1 = LEFT_NODE( node1Index32 );
+					const cr1 = RIGHT_NODE( node1Index32, uint32Array1 );
+					arrayToBox( BOUNDING_DATA_INDEX( cl1 ), float32Array1, _leftBox1 );
+					arrayToBox( BOUNDING_DATA_INDEX( cr1 ), float32Array1, _rightBox1 );
+
+					// precompute the intersections otherwise the global boxes will be modified during traversal
+					const intersectCl1 = newBox.intersectsBox( _leftBox1 );
+					const intersectCr1 = newBox.intersectsBox( _rightBox1 );
+					result = (
+						intersectCl1 && _traverse(
+							cr2, cl1, matrix1to2, matrix2to1, intersectsRangesFunc,
+							node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+							newBox, ! reversed,
+						)
+					) || (
+						intersectCr1 && _traverse(
+							cr2, cr1, matrix1to2, matrix2to1, intersectsRangesFunc,
+							node2IndexByteOffset, node1IndexByteOffset, depth2, depth1 + 1,
+							newBox, ! reversed,
+						)
+					);
+
+					_boxPool.releasePrimitive( newBox );
+
+				}
+
+			}
+
+		}
+
+		return result;
 
 	}
 
@@ -5323,10 +5393,105 @@
 
 		bvhcast( otherBvh, matrixToLocal, callbacks ) {
 
-			const bvhcastFunc = this.indirect ? bvhcast_indirect : bvhcast;
-			return bvhcastFunc( this, otherBvh, matrixToLocal, callbacks );
+			let {
+				intersectsRanges,
+				intersectsTriangles,
+			} = callbacks;
+
+			const triangle1 = ExtendedTrianglePool.getPrimitive();
+			const indexAttr1 = this.geometry.index;
+			const positionAttr1 = this.geometry.attributes.position;
+			const assignTriangle1 = this.indirect ?
+				i1 => {
+
+
+					const ti = this.resolveTriangleIndex( i1 );
+					setTriangle( triangle1, ti * 3, indexAttr1, positionAttr1 );
+
+				} :
+				i1 => {
+
+					setTriangle( triangle1, i1 * 3, indexAttr1, positionAttr1 );
+
+				};
+
+			const triangle2 = ExtendedTrianglePool.getPrimitive();
+			const indexAttr2 = otherBvh.geometry.index;
+			const positionAttr2 = otherBvh.geometry.attributes.position;
+			const assignTriangle2 = otherBvh.indirect ?
+				i2 => {
+
+					const ti2 = otherBvh.resolveTriangleIndex( i2 );
+					setTriangle( triangle2, ti2 * 3, indexAttr2, positionAttr2 );
+
+				} :
+				i2 => {
+
+					setTriangle( triangle2, i2 * 3, indexAttr2, positionAttr2 );
+
+				};
+
+			// generate triangle callback if needed
+			if ( intersectsTriangles ) {
+
+				const iterateOverDoubleTriangles = ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) => {
+
+					for ( let i2 = offset2, l2 = offset2 + count2; i2 < l2; i2 ++ ) {
+
+						assignTriangle2( i2 );
+
+						triangle2.a.applyMatrix4( matrixToLocal );
+						triangle2.b.applyMatrix4( matrixToLocal );
+						triangle2.c.applyMatrix4( matrixToLocal );
+						triangle2.needsUpdate = true;
+
+						for ( let i1 = offset1, l1 = offset1 + count1; i1 < l1; i1 ++ ) {
+
+							assignTriangle1( i1 );
+
+							triangle1.needsUpdate = true;
+
+							if ( intersectsTriangles( triangle1, triangle2, i1, i2, depth1, index1, depth2, index2 ) ) {
+
+								return true;
+
+							}
+
+						}
+
+					}
+
+					return false;
+
+				};
+
+				if ( intersectsRanges ) {
+
+					const originalIntersectsRanges = intersectsRanges;
+					intersectsRanges = function ( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) {
+
+						if ( ! originalIntersectsRanges( offset1, count1, offset2, count2, depth1, index1, depth2, index2 ) ) {
+
+							return iterateOverDoubleTriangles( offset1, count1, offset2, count2, depth1, index1, depth2, index2 );
+
+						}
+
+						return true;
+
+					};
+
+				} else {
+
+					intersectsRanges = iterateOverDoubleTriangles;
+
+				}
+
+			}
+
+			return bvhcast( this, otherBvh, matrixToLocal, intersectsRanges );
 
 		}
+
 
 		/* Derived Cast Functions */
 		intersectsBox( box, boxToMesh ) {
