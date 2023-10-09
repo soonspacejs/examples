@@ -95,7 +95,9 @@
     const path = '../../assets/sceneData/cps/智慧园区';
 
     cpsSoonmanagerPlugin.setPath(path);
-    await cpsSoonmanagerPlugin.loadScene();
+    await cpsSoonmanagerPlugin.loadScene({
+      loadFlowData: true,
+    });
     await ssp.flyMainViewpoint(undefined, { duration: 0 });
 
     const dialog = document.querySelector('#dialog');
