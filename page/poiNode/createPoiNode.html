@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
 
-    <div
-      id="poiTemplate"
-      style="
+<body>
+  <div id="view"></div>
+
+  <div id="poiTemplate" style="
         display: none;
         width: 160px;
         height: auto;
         padding: 8px;
         background-color: #ccc;
         color: #000;
-      "
-    >
-      <h3 style="text-align: center">标题</h3>
-      <div>
-        <label>数据一：</label>
-        <span>10</span>
-      </div>
-      <div>
-        <label>数据二：</label>
-        <span>20</span>
-      </div>
-      <div>
-        <label>数据三：</label>
-        <span>30</span>
-      </div>
+      ">
+    <h3 style="text-align: center">标题</h3>
+    <div>
+      <label>数据一：</label>
+      <span>10</span>
     </div>
+    <div>
+      <label>数据二：</label>
+      <span>20</span>
+    </div>
+    <div>
+      <label>数据三：</label>
+      <span>30</span>
+    </div>
+  </div>
 
-     <script type="importmap">
+  <script type="importmap">
     {
       "imports": {
         "three": "../../libs/three/build/three.module.js",
@@ -47,121 +45,126 @@
     }
   </script>
   <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
-      import { GUI } from '../../libs/gui.js';
+    import SoonSpace from '../../libs/soonspacejs/index.js';
+    import { GUI } from '../../libs/gui.js';
 
-      const ssp = (window.ssp = new SoonSpace({
-        el: '#view',
-        options: {
-          showGrid: true,
-          showInfo: true,
-          levelEnabled: true,
-          background: {
-            color: '#000',
-          }
-        },
-        events: {},
-      }));
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {
+        showGrid: true,
+        showInfo: true,
+        levelEnabled: true,
+        background: {
+          color: '#000',
+        }
+      },
+      events: {},
+    }));
 
-      ssp.flyMainViewpoint();
+    ssp.flyMainViewpoint();
 
-      const el = document.getElementById('poiTemplate');
+    const el = document.getElementById('poiTemplate');
 
-      const gui = new GUI();
-      const paramFn = {
-        '2D': function () {
-          const poiNodeEl = el.cloneNode(true);
-          poiNodeEl.style.display = 'block';
-          // pc 点击
-          poiNodeEl.onclick = function () {
-            alert('2D PoiNode click');
-          };
-          // 移动点击
-          poiNodeEl.ontouchend = function () {
-            alert('2D PoiNode click');
-          };
+    const gui = new GUI();
+    const paramFn = {
+      '2D': function () {
+        const poiNodeEl = el.cloneNode(true);
+        poiNodeEl.style.display = 'block';
+        // pc 点击
+        poiNodeEl.onclick = function () {
+          alert('2D PoiNode click');
+        };
+        // 移动点击
+        poiNodeEl.ontouchend = function () {
+          alert('2D PoiNode click');
+        };
 
-          const poiNode = ssp.createPoiNode({
-            type: '2D',
-            id: '2DPoiNode',
-            position: {
-              x: -500,
-              y: 0,
-              z: 0,
-            },
-            element: poiNodeEl,
-            level: {
-              max: 3000,
-              min: null,
-            },
-          });
-        },
-        '2.5D': function () {
-          const poiNodeEl = el.cloneNode(true);
-          poiNodeEl.style.display = 'block';
-          // pc 点击
-          poiNodeEl.onclick = function () {
-            alert('2.5D PoiNode click');
-          };
-          // 移动点击
-          poiNodeEl.ontouchend = function () {
-            alert('2.5D PoiNode click');
-          };
+        const poiNode = ssp.createPoiNode({
+          type: '2D',
+          id: '2DPoiNode',
+          position: {
+            x: -500,
+            y: 0,
+            z: 0,
+          },
+          element: poiNodeEl,
+          level: {
+            max: 3000,
+            min: null,
+          },
+        });
+      },
+      '2.5D': function () {
+        const poiNodeEl = el.cloneNode(true);
+        poiNodeEl.style.display = 'block';
+        // pc 点击
+        poiNodeEl.onclick = function () {
+          alert('2.5D PoiNode click');
+        };
+        // 移动点击
+        poiNodeEl.ontouchend = function () {
+          alert('2.5D PoiNode click');
+        };
 
-          const poiNode = ssp.createPoiNode({
-            type: '2.5D',
-            id: '2.5DPoiNode',
-            position: {
-              x: 0,
-              y: 0,
-              z: 0,
-            },
-            element: poiNodeEl,
-            level: {
-              max: 3000,
-              min: null,
-            },
-          });
-        },
-        '3D': function () {
-          const poiNodeEl = el.cloneNode(true);
-          poiNodeEl.style.display = 'block';
-          // pc 点击
-          poiNodeEl.onclick = function () {
-            alert('3D PoiNode click');
-          };
-          // 移动点击
-          poiNodeEl.ontouchend = function () {
-            alert('3D PoiNode click');
-          };
+        const poiNode = ssp.createPoiNode({
+          type: '2.5D',
+          id: '2.5DPoiNode',
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          element: poiNodeEl,
+          level: {
+            max: 3000,
+            min: null,
+          },
+        });
+      },
+      '3D': function () {
+        const poiNodeEl = el.cloneNode(true);
+        poiNodeEl.style.display = 'block';
+        // pc 点击
+        // poiNodeEl.onclick = function () {
+        //   alert('3D PoiNode click');
+        // };
+        // // 移动点击
+        // poiNodeEl.ontouchend = function () {
+        //   alert('3D PoiNode click');
+        // };
 
-          const poiNode = ssp.createPoiNode({
-            type: '3D',
-            id: '3DPoiNode',
-            position: {
-              x: 500,
-              y: 0,
-              z: 0,
-            },
-            element: poiNodeEl,
-            level: {
-              max: 3000,
-              min: null,
-            },
-          });
-        },
-        隐藏全部: function () {
-          ssp.hideAllPoiNode();
-        },
-        显示全部: function () {
-          ssp.showAllPoiNode();
-        },
-        清除全部: function () {
-          ssp.clearPoiNode();
-        },
-      };
+        poiNodeEl.addEventListener('dblclick', function () {
+          console.log('3D PoiNode dblclick')
+        })
 
-      for (let i in paramFn) gui.add(paramFn, i);
-    </script>
-  </body>
+        const poiNode = ssp.createPoiNode({
+          type: '3D',
+          id: '3DPoiNode',
+          position: {
+            x: 500,
+            y: 0,
+            z: 0,
+          },
+          element: poiNodeEl,
+          level: {
+            max: 3000,
+            min: null,
+          },
+        });
+      },
+      隐藏全部: function () {
+        ssp.hideAllPoiNode();
+      },
+      显示全部: function () {
+        ssp.showAllPoiNode();
+      },
+      清除全部: function () {
+        ssp.clearPoiNode();
+      },
+    };
+
+    for (let i in paramFn) gui.add(paramFn, i);
+  </script>
+</body>
+
 </html>
