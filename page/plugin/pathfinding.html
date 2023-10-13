@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>navigation-mesh 样例</title>
-    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/base.css" />
     <style>
         .interactive {
             display: grid;
@@ -32,15 +32,9 @@
 
 <body>
     <div class="interactive">
-        <div class="wrap">
-            <button class="start">选择起点（点击模型选择位置）</button><span class="startText"></span>
-        </div>
-        <div class="wrap">
-            <button class="end">选择终点（点击模型选择位置）</button><span class="endText"></span>
-        </div>
-        <div class="wrap">
-            <button class="computePath">计算路径</button><span class="computeSuccess"></span>
-        </div>
+        <div class="wrap"><button class="start">选择起点（点击模型选择位置）</button><span class="startText"></span></div>
+        <div class="wrap"><button class="end">选择终点（点击模型选择位置）</button><span class="endText"></span></div>
+        <div class="wrap"><button class="computePath">计算路径</button><span class="computeSuccess"></span></div>
     </div>
     <div id="view" style="width: 100vw; height: 100vh"></div>
 
@@ -48,8 +42,8 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
       }
     </script>
@@ -79,20 +73,14 @@
             },
         }));
 
-        const soonmanager2SyncPlugin = ssp.registerPlugin(
-            Soonmanager2SyncPlugin,
-            'soonmanager2SyncPlugin'
-        );
+        // 路径计算初始化
+        await PathfindingPlugin.ready();
 
-        const pathfindingPlugin = ssp.registerPlugin(
-            PathfindingPlugin,
-            'pathfindingPlugin'
-        );
+        const soonmanager2SyncPlugin = ssp.registerPlugin(Soonmanager2SyncPlugin, 'soonmanager2SyncPlugin');
 
-        const patrolControls = ssp.registerPlugin(
-            PatrolControlsPlugin,
-            'patrolControls'
-        );
+        const pathfindingPlugin = ssp.registerPlugin(PathfindingPlugin, 'pathfindingPlugin');
+
+        const patrolControls = ssp.registerPlugin(PatrolControlsPlugin, 'patrolControls');
 
         console.log(pathfindingPlugin);
 
@@ -134,8 +122,7 @@
                 case 'start':
                     startPosition = pathfindingPlugin.getClosestPoint(p);
 
-                    document.querySelector('.startText').innerText =
-                        JSON.stringify(startPosition);
+                    document.querySelector('.startText').innerText = JSON.stringify(startPosition);
                     document.querySelector('.computeSuccess').innerText = '';
 
                     break;
@@ -143,8 +130,7 @@
                 case 'end':
                     endPosition = pathfindingPlugin.getClosestPoint(p);
 
-                    document.querySelector('.endText').innerText =
-                        JSON.stringify(endPosition);
+                    document.querySelector('.endText').innerText = JSON.stringify(endPosition);
                     document.querySelector('.computeSuccess').innerText = '';
 
                     break;
@@ -173,11 +159,9 @@
             const path = pathfindingPlugin.computePath(startPosition, endPosition);
 
             if (path && path.length > 0) {
-                document.querySelector('.computeSuccess').innerText =
-                    '路径计算成功！';
+                document.querySelector('.computeSuccess').innerText = '路径计算成功！';
             } else {
-                document.querySelector('.computeSuccess').innerText =
-                    '路径计算失败！';
+                document.querySelector('.computeSuccess').innerText = '路径计算失败！';
             }
 
             const nodes = path.map((path, index) => ({
@@ -218,7 +202,6 @@
             },
         };
 
-
         const helperChange = () => {
             pathfindingPlugin.createDebugNavMesh();
         };
@@ -236,10 +219,7 @@
         naviParams.computeArea();
 
         gui.add(naviParams, 'helper').name('导航区域辅助器').onChange(helperChange);
-        gui
-            .add(naviParams, 'conditionerY', 1, 4.3, 0.1)
-            .name('空调高度')
-            .onChange(conditionerYChange);
+        gui.add(naviParams, 'conditionerY', 1, 4.3, 0.1).name('空调高度').onChange(conditionerYChange);
         gui.add(naviParams, 'computeArea').name('重新计算导航区域');
 
         const patrol = gui.addFolder('路径巡检');
