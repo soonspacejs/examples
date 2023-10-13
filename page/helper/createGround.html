@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SoonSpace Example</title>
-    <link rel="stylesheet" href="../../assets/css/base.css" />
-  </head>
 
-  <body>
-    <div id="view"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SoonSpace Example</title>
+  <link rel="stylesheet" href="../../assets/css/base.css" />
+</head>
 
-    <script type="importmap">
+<body>
+  <div id="view"></div>
+
+  <script type="importmap">
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
@@ -20,29 +21,32 @@
         }
       }
     </script>
-    <script type="module">
-      import SoonSpace from '../../libs/soonspacejs/index.js';
-      import { GUI } from '../../libs/gui.js';
+  <script type="module">
+    import SoonSpace from '../../libs/soonspacejs/index.js';
+    import { GUI } from '../../libs/gui.js';
 
-      const ssp = (window.ssp = new SoonSpace({
-        el: '#view',
-        options: {},
-        events: {},
-      }));
+    const ssp = (window.ssp = new SoonSpace({
+      el: '#view',
+      options: {},
+      events: {},
+    }));
 
-      const ground = ssp.addGroundHelper({
-        id: 'ground',
-        imgUrl: '../../assets/img/ground/004.jpg',
-        width: 500,
-        height: 500,
-        opacity: 0.6,
-        position: { x: 0, y: 0, z: 0 },
-        repeat: { x: 10, y: 10 },
-      });
+    ssp.setEnvironment({
+      file: '../../assets/img/hdr/puresky_1k.hdr',
+      background: true,
+    });
 
-      setTimeout(() => {
-        ssp.render();
-      }, 1000);
-    </script>
-  </body>
+    const ground = await ssp.addGroundHelper({
+      id: 'ground',
+      imgUrl: '../../assets/img/ground/002.jpg',
+      width: 500,
+      height: 500,
+      opacity: 1,
+      position: { x: 0, y: 0, z: 0 },
+      repeat: { x: 10, y: 10 },
+    });
+
+  </script>
+</body>
+
 </html>
