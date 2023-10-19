@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+    <div id="tips">使用鼠标中键拾取坐标设置中心点</div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          showInfo: true,
+          showViewHelper: true,
+        },
+        events: {},
+      }));
+
+      const model = await ssp.loadModel({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.01,
+          y: 0.01,
+          z: 0.01,
+        },
+      });
+      ssp.flyToObj(model);
+
+      const { controls, domElement } = ssp;
+
+      const helperPoint = document.createElement('div');
+      helperPoint.style.width = '1rem';
+      helperPoint.style.height = '1rem';
+      helperPoint.style.background = 'radial-gradient(#e66465, #9198e5)';
+      helperPoint.style.borderRadius = '50%';
+
+      const helperPointPoi = ssp.createPoiNode({
+        id: 'helper-point-poiNode',
+        element: helperPoint,
+        type: '2D',
+      });
+
+      const controlsUpdate = () => {
+        controls.getTarget(helperPointPoi.position);
+      };
+
+      controls.addEventListener('update', controlsUpdate);
+
+      const pointerdownHandle = (event) => {
+        // mouse middle click
+        if (event.button === 1) {
+          const [intersect] = ssp.viewport.getIntersects(event);
+
+          if (intersect) {
+            const {
+              point: { x, y, z },
+            } = intersect;
+
+            controls.setTarget(x, y, z, true);
+          }
+        }
+      };
+
+      domElement.addEventListener('pointerdown', pointerdownHandle);
+    </script>
+  </body>
+</html>

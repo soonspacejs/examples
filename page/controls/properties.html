@@ -22,7 +22,6 @@
       }
     </script>
     <script type="module">
-        import { MathUtils } from 'three';
         import SoonSpace from '../../libs/soonspacejs/index.js';
         import { GUI } from '../../libs/gui.js';
 
@@ -52,7 +51,6 @@
         });
         ssp.flyToObj(model);
 
-        const { DEG2RAD } = MathUtils;
         const { controls } = ssp;
 
         const gui = new GUI();

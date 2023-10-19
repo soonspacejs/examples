@@ -271,6 +271,10 @@ export default [
       {
         title: '无限 dolly',
         demoLink: './page/controls/infinity-dolly.html',
+      },
+      {
+        title: '动态 target',
+        demoLink: './page/controls/dynamic-target.html',
       }
     ],
   },
