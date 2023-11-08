@@ -38,9 +38,9 @@ function getShaderStageProperty( shaderStage ) {
 
 class WebGLNodeBuilder extends NodeBuilder {
 
-	constructor( object, renderer, shader ) {
+	constructor( object, renderer, shader, material = null ) {
 
-		super( object, renderer, new GLSLNodeParser() );
+		super( object, renderer, new GLSLNodeParser(), null, material );
 
 		this.shader = shader;
 		this.slots = { vertex: [], fragment: [] };
@@ -220,7 +220,7 @@ class WebGLNodeBuilder extends NodeBuilder {
 						this.addSlot( 'fragment', new SlotNode( {
 							node: material.clearcoatNormalNode,
 							nodeType: 'vec3',
-							source: 'vec3 clearcoatNormal = geometryNormal;',
+							source: 'vec3 clearcoatNormal = nonPerturbedNormal;',
 							target: 'vec3 clearcoatNormal = %RESULT%;'
 						} ) );
 
@@ -499,7 +499,7 @@ class WebGLNodeBuilder extends NodeBuilder {
 			for ( const attribute of attributes ) {
 
 				// ignore common attributes to prevent redefinitions
-				if ( /^(position|normal|uv\d?)$/.test( attribute.name ) )
+				if ( /^(position|normal|uv[1-3]?)$/.test( attribute.name ) )
 					continue;
 
 				snippet += `attribute ${attribute.type} ${attribute.name}; `;

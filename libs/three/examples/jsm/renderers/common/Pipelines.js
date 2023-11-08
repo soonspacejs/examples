@@ -109,31 +109,31 @@ class Pipelines extends DataMap {
 
 			// get shader
 
-			const nodeBuilder = this.nodes.getForRender( renderObject );
+			const nodeBuilderState = renderObject.getNodeBuilderState();
 
 			// programmable stages
 
-			let stageVertex = this.programs.vertex.get( nodeBuilder.vertexShader );
+			let stageVertex = this.programs.vertex.get( nodeBuilderState.vertexShader );
 
 			if ( stageVertex === undefined ) {
 
 				if ( previousPipeline && previousPipeline.vertexProgram.usedTimes === 0 ) this._releaseProgram( previousPipeline.vertexProgram );
 
-				stageVertex = new ProgrammableStage( nodeBuilder.vertexShader, 'vertex' );
-				this.programs.vertex.set( nodeBuilder.vertexShader, stageVertex );
+				stageVertex = new ProgrammableStage( nodeBuilderState.vertexShader, 'vertex' );
+				this.programs.vertex.set( nodeBuilderState.vertexShader, stageVertex );
 
 				backend.createProgram( stageVertex );
 
 			}
 
-			let stageFragment = this.programs.fragment.get( nodeBuilder.fragmentShader );
+			let stageFragment = this.programs.fragment.get( nodeBuilderState.fragmentShader );
 
 			if ( stageFragment === undefined ) {
 
 				if ( previousPipeline && previousPipeline.fragmentProgram.usedTimes === 0 ) this._releaseProgram( previousPipeline.fragmentProgram );
 
-				stageFragment = new ProgrammableStage( nodeBuilder.fragmentShader, 'fragment' );
-				this.programs.fragment.set( nodeBuilder.fragmentShader, stageFragment );
+				stageFragment = new ProgrammableStage( nodeBuilderState.fragmentShader, 'fragment' );
+				this.programs.fragment.set( nodeBuilderState.fragmentShader, stageFragment );
 
 				backend.createProgram( stageFragment );
 
@@ -343,7 +343,7 @@ class Pipelines extends DataMap {
 			data.stencilWrite !== material.stencilWrite || data.stencilFunc !== material.stencilFunc ||
 			data.stencilFail !== material.stencilFail || data.stencilZFail !== material.stencilZFail || data.stencilZPass !== material.stencilZPass ||
 			data.stencilFuncMask !== material.stencilFuncMask || data.stencilWriteMask !== material.stencilWriteMask ||
-			data.side !== material.side
+			data.side !== material.side || data.alphaToCoverage !== material.alphaToCoverage
 		) {
 
 			data.material = material; data.materialVersion = material.version;
@@ -355,7 +355,7 @@ class Pipelines extends DataMap {
 			data.stencilWrite = material.stencilWrite; data.stencilFunc = material.stencilFunc;
 			data.stencilFail = material.stencilFail; data.stencilZFail = material.stencilZFail; data.stencilZPass = material.stencilZPass;
 			data.stencilFuncMask = material.stencilFuncMask; data.stencilWriteMask = material.stencilWriteMask;
-			data.side = material.side;
+			data.side = material.side; data.alphaToCoverage = material.alphaToCoverage;
 
 			needsUpdate = true;
 

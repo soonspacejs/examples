@@ -7,6 +7,7 @@ import { reference } from '../accessors/ReferenceNode.js';
 import { texture } from '../accessors/TextureNode.js';
 import { positionWorld } from '../accessors/PositionNode.js';
 import { normalWorld } from '../accessors/NormalNode.js';
+import { WebGPUCoordinateSystem } from 'three';
 //import { add } from '../math/OperatorNode.js';
 
 import { Color, DepthTexture, NearestFilter, LessCompare } from 'three';
@@ -37,7 +38,7 @@ class AnalyticLightNode extends LightingNode {
 
 	}
 
-	constructShadow( builder ) {
+	setupShadow( builder ) {
 
 		let shadowNode = this.shadowNode;
 
@@ -73,11 +74,24 @@ class AnalyticLightNode extends LightingNode {
 				.and( shadowCoord.y.lessThanEqual( 1 ) )
 				.and( shadowCoord.z.lessThanEqual( 1 ) );
 
-			shadowCoord = vec3(
-				shadowCoord.x,
-				shadowCoord.y.oneMinus(), // WebGPU: Flip Y
-				shadowCoord.z.add( bias ).mul( 2 ).sub( 1 ) // WebGPU: Convertion [ 0, 1 ] to [ - 1, 1 ]
-			);
+
+			if ( builder.renderer.coordinateSystem === WebGPUCoordinateSystem ) {
+
+				shadowCoord = vec3(
+					shadowCoord.x,
+					shadowCoord.y.oneMinus(), // WebGPU: Flip Y
+					shadowCoord.z.add( bias ).mul( 2 ).sub( 1 ) // WebGPU: Convertion [ 0, 1 ] to [ - 1, 1 ]
+				);
+
+			} else {
+
+				shadowCoord = vec3(
+					shadowCoord.x,
+					shadowCoord.y,
+					shadowCoord.z.add( bias )
+				);
+
+			}
 
 			const textureCompare = ( depthTexture, shadowCoord, compare ) => texture( depthTexture, shadowCoord ).compare( compare );
 			//const textureCompare = ( depthTexture, shadowCoord, compare ) => compare.step( texture( depthTexture, shadowCoord ) );
@@ -136,9 +150,9 @@ class AnalyticLightNode extends LightingNode {
 
 	}
 
-	construct( builder ) {
+	setup( builder ) {
 
-		if ( this.light.castShadow ) this.constructShadow( builder );
+		if ( this.light.castShadow ) this.setupShadow( builder );
 
 	}
 
@@ -181,4 +195,4 @@ class AnalyticLightNode extends LightingNode {
 
 export default AnalyticLightNode;
 
-addNodeClass( AnalyticLightNode );
+addNodeClass( 'AnalyticLightNode', AnalyticLightNode );
