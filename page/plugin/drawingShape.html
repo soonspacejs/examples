@@ -33,13 +33,13 @@
         events: {},
       }));
 
-      ssp.addGroundHelper({
+      await ssp.addGroundHelper({
         id: 'ground',
         imgUrl: '../../assets/img/ground/001.jpg',
         width: 10000,
         height: 10000,
       });
-      ssp.flyMainViewpoint();
+      await ssp.flyMainViewpoint();
 
       const drawingShapePlugin = ssp.registerPlugin(
         DrawingShapePlugin,
