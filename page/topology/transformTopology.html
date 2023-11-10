@@ -57,7 +57,7 @@
             'transformControls'
           );
 
-          transformControls.start(topology, {
+          const control = transformControls.start(topology, {
             mode: 'translate',
             onUpdate(object) {
               console.log('onUpdate', object);
@@ -73,7 +73,7 @@
             .add({ mode: 'translate' }, 'mode')
             .options(['translate', 'rotate', 'scale'])
             .name('操作模式')
-            .onChange((val) => transformControls.changeMode(val));
+            .onChange((val) => transformControls.changeMode(control,val));
         });
     </script>
   </body>

@@ -141,7 +141,7 @@
       imageSlice.depth = sliceMesh.depth;
       document.getElementById("left-top").appendChild(imageSlice.canvas);
       Object.assign(window, { mesh, sliceMesh });
-      transformControls.start(mesh, {
+      const control = transformControls.start(mesh, {
         mode: "translate",
         // onUpdate(object) {
         //   console.log('onUpdate', object);
@@ -163,7 +163,7 @@
         .add({ mode: "translate" }, "mode", ["translate", "rotate", "scale"])
         .name("操作模式")
         .onChange((value) => {
-          transformControls.changeMode(value);
+          transformControls.changeMode(control,value);
         });
       const materialFolder = gui.addFolder("材质");
       // materialFolder.add( material, 'gradient', gradientMap ).listen()
