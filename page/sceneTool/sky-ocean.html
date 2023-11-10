@@ -11,6 +11,7 @@
   <body>
     <div id="view"></div>
 
+    <script async src="../../libs/es-module-shims.js"></script>
     <script type="importmap">
       {
         "imports": {
@@ -102,8 +103,8 @@
       });
 
       const water = new Water(waterGeometry, {
-        textureWidth: 1024,
-        textureHeight: 1024,
+        textureWidth: 512,
+        textureHeight: 512,
         waterNormals,
         sunDirection: new THREE.Vector3(),
         sunColor: 0xffffff,
