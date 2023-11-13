@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script async src="../../libs/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { Water } from 'three/examples/jsm/objects/Water.js';
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          background: {
+            alpha: true,
+          },
+        },
+      }));
+
+      ssp.controls.maxPolarAngle = Math.PI / 2;
+      ssp.controls.minDistance = 0;
+      ssp.controls.maxDistance = 500;
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: 37.75625508579821,
+          y: 11.207247029533384,
+          z: -18.261504346322585,
+        },
+        target: {
+          x: -1.8715953339305147,
+          y: 6.225192342554074,
+          z: 5.276419529938932,
+        },
+      });
+
+      const model = await ssp.loadModel({
+        id: 'gltf',
+        name: 'gltf',
+        url: '../../assets/model/gltf/pirate_island.glb',
+      });
+
+      const box = ssp.utils.getBoundingBox(model);
+
+      const size = new ssp.THREE.Vector3(),
+        center = new ssp.THREE.Vector3();
+
+      box.getSize(size);
+      box.getCenter(center);
+
+      /**
+       * light
+       */
+
+      const positionHeight = Math.tan(Math.PI / 4) * size.x;
+
+      const directionalLight = ssp.createDirectionalLight({
+        id: 'directionalLight',
+        name: 'directionalLight',
+        position: {
+          x: box.max.x,
+          y: positionHeight,
+          z: box.max.z,
+        },
+        target: {
+          x: box.min.x,
+          y: box.min.y,
+          z: box.min.z,
+        },
+        openShadow: true,
+        shadowAutoUpdate: false,
+        intensity: 15,
+        mapSize: ssp.viewport.renderer.capabilities.maxTextureSize,
+      });
+
+      // Water
+
+      const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+      const waterNormals = new THREE.TextureLoader().load('../../assets/img/waternormals.jpg', function (texture) {
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      });
+
+      const water = new Water(waterGeometry, {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals,
+        sunDirection: new THREE.Vector3(),
+        sunColor: 0xffffff,
+        waterColor: 0x001e0f,
+        distortionScale: 0.7,
+        fog: false,
+      });
+
+      water.rotation.x = -Math.PI / 2;
+      water.position.y += 2.4;
+
+      ssp.addObject(water);
+
+      const gui = new GUI();
+
+      const params = {
+        enabled: true,
+        position: { x: 0, y: 0, z: 0 },
+        scalar: 10000,
+        turbidity: 10,
+        rayleigh: 3,
+        elevation: 6,
+        azimuth: -36,
+      };
+
+      // Sky
+
+      const sceneEnv = new THREE.Scene();
+
+      let renderTarget;
+
+      const updateSun = () => {
+        ssp.setSky(params);
+
+        const sunPosition = ssp.viewport.sky.material.uniforms['sunPosition'].value;
+
+        water.material.uniforms['sunDirection'].value.copy(sunPosition).normalize();
+
+        if (renderTarget !== undefined) renderTarget.dispose();
+
+        sceneEnv.add(ssp.viewport.sky);
+        renderTarget = ssp.viewport.pmremGenerator.fromScene(sceneEnv);
+        ssp.viewport.scene.add(ssp.viewport.sky);
+
+        ssp.viewport.scene.environment = renderTarget.texture;
+
+        // light
+        const lightPosition = center.clone().addScaledVector(sunPosition, size.length() / 2);
+        directionalLight.position.copy(lightPosition);
+        directionalLight.target.position.copy(lightPosition).negate();
+        ssp.updateAllShadow();
+      };
+
+      updateSun();
+
+      gui.add(params, 'elevation', 0, 90).name('海拔').onChange(updateSun);
+
+      gui.add(params, 'azimuth', -180, 180).name('方位').onChange(updateSun);
+
+      // update
+      ssp.signals.beforeRender.add(() => {
+        water.material.uniforms['time'].value += ssp.viewport.state.delta;
+        ssp.render();
+      });
+      ssp.render();
+    </script>
+  </body>
+</html>

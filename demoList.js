@@ -233,10 +233,10 @@ export default [
         title: '天空',
         demoLink: './page/sceneTool/sky.html',
       },
-      // {
-      //   title: '海洋',
-      //   demoLink: './page/sceneTool/sky-ocean.html',
-      // },
+      {
+        title: '海洋',
+        demoLink: './page/sceneTool/ocean.html',
+      },
       {
         title: '环境光遮蔽',
         demoLink: './page/sceneTool/SSAO.html',
