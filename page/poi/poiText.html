@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { Vector3 } from 'three';
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: false,
+          showInfo: false,
+          showViewHelper: true,
+        },
+        events: {
+          modelClick(p) {
+            console.log(p);
+          },
+        },
+      }));
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: -79.90187367051048,
+          y: 115.74327900305407,
+          z: 9.38389101417953,
+        },
+        target: {
+          x: -9.583605918899758,
+          y: 7.78366779569849,
+          z: 7.746574803635215,
+        },
+      });
+
+      const poi = ssp.createPoi({
+        url: '../../assets/img/poi/poi_test.png',
+        id: 'test_poi_001',
+        name: 'test_poi_001',
+        namePosition: { x: 0, y: 12, z: 0 },
+        nameScale: { x: 16, y: 4, z: 1 },
+        // text 样式配置
+        nameCanvasInfo: {
+          canvasWidth: 256,
+          canvasHeight: 64,
+          fillStyle: '#fff',
+          strokeStyle: '#000',
+          backgroundStyle: 'rgba(1,1,1,0.5)',
+          borderStyle: '#0f0',
+          borderWidth: 3,
+        },
+        position: {
+          x: 20,
+          y: 10,
+          z: 0,
+        },
+        scale: {
+          x: 0.8,
+          y: 0.8,
+          z: 0.8,
+        },
+        level: {
+          min: 0,
+          max: 1000,
+        },
+      });
+
+      const model = await ssp.loadModel({
+        id: 'room_01',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      await ssp.render();
+
+      // 只有文字的 poi
+      const po2 = ssp.createPoi({
+        id: 'poi2',
+        name: '机柜',
+        namePosition: { x: 0, y: 4, z: 0 },
+        nameScale: { x: 16, y: 4, z: 1 },
+        nameCanvasInfo: {
+          canvasWidth: 256,
+          canvasHeight: 64,
+          fillStyle: '#cf50ff',
+          strokeStyle: '#000',
+          backgroundStyle: 'rgba(0,255,0,0.5)',
+          borderStyle: '#f00',
+          borderWidth: 3,
+        },
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        type: '2.5d',
+        visible: false,
+      });
+
+      // 机柜 mesh
+      const cabinet = model.getObjectByName('25');
+      const cabinetBox = ssp.utils.getBoundingBox(cabinet);
+      const cabinetCenter = cabinetBox.getCenter(new Vector3());
+      po2.position.copy(cabinetCenter);
+      po2.position.y = cabinetBox.max.y;
+      po2.show();
+    </script>
+  </body>
+</html>

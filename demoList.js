@@ -67,6 +67,10 @@ export default [
         demoLink: './page/poi/createPoi.html',
       },
       {
+        title: '文字样式',
+        demoLink: './page/poi/poiText.html',
+      },
+      {
         title: 'Poi 类型',
         demoLink: './page/poi/poiType.html',
       },
