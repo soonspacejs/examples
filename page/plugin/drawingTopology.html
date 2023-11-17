@@ -1,81 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoonSpace Example</title>
-  <link rel="stylesheet" href="../../assets/css/base.css">
-</head>
+  <body>
+    <div id="view"></div>
 
-<body>
-  <div id="view"></div>
-  
-   <script type="importmap">
-    {
-      "imports": {
-        "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
-      }
-    }
-  </script>
-  <script type="module">
-    import SoonSpace from '../../libs/soonspacejs/index.js'
-    import DrawingTopologyPlugin from '../../libs/soonspacejs/plugins/drawing-topology.js'
-    import { GUI } from '../../libs/gui.js'
-
-    const ssp = window.ssp = new SoonSpace({
-      el: '#view',
-      options: {
-        showInfo: true
-      },
-      events: {}
-    })
-
-    ssp.addGroundHelper({
-      id: 'ground',
-      imgUrl: '../../assets/img/ground/001.jpg',
-      width: 10000,
-      height: 10000
-    })
-
-    const drawingTopologyPlugin = ssp.registerPlugin(DrawingTopologyPlugin, 'drawingTopologyPlugin')
-
-    ssp.loadModel({
-      id: 'room',
-      url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
-      position: {
-        x: 100,
-        y: 120,
-        z: 100
-      }
-    })
-      .then(sbm => {
-        return ssp.flyToObj(sbm, "frontTop", { padding: 100 })
-      })
-      .then(() => {
-        const gui = new GUI()
-
-        const fns = {
-          开始绘制: function () {
-            drawingTopologyPlugin.start({
-              id: 'draing_topology',
-              onDone(nodes) {
-                console.log('drawEnd', nodes)
-              },
-              onCancel() {
-                console.log('drawCancel')
-              }
-            })
-          }
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import DrawingTopologyPlugin from '../../libs/soonspacejs/plugins/drawing-topology.js';
+      import { GUI } from '../../libs/gui.js';
 
-        for (let i in fns) gui.add(fns, i)
-      })
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+        },
+        events: {},
+      }));
 
-  </script>
-</body>
+      ssp.addGroundHelper({
+        id: 'ground',
+        imgUrl: '../../assets/img/ground/001.jpg',
+        width: 10000,
+        height: 10000,
+      });
 
+      const drawingTopologyPlugin = ssp.registerPlugin(DrawingTopologyPlugin, 'drawingTopologyPlugin');
+
+      ssp
+        .loadModel({
+          id: 'room',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          position: {
+            x: 100,
+            y: 120,
+            z: 100,
+          },
+        })
+        .then((sbm) => {
+          return ssp.flyToObj(sbm, 'frontTop', { padding: 100 });
+        })
+        .then(() => {
+          const gui = new GUI();
+
+          const fns = {
+            开始绘制: function () {
+              drawingTopologyPlugin.start({
+                id: 'drawing_topology',
+                onDone(nodes) {
+                  console.log('drawEnd', nodes);
+                },
+                onAdd(addNode, intersectObject) {
+                  console.log('add', addNode, intersectObject);
+                },
+                onUndo(undoNode) {
+                  console.log('undo', undoNode);
+                },
+                onCancel() {
+                  console.log('drawCancel');
+                },
+              });
+            },
+          };
+
+          for (let i in fns) gui.add(fns, i);
+        });
+    </script>
+  </body>
 </html>
