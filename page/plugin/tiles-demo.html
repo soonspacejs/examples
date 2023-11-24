@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+      #info {
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 5px;
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+    <div id="info"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { Sphere } from 'three';
+      import SoonSpace from 'soonspacejs';
+      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+      // import TransformControlsPlugin from '../../plugin-transform-controls/dist/index.esm.js';
+      import TilesPlugin from '../../libs/soonspacejs/plugins/tiles.js';
+      // import { GUI } from '../../../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showViewHelper: true,
+        },
+        events: {},
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/three/examples/jsm/libs/draco/');
+      ssp.setModelKtx2DecoderPath('../../libs/three/examples/jsm/libs/basis/');
+
+      const tilesPlugin = ssp.registerPlugin(TilesPlugin, 'tilesPlugin');
+
+      const baseUrl = 'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles';
+
+      const tiles = await tilesPlugin.loadTiles(baseUrl + '/交规院1101块/tileset.json');
+      const tiles1 = await tilesPlugin.loadTiles(baseUrl + '/交规院1022块/tileset.json');
+      const tiles2 = await tilesPlugin.loadTiles(baseUrl + '/交规院1027块/tileset.json');
+
+      window.tilesArr = [tiles, tiles1, tiles2];
+
+      const { controls } = ssp;
+
+      controls.verticalDragToForward = true;
+
+      // // helper
+      // const helperPoint = document.createElement('div');
+      // helperPoint.style.width = '1rem';
+      // helperPoint.style.height = '1rem';
+      // helperPoint.style.background = 'radial-gradient(#e66465, #9198e5)';
+      // helperPoint.style.borderRadius = '50%';
+
+      // const helperPointPoi = ssp.createPoiNode({
+      //   id: 'helper-point-poiNode',
+      //   element: helperPoint,
+      //   type: '2D',
+      //   visible: false,
+      // });
+
+      // // events
+      // controls.addEventListener('transitionstart', () => {
+      //   controls.getTarget(helperPointPoi.position, false);
+      //   helperPointPoi.show();
+      // });
+      // controls.addEventListener('rest', () => {
+      //   helperPointPoi.hide();
+      // });
+
+      const boundingSphere = new Sphere();
+      tiles1.getBoundingSphere(boundingSphere);
+      console.log(boundingSphere);
+      boundingSphere.radius /= 5;
+      controls.fitToSphere(boundingSphere);
+
+      const up = boundingSphere.center.clone().normalize();
+      controls.camera.up.copy(up);
+      controls.updateCameraUp();
+
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+      cpsSoonmanagerPlugin.setPath(baseUrl + '/杭州交规院Scene');
+      cpsSoonmanagerPlugin.setKey(
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOcXDr8lcaQcg5b6XSK4ov9//GTEynWkfalnawqQK5ngATR5sFastfaVQK7ISRNlsZ/trggyXZPTmBD3m+Uy2e6PtELOIhusie8n4xGjno2ZhRu5dB8IuzFyEDM05WwHNlUFJPKInVikyLzmW1wKO/j69PAnsULsHwcMVLb6pKmQIDAQAB'
+      );
+      await cpsSoonmanagerPlugin.loadScene({ needsModelsBoundsTree: false });
+      // await ssp.computeModelsBoundsTree();
+      // const modelGroup = await ssp.loadModel({
+      //   id: 'test-opt',
+      //   url: './test-opt.glb'
+      // })
+
+      const [modelGroup] = ssp.getObjectByName('编组1');
+
+      modelGroup.position.set(...[-2763238.779194681, 4758145.7093269, 3214945.9224052825]);
+      modelGroup.rotation.set(...[-2.6640808767967856, -0.25157887271232854, 2.6848083784246044, 'XYZ']);
+
+      // 重置中心点
+      // ssp.signals.click.add((event) => {
+      //   // hack
+      //   const intersects = [];
+      //   ssp.viewport.getIntersects(event, intersects);
+      //   tiles.raycast(ssp.viewport.raycaster, intersects);
+      //   if (intersects.length === 0) tiles1.raycast(ssp.viewport.raycaster, intersects);
+      //   if (intersects.length === 0) tiles2.raycast(ssp.viewport.raycaster, intersects);
+      //   const [intersect] = intersects;
+      //   if (intersect) {
+      //     const {
+      //       point: { x, y, z },
+      //     } = intersect;
+
+      //     controls.setTarget(x, y, z, true);
+      //   }
+      // });
+
+      // const transformControls = ssp.registerPlugin(TransformControlsPlugin, 'transformControls');
+
+      // const control = transformControls.start(modelGroup);
+      // control.space = 'local';
+
+      // const gui = new GUI();
+      // gui
+      //   .add({ mode: 'translate' }, 'mode')
+      //   .options(['translate', 'rotate', 'scale'])
+      //   .name('操作模式')
+      //   .onChange((val) => transformControls.changeMode(control, val));
+
+      const infoEl = document.getElementById('info');
+
+      ssp.signals.sceneRendered.add(() => {
+        const totalLoaded = tiles.lruCache.itemList.length - tiles.parseQueue.items.length - tiles.downloadQueue.items.length;
+
+        const { calls, triangles } = ssp.viewport.renderer.info.render;
+        infoEl.innerText =
+          `tiles downloading : ${tiles.downloadQueue.items.length}\n` +
+          `tiles parsing     : ${tiles.parseQueue.items.length}\n` +
+          `tiles loaded      : ${totalLoaded}\n` +
+          `tiles displayed   : ${tiles.visibleTiles.size}\n` +
+          `draw calls        : ${calls}\n` +
+          `triangles         : ${triangles.toLocaleString()}\n`;
+      });
+    </script>
+  </body>
+</html>
