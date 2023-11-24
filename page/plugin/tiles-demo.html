@@ -42,7 +42,7 @@
       import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
       // import TransformControlsPlugin from '../../plugin-transform-controls/dist/index.esm.js';
       import TilesPlugin from '../../libs/soonspacejs/plugins/tiles.js';
-      // import { GUI } from '../../../../libs/gui.js';
+      import { GUI } from '../../libs/gui.js';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
@@ -58,11 +58,18 @@
 
       const tilesPlugin = ssp.registerPlugin(TilesPlugin, 'tilesPlugin');
 
-      const baseUrl = 'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles/杭州交规院';
+      const baseUrl =
+        'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles/杭州交规院';
 
-      const tiles = await tilesPlugin.loadTiles(baseUrl + '/交规院1101块/tileset.json');
-      const tiles1 = await tilesPlugin.loadTiles(baseUrl + '/交规院1022块/tileset.json');
-      const tiles2 = await tilesPlugin.loadTiles(baseUrl + '/交规院1027块/tileset.json');
+      const tiles = await tilesPlugin.loadTiles(
+        baseUrl + '/交规院1101块/tileset.json'
+      );
+      const tiles1 = await tilesPlugin.loadTiles(
+        baseUrl + '/交规院1022块/tileset.json'
+      );
+      const tiles2 = await tilesPlugin.loadTiles(
+        baseUrl + '/交规院1027块/tileset.json'
+      );
 
       window.tilesArr = [tiles, tiles1, tiles2];
 
@@ -103,7 +110,8 @@
       controls.camera.up.copy(up);
       controls.updateCameraUp();
 
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
 
       cpsSoonmanagerPlugin.setPath(baseUrl + '/杭州交规院Scene');
       cpsSoonmanagerPlugin.setKey(
@@ -118,8 +126,17 @@
 
       const [modelGroup] = ssp.getObjectByName('编组1');
 
-      modelGroup.position.set(...[-2763238.779194681, 4758145.7093269, 3214945.9224052825]);
-      modelGroup.rotation.set(...[-2.6640808767967856, -0.25157887271232854, 2.6848083784246044, 'XYZ']);
+      modelGroup.position.set(
+        ...[-2763238.779194681, 4758145.7093269, 3214945.9224052825]
+      );
+      modelGroup.rotation.set(
+        ...[
+          -2.6640808767967856,
+          -0.25157887271232854,
+          2.6848083784246044,
+          'XYZ',
+        ]
+      );
 
       // 重置中心点
       // ssp.signals.click.add((event) => {
@@ -144,7 +161,13 @@
       // const control = transformControls.start(modelGroup);
       // control.space = 'local';
 
-      // const gui = new GUI();
+      const gui = new GUI();
+
+      gui
+        .add({ model: true }, 'model')
+        .name('显示模型')
+        .onChange((val) => (val ? modelGroup.show() : modelGroup.hide()));
+
       // gui
       //   .add({ mode: 'translate' }, 'mode')
       //   .options(['translate', 'rotate', 'scale'])
@@ -154,7 +177,10 @@
       const infoEl = document.getElementById('info');
 
       ssp.signals.sceneRendered.add(() => {
-        const totalLoaded = tiles.lruCache.itemList.length - tiles.parseQueue.items.length - tiles.downloadQueue.items.length;
+        const totalLoaded =
+          tiles.lruCache.itemList.length -
+          tiles.parseQueue.items.length -
+          tiles.downloadQueue.items.length;
 
         const { calls, triangles } = ssp.viewport.renderer.info.render;
         infoEl.innerText =
