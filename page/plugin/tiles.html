@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <style>
+      * {
+        margin: 0;
+      }
+      #info {
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 5px;
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+    <div id="info"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { Sphere } from 'three';
+      import SoonSpace from 'soonspacejs';
+      import TilesPlugin from '../../libs/soonspacejs/plugins/tiles.js';
+      import { GUI } from '../../libs/gui.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showViewHelper: true,
+        },
+        events: {
+          sceneClick() {
+            // console.log('scene');
+          },
+        },
+      }));
+
+      const { ACTION } = SoonSpace;
+
+      const { controls } = ssp;
+      controls.verticalDragToForward = true;
+      controls.dollyToCursor = true;
+      controls.maxPolarAngle = Math.PI / 2;
+      controls.mouseButtons.left = ACTION.TRUCK;
+      controls.mouseButtons.right = ACTION.ROTATE;
+
+      ssp.setModelDracoDecoderPath('../../libs/three/examples/jsm/libs/draco/');
+      ssp.setModelKtx2DecoderPath('../../libs/three/examples/jsm/libs/basis/');
+
+      const tilesPlugin = ssp.registerPlugin(TilesPlugin, 'tilesPlugin');
+
+      const baseUrl = 'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles/杭州交规院';
+
+      const tiles = await tilesPlugin.loadTiles(`${baseUrl}/1022-3dt/tileset.json`);
+
+      console.log(tiles);
+
+      window.tiles = tiles;
+
+      const boundingSphere = new Sphere();
+      tiles.getBoundingSphere(boundingSphere);
+      controls.fitToSphere(boundingSphere);
+
+      const up = boundingSphere.center.clone().normalize();
+      controls.camera.up.copy(up);
+      controls.updateCameraUp();
+
+      const infoEl = document.getElementById('info');
+
+      ssp.signals.sceneRendered.add(() => {
+        const totalLoaded = tiles.lruCache.itemList.length - tiles.parseQueue.items.length - tiles.downloadQueue.items.length;
+
+        const { calls, triangles } = ssp.viewport.renderer.info.render;
+        infoEl.innerText =
+          `tiles downloading : ${tiles.downloadQueue.items.length}\n` +
+          `tiles parsing     : ${tiles.parseQueue.items.length}\n` +
+          `tiles loaded      : ${totalLoaded}\n` +
+          `tiles displayed   : ${tiles.visibleTiles.size}\n` +
+          `draw calls        : ${calls}\n` +
+          `triangles         : ${triangles.toLocaleString()}\n`;
+      });
+    </script>
+  </body>
+</html>
