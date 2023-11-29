@@ -15,8 +15,8 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-heat-map": "../../libs/soonspacejs/plugins/heat-map.js",
           "@soonspacejs/plugin-drawing-shape": "../../libs/soonspacejs/plugins/drawing-shape.js",
@@ -43,10 +43,7 @@
         },
       }));
 
-      const drawingShapePlugin = ssp.registerPlugin(
-        DrawingShapePlugin,
-        'drawingShapePlugin'
-      );
+      const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin');
 
       ssp
         .loadModel({
@@ -72,6 +69,7 @@
           const res = await drawingShapePlugin.drawingLine({
             color: 'green',
             opacity: 0.8,
+            offsetY: 1,
           });
 
           console.log('drawLine done', res);
@@ -102,10 +100,7 @@
             radius: Math.random() * 100,
             value: Math.random() * 100,
           });
-          const heatObj = heatMapPlugin.setDataPolygon(
-            'polygon',
-            polygonHeatMapData
-          );
+          const heatObj = heatMapPlugin.setDataPolygon('polygon', polygonHeatMapData);
         },
         移动多边形热力图: function () {
           const heatObj = heatMapPlugin.getById('polygon');
