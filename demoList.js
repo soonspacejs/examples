@@ -542,6 +542,10 @@ export default [
         title: '模型爆炸拆分',
         demoLink: './page/plugin/modelBlast.html',
       },
+      {
+        title: '3D Tiles 加载',
+        demoLink: './page/plugin/tiles.html',
+      }
     ],
   },
   // featrue
