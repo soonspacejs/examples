@@ -543,6 +543,10 @@ export default [
         demoLink: './page/plugin/modelBlast.html',
       },
       {
+        title: '测量',
+        demoLink: './page/plugin/measuring.html',
+      },
+      {
         title: '3D Tiles 加载',
         demoLink: './page/plugin/tiles.html',
       }
