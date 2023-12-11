@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="tips" style="color: greenyellow">单击开始测量，双击（Enter）结束，Esc 退出</div>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-measuring": "../../libs/soonspacejs/plugins/measuring.js",
+          "gui": "../../libs/gui.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import MeasuringPlugin, { MeasuringMode } from '@soonspacejs/plugin-measuring';
+      import { GUI } from 'gui';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showGrid: true,
+          showInfo: true,
+        },
+        events: {},
+      }));
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: 8.1517087405622,
+          y: 3.446804807190087,
+          z: 10.079993926067061,
+        },
+        target: {
+          x: 1.5931323187584587,
+          y: -0.14224494674127933,
+          z: -2.36145736113559,
+        },
+      });
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+      ssp.setEnvironment({
+        file: '../../assets/img/hdr/sunrise_1k.hdr',
+        background: true,
+      });
+
+      const measuringPlugin = ssp.registerPlugin(MeasuringPlugin, 'measuringPlugin');
+
+      window.measuringPlugin = measuringPlugin;
+
+      const model = await ssp.loadModel({
+        id: 'room',
+        url: '../../assets/model/gltf/court-transformed.glb',
+
+        rotation: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+      });
+
+      ssp.computeModelsBoundsTree();
+
+      const gui = new GUI();
+
+      const params = {
+        [MeasuringMode.Distance]: () => {
+          measuringPlugin.start(MeasuringMode.Distance, { unit: 'm', precision: 2 });
+        },
+        [MeasuringMode.Area]: () => {
+          measuringPlugin.start(MeasuringMode.Area);
+        },
+        [MeasuringMode.Angle]: () => {
+          measuringPlugin.start(MeasuringMode.Angle, { precision: 2 });
+        },
+        clear: () => {
+          measuringPlugin.clear();
+        },
+      };
+
+      measuringPlugin.onDone = () => {
+        console.log('done');
+      };
+      measuringPlugin.onCancel = () => {
+        console.log('cancel');
+      };
+
+      gui.add(params, MeasuringMode.Distance).name('距离测量');
+      gui.add(params, MeasuringMode.Area).name('面积测量');
+      gui.add(params, MeasuringMode.Angle).name('角度测量');
+      gui.add(params, 'clear').name('清空');
+    </script>
+  </body>
+</html>
