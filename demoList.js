@@ -52,6 +52,10 @@ export default [
         demoLink: './page/model/loadFbx.html',
       },
       {
+        title: '加载点云',
+        demoLink: './page/model/loadPly.html',
+      },
+      {
         title: 'dxf 二三维联动',
         demoLink: './page/model/loadDxf.html',
       },

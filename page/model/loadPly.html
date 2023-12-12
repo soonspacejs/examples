@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import * as THREE from 'three';
+      import { PLYLoader } from 'three/examples/jsm/loaders/PLYLoader.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+        },
+        events: {},
+      }));
+
+      const loader = new PLYLoader();
+      const geometry = await loader.loadAsync('../../assets/model/office1_v3.ply');
+      const material = new THREE.MeshStandardMaterial({ vertexColors: true });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      ssp.addObject(mesh);
+      ssp.flyToObj(mesh);
+    </script>
+  </body>
+</html>
