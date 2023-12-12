@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import { GUI } from '../../libs/lil-gui.module.min.js';
+      import * as THREE from 'three';
+      import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+        },
+        events: {},
+      }));
+
+      const loader = new PCDLoader();
+      const points = await loader.loadAsync('../../assets/model/mesh.pcd');
+      points.material.size = 0.02;
+
+      //
+      const gui = new GUI();
+
+      gui.add(points.material, 'size', 0.01, 0.05).onChange(() => ssp.render());
+      gui.addColor(points.material, 'color').onChange(() => ssp.render());
+
+      ssp.addObject(points);
+      ssp.flyToObj(points);
+    </script>
+  </body>
+</html>

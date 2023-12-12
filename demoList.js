@@ -53,7 +53,7 @@ export default [
       },
       {
         title: '加载点云',
-        demoLink: './page/model/loadPly.html',
+        demoLink: './page/model/loadPcd.html',
       },
       {
         title: 'dxf 二三维联动',
