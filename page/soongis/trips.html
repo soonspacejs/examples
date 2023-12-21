@@ -51,6 +51,8 @@
       'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
     const lightStyle =
       'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+    const satelliteStyle =
+      'https://api.maptiler.com/maps/satellite/style.json?key=dHVN7nnsTd213RXpZXGb';
     const soongis = new SoonGIS({
       container: 'map',
       center,
@@ -61,12 +63,16 @@
       style: darkStyle,
     });
 
+    const ssp = (window.ssp = new SoonSpace({
+      soongis,
+    }));
+
     self.soongis = soongis;
 
     const { map } = soongis;
 
     if (!map.isStyleLoaded())
-      await new Promise((resolve) => map.on('load', resolve));
+      await new Promise((resolve) => map.once('style.load', resolve));
 
     // trips layer
     const layer = new deck.MapboxLayer({
@@ -88,10 +94,6 @@
     });
 
     map.addLayer(layer);
-
-    const ssp = (window.ssp = new SoonSpace({
-      soongis,
-    }));
 
     ssp.setToneMapping({ exposure: 0.4 });
 
@@ -117,9 +119,6 @@
         z: 0.01,
       },
     });
-    // setTimeout(() => {
-    //   ssp.emissiveShow(model)
-    // },1000)
     await ssp.loadModel({
       id: 'model2',
       url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
@@ -264,7 +263,7 @@
 
     const gui = new GUI();
 
-    const theme = ['黑夜', '白天'];
+    const theme = ['黑夜', '白天', '卫星图'];
     const guiParams = {
       flyToCenter,
       theme: theme[0],
@@ -279,10 +278,20 @@
         if (val === theme[0]) {
           ssp.setToneMapping({ exposure: 0.4 });
           map.setStyle(darkStyle);
-        } else {
+        } else if (val === theme[1]) {
           ssp.setToneMapping({ exposure: 0.8 });
           map.setStyle(lightStyle);
+        } else if (val === theme[2]) {
+          ssp.setToneMapping({ exposure: 0.8 });
+          map.setStyle(satelliteStyle);
         }
+
+        map.once('styledata', () => {
+          // hack
+          setTimeout(() => {
+            map.moveLayer('trips-layer');
+          }, 1000);
+        });
       });
     gui
       .add(guiParams, 'emissive')
