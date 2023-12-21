@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../../libs/maplibre-gl/dist/maplibre-gl.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body,
+      #map {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js",
+        "three/examples/": "../../libs/three/examples/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+        "soonspacejs": "../../libs/soonspacejs/index.js"
+      }
+    }
+  </script>
+  <script src="../../libs/maplibre-gl/dist/maplibre-gl.js"></script>
+  <script src="../../libs/soongis/dist/index.js"></script>
+  <script type="module">
+    import SoonSpace from 'soonspacejs';
+
+    const center = [120.16071664690207, 30.189586637919618];
+    const soongis = new SoonGIS({
+      container: 'map',
+      center,
+      zoom: 18,
+      pitch: 60,
+      maxPitch: 85,
+      antialias: true,
+      // style: 'https://api.maptiler.com/maps/basic/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      // style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      // style: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+      //   style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+    });
+
+    self.soongis = soongis;
+
+    const { map } = soongis;
+
+    if (!map.isStyleLoaded())
+      await new Promise((resolve) => map.on('load', resolve));
+
+    const ssp = (window.ssp = new SoonSpace({
+      soongis,
+    }));
+
+    ssp.setToneMapping({ exposure: 0.8 });
+
+    const { soongisManager } = ssp;
+    // soongisManager.setCoordinates({ longitude: center[0], latitude: center[1], altitude: 0 });
+
+    await ssp.loadModel({
+      id: 'model1',
+      url: '../../assets/model/sbm/jianzhu01/jianzhu01_1F_0.sbm',
+      position: {
+        x: -80,
+        y: 0,
+        z: 56,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+    await ssp.loadModel({
+      id: 'model2',
+      url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
+      position: {
+        x: -80,
+        y: 0,
+        z: 56,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+    await ssp.loadModel({
+      id: 'model3',
+      url: '../../assets/model/sbm/jianzhu03/jianzhu03_1F_0.sbm',
+      position: {
+        x: -30,
+        y: 0,
+        z: -110,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+
+    const flyCenter = [120.16020951296798, 30.189616162125105];
+    map.flyTo({ center: flyCenter, zoom: 16, duration: 500 });
+  </script>
+</html>

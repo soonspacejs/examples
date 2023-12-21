@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../../libs/maplibre-gl/dist/maplibre-gl.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body,
+      #map {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three/build/three.module.js",
+        "three/examples/": "../../libs/three/examples/",
+        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+        "soonspacejs": "../../libs/soonspacejs/index.js"
+      }
+    }
+  </script>
+  <script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: '28f0b900c74a5b3e1484e80cb0a9faef',
+    };
+  </script>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=618738dac6cc67cc80ae9616411fd869&plugin=AMap.LineSearch"></script>
+  <script src="../../libs/deck.gl.js"></script>
+  <script src="../../libs/coordstransform.js"></script>
+  <script src="../../libs/maplibre-gl/dist/maplibre-gl.js"></script>
+  <script src="../../libs/soongis/dist/index.js"></script>
+  <script type="module">
+    import SoonSpace from 'soonspacejs';
+
+    const center = [120.16071664690207, 30.189586637919618];
+    const darkStyle =
+      'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+    const lightStyle =
+      'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+    const soongis = new SoonGIS({
+      container: 'map',
+      center,
+      zoom: 18,
+      pitch: 60,
+      maxPitch: 85,
+      antialias: true,
+      style: darkStyle,
+    });
+
+    self.soongis = soongis;
+
+    const { map } = soongis;
+
+    if (!map.isStyleLoaded())
+      await new Promise((resolve) => map.on('load', resolve));
+
+    // trips layer
+    const layer = new deck.MapboxLayer({
+      id: 'trips-layer',
+      type: deck.TripsLayer,
+      data: [],
+      getPath: (d) => d._path,
+      getTimestamps: (d) => d._timestamp,
+      getColor: (d) => d._color,
+      opacity: 0.8,
+      widthMinPixels: 5,
+      capRounded: true,
+      fadeTrail: true,
+      trailLength: 200,
+      currentTime: 0,
+      parameters: {
+        depthTest: false,
+      },
+    });
+
+    map.addLayer(layer);
+
+    const ssp = (window.ssp = new SoonSpace({
+      soongis,
+    }));
+
+    ssp.setToneMapping({ exposure: 0.4 });
+
+    const { soongisManager } = ssp;
+    // soongisManager.setCoordinates({ longitude: center[0], latitude: center[1], altitude: 0 });
+
+    const model1 = await ssp.loadModel({
+      id: 'model1',
+      url: '../../assets/model/sbm/jianzhu01/jianzhu01_1F_0.sbm',
+      position: {
+        x: -80,
+        y: 0,
+        z: 56,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+    // setTimeout(() => {
+    //   ssp.emissiveShow(model)
+    // },1000)
+    await ssp.loadModel({
+      id: 'model2',
+      url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
+      position: {
+        x: -80,
+        y: 0,
+        z: 56,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+    await ssp.loadModel({
+      id: 'model3',
+      url: '../../assets/model/sbm/jianzhu03/jianzhu03_1F_0.sbm',
+      position: {
+        x: -30,
+        y: 0,
+        z: -110,
+      },
+      rotation: {
+        x: 0,
+        y: Math.PI / 12,
+        z: 0,
+      },
+      scale: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+    });
+
+    function flyToCenter() {
+      const flyCenter = [120.16020951296798, 30.189616162125105];
+      map.flyTo({ center: flyCenter, zoom: 16, duration: 500 });
+    }
+    flyToCenter();
+
+    // amap data
+    const busLinesSet = new Set([
+      '113路',
+      '1510M路',
+      '1514M路',
+      '171路',
+      '172路',
+      '352路',
+      '315路',
+      '107路',
+      '114路',
+      '225路',
+      '226路',
+      '137路',
+      '138路',
+      '402路',
+      '7157路',
+      '197路',
+      '7139M',
+      '542路',
+      '1514M',
+      '1521M路',
+    ]);
+    const busLines = [...busLinesSet];
+    const linesearch = new AMap.LineSearch({
+      pageIndex: 1,
+      city: '杭州',
+      pageSize: 1,
+      extensions: 'all',
+    });
+    const TIME_LENGTH = 1000;
+    function getTripsData(word) {
+      return new Promise((resolve, reject) => {
+        linesearch.search(word, function (status, result) {
+          if (status === 'complete' && result.info === 'OK') {
+            const [line] = result.lineInfo;
+            if (line) {
+              const { path } = line;
+              const pathLangth = path.length;
+              if (pathLangth > 0) {
+                const randomColor = [
+                  255 * Math.random(),
+                  255 * Math.random(),
+                  255 * Math.random(),
+                ];
+                const pathObj = {
+                  _path: [],
+                  _timestamp: [],
+                  _name: line.name,
+                  _color: randomColor,
+                };
+                path.reduce((init, curr, index) => {
+                  // 坐标系转换
+                  const lnglat = coordtransform.gcj02towgs84(
+                    curr.lng,
+                    curr.lat
+                  );
+                  init._path.push(lnglat);
+                  init._timestamp.push(
+                    (TIME_LENGTH / pathLangth) * (index + 1)
+                  );
+                  return init;
+                }, pathObj);
+
+                resolve(pathObj);
+              }
+            }
+          }
+
+          reject();
+        });
+      });
+    }
+
+    const values = await Promise.allSettled(
+      busLines.map((word) => getTripsData(word))
+    );
+
+    const data = values
+      .filter((v) => v.status === 'fulfilled')
+      .map((v) => v.value);
+
+    // animate
+    let _time = 0;
+    function animate() {
+      _time = (_time + 0.5) % TIME_LENGTH;
+      layer.setProps({ currentTime: _time, data });
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(() => {
+      animate();
+    });
+
+    // gui
+    import { GUI } from '../../libs/lil-gui.module.min.js';
+
+    const gui = new GUI();
+
+    const theme = ['黑夜', '白天'];
+    const guiParams = {
+      flyToCenter,
+      theme: theme[0],
+      emissive: false,
+    };
+
+    gui.add(guiParams, 'flyToCenter').name('飞向建筑');
+    gui
+      .add(guiParams, 'theme', theme)
+      .name('主题')
+      .onChange((val) => {
+        if (val === theme[0]) {
+          ssp.setToneMapping({ exposure: 0.4 });
+          map.setStyle(darkStyle);
+        } else {
+          ssp.setToneMapping({ exposure: 0.8 });
+          map.setStyle(lightStyle);
+        }
+      });
+    gui
+      .add(guiParams, 'emissive')
+      .name('建筑自发光')
+      .onChange((val) => {
+        if (val) ssp.emissiveShow(model1);
+        else ssp.unEmissiveShow(model1);
+      });
+  </script>
+</html>
