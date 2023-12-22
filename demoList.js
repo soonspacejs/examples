@@ -557,7 +557,7 @@ export default [
     ],
   },
   {
-    title: 'soongis',
+    title: 'SoonGIS',
     key: 'soongis',
     children: [
       {

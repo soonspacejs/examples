@@ -71,8 +71,8 @@
 
     const { map } = soongis;
 
-    if (!map.isStyleLoaded())
-      await new Promise((resolve) => map.once('style.load', resolve));
+    if (!map.loaded())
+      await new Promise((resolve) => map.once('load', resolve));
 
     // trips layer
     const layer = new deck.MapboxLayer({
