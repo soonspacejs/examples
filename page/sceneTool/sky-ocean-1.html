@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script async src="../../libs/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { Water } from 'three/examples/jsm/objects/Water.js';
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          background: {
+            alpha: true,
+          },
+        },
+        events: {
+          modelClick(params) {
+            console.log(params);
+          },
+        },
+      }));
+
+      ssp.controls.maxPolarAngle = Math.PI / 2;
+      // ssp.controls.minDistance = 0;
+      // ssp.controls.maxDistance = 500;
+
+      ssp.setEnvironment({
+        file: '../../assets/img/hdr/sunrise_1k.hdr',
+        // background: true,
+      });
+
+      ssp.setCameraViewpoint({
+        position: {
+          x: -37.36209613323196,
+          y: -557.0619073785316,
+          z: -314.7950329647714,
+        },
+        target: {
+          x: -115.40571768587652,
+          y: -557.0619073785316,
+          z: -225.7877682494331,
+        },
+      });
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
+        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/上海20231227');
+      await cpsSoonmanagerPlugin.loadScene();
+
+      // 动画播放
+      const animationsData = await cpsSoonmanagerPlugin.fetchAnimationsData();
+      for (let [key, data] of animationsData) {
+        const object = ssp.getObjectById(key);
+        cpsSoonmanagerPlugin.playObjectAnimation(object, 0);
+      }
+      // await ssp.flyMainViewpoint();
+
+      ssp.setSky({
+        enabled: true,
+        // position: {
+        //   x: -11488.869143095151,
+        //   y: -53732.53713866105,
+        //   z: -20218.97066552243,
+        // },
+        scalar: 4000,
+        turbidity: 10,
+        rayleigh: 3,
+        elevation: 6,
+        azimuth: -12,
+      });
+
+      const [model] = ssp.getObjectByName('上海浦东');
+      const waterMesh = model.getObjectByName('Line86');
+      console.log(waterMesh);
+
+      // Water
+
+      // const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+      const waterNormals = new THREE.TextureLoader().load(
+        '../../assets/img/waternormals.jpg',
+        function (texture) {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        }
+      );
+
+      const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+      const water = new Water(waterGeometry, {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals,
+        // sunDirection: new THREE.Vector3(),
+        // eye: new THREE.Vector3(0, 1, 0),
+        waterColor: 0x00aaff,
+        distortionScale: 0.7,
+        fog: false,
+      });
+
+      const sunPosition =
+        ssp.viewport.sky.material.uniforms['sunPosition'].value;
+
+      water.material.uniforms['sunDirection'].value
+        .copy(sunPosition)
+        .normalize();
+
+      waterMesh.matrix.decompose(water.position, water.rotation, water.scale);
+      water.position.y = 19.2;
+      water.rotation.x = -Math.PI;
+      // water.rotation.x = -Math.PI / 2;
+      // water.position.y += 0.58;
+
+      waterMesh.visible = false;
+
+      ssp.addObject(water, waterMesh.parent);
+
+      ssp.signals.beforeRender.add(() => {
+        water.material.uniforms['time'].value += 1.0 / 60.0;
+        ssp.render();
+      });
+      ssp.render();
+    </script>
+  </body>
+</html>
