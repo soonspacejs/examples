@@ -65,10 +65,15 @@
       });
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
-        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(
+        CpsSoonmanagerPlugin,
+        'cpsSoonmanagerPlugin'
+      ));
 
-      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/上海20231227');
+      cpsSoonmanagerPlugin.setKey(
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO0R1vcfWt4v2SoWDdODBA6NoMhRW1jBXta5AJNCRcIhdipCDni/ef23Vnqop2Cjbb8G3iMm62tuZn47RXeKRs1/41kuQL2/Vhra2kdenJIQ5txNxUReRtrsih/seOnU/vpNmSZcX8l/iWPmwp5ERFHosYXqnpEsyMaw/8Z7npSQIDAQAB'
+      );
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/上海长江大桥demo_导入');
       await cpsSoonmanagerPlugin.loadScene();
 
       // 动画播放
@@ -100,12 +105,9 @@
       // Water
 
       // const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
-      const waterNormals = new THREE.TextureLoader().load(
-        '../../assets/img/waternormals.jpg',
-        function (texture) {
-          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        }
-      );
+      const waterNormals = new THREE.TextureLoader().load('../../assets/img/waternormals.jpg', function (texture) {
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      });
 
       const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
       const water = new Water(waterGeometry, {
@@ -119,20 +121,19 @@
         fog: false,
       });
 
-      const sunPosition =
-        ssp.viewport.sky.material.uniforms['sunPosition'].value;
+      const sunPosition = ssp.viewport.sky.material.uniforms['sunPosition'].value;
 
-      water.material.uniforms['sunDirection'].value
-        .copy(sunPosition)
-        .normalize();
+      water.material.uniforms['sunDirection'].value.copy(sunPosition).normalize();
 
-      waterMesh.matrix.decompose(water.position, water.rotation, water.scale);
-      water.position.y = 19.2;
+      // waterMesh.matrix.decompose(water.position, water.rotation, water.scale);
+      // water.position.y = 19.2;
       water.rotation.x = -Math.PI;
       // water.rotation.x = -Math.PI / 2;
       // water.position.y += 0.58;
 
       waterMesh.visible = false;
+
+      console.log(water);
 
       ssp.addObject(water, waterMesh.parent);
 
