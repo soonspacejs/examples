@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import ModelBlastPlugin from '../../libs/soonspacejs/plugins/model-blast.js';
+      import { GUI } from '../../libs/lil-gui.module.min.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+        },
+        events: {},
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+      const modelBlast = ssp.registerPlugin(ModelBlastPlugin, 'modelBlast');
+
+      const model = await ssp.loadModel({
+        id: 'room_01',
+        url: '../../assets/model/gltf/Hospital_Room.glb',
+      });
+      const objects = model.getObjectByName('000-0-0').children;
+      ssp.flyMainViewpoint();
+
+      const gui = new GUI();
+
+      const params = {
+        scalar: 10,
+        play: () => {
+          ssp.animation(
+            { scalar: 0 },
+            { scalar: 100 },
+            { duration: 1200, mode: 'Quadratic.InOut' },
+            ({ scalar }) => {
+              modelBlast.startForObjects(objects, scalar);
+            },
+            (tween) => {}
+          );
+        },
+        close: () => {
+          modelBlast.stopForObjects(objects);
+        },
+      };
+
+      gui
+        .add(params, 'scalar', 1, 100)
+        .name('间隔')
+        .onChange((val) => {
+          modelBlast.startForObjects(objects, val);
+        });
+
+      gui.add(params, 'play').name('爆炸动画');
+      gui.add(params, 'close').name('关闭');
+    </script>
+  </body>
+</html>
