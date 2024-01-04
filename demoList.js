@@ -543,8 +543,12 @@ export default [
         demoLink: './page/plugin/sceneClipping.html',
       },
       {
-        title: '模型爆炸拆分',
+        title: '模型爆炸拆分（mesh）',
         demoLink: './page/plugin/modelBlast.html',
+      },
+      {
+        title: '模型爆炸拆分（objects）',
+        demoLink: './page/plugin/modelBlast-objects.html',
       },
       {
         title: '测量',
