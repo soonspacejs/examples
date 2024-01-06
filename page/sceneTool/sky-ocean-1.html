@@ -27,6 +27,7 @@
       import { Water } from 'three/examples/jsm/objects/Water.js';
       import SoonSpace from '../../libs/soonspacejs/index.js';
       import CpsSoonmanagerPlugin from '../../libs/soonspacejs/plugins/cps-soonmanager.js';
+      import { GUI } from '../../libs/lil-gui.module.min.js';
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
@@ -116,14 +117,30 @@
         waterNormals,
         // sunDirection: new THREE.Vector3(),
         // eye: new THREE.Vector3(0, 1, 0),
-        waterColor: 0x00aaff,
+        waterColor: 0x01193c,
         distortionScale: 0.7,
         fog: false,
       });
 
+      const {
+        material: { uniforms },
+      } = water;
+
       const sunPosition = ssp.viewport.sky.material.uniforms['sunPosition'].value;
 
-      water.material.uniforms['sunDirection'].value.copy(sunPosition).normalize();
+      uniforms['sunDirection'].value.copy(sunPosition).normalize();
+      uniforms['size'].value = 5;
+
+      const gui = new GUI();
+      const speeds = { v: 240 };
+
+      gui
+        .add({ y: 0 }, 'y', -20, 20, 0.1)
+        .name('高度')
+        .onChange((val) => (water.position.z = -val));
+      gui.add(uniforms['size'], 'value', 0.1, 10, 0.1).name('water size');
+      gui.addColor(uniforms['waterColor'], 'value').name('water color');
+      gui.add(speeds, 'v', 1, 240).name('water frame time');
 
       // waterMesh.matrix.decompose(water.position, water.rotation, water.scale);
       // water.position.y = 19.2;
@@ -138,7 +155,7 @@
       ssp.addObject(water, waterMesh.parent);
 
       ssp.signals.beforeRender.add(() => {
-        water.material.uniforms['time'].value += 1.0 / 60.0;
+        water.material.uniforms['time'].value += 1.0 / speeds.v;
         ssp.render();
       });
       ssp.render();
