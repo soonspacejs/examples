@@ -65,65 +65,136 @@
     ssp.setToneMapping({ exposure: 0.8 });
 
     const { soongisManager } = ssp;
-    // soongisManager.setCoordinates({ longitude: center[0], latitude: center[1], altitude: 0 });
 
-    await ssp.loadModel({
-      id: 'model1',
-      url: '../../assets/model/sbm/jianzhu01/jianzhu01_1F_0.sbm',
-      position: {
-        x: -80,
-        y: 0,
-        z: 56,
-      },
-      rotation: {
-        x: 0,
-        y: Math.PI / 12,
-        z: 0,
-      },
-      scale: {
-        x: 0.01,
-        y: 0.01,
-        z: 0.01,
-      },
+    const position = soongisManager.fromCoordinateToPosition({
+      longitude: center[0],
+      latitude: center[1],
+      altitude: 0,
     });
-    await ssp.loadModel({
-      id: 'model2',
-      url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
-      position: {
-        x: -80,
-        y: 0,
-        z: 56,
+
+    const model = ssp.loadModelToGroup(
+      {
+        id: 'group',
+        position,
       },
-      rotation: {
-        x: 0,
-        y: Math.PI / 12,
-        z: 0,
-      },
-      scale: {
-        x: 0.01,
-        y: 0.01,
-        z: 0.01,
-      },
-    });
-    await ssp.loadModel({
-      id: 'model3',
-      url: '../../assets/model/sbm/jianzhu03/jianzhu03_1F_0.sbm',
-      position: {
-        x: -30,
-        y: 0,
-        z: -110,
-      },
-      rotation: {
-        x: 0,
-        y: Math.PI / 12,
-        z: 0,
-      },
-      scale: {
-        x: 0.01,
-        y: 0.01,
-        z: 0.01,
-      },
-    });
+      [
+        {
+          id: 'model1',
+          url: '../../assets/model/sbm/jianzhu01/jianzhu01_1F_0.sbm',
+          position: {
+            x: -80,
+            y: 0,
+            z: 56,
+          },
+          rotation: {
+            x: 0,
+            y: Math.PI / 12,
+            z: 0,
+          },
+          scale: {
+            x: 0.01,
+            y: 0.01,
+            z: 0.01,
+          },
+        },
+        {
+          id: 'model2',
+          url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
+          position: {
+            x: -80,
+            y: 0,
+            z: 56,
+          },
+          rotation: {
+            x: 0,
+            y: Math.PI / 12,
+            z: 0,
+          },
+          scale: {
+            x: 0.01,
+            y: 0.01,
+            z: 0.01,
+          },
+        },
+        {
+          id: 'model3',
+          url: '../../assets/model/sbm/jianzhu03/jianzhu03_1F_0.sbm',
+          position: {
+            x: -30,
+            y: 0,
+            z: -110,
+          },
+          rotation: {
+            x: 0,
+            y: Math.PI / 12,
+            z: 0,
+          },
+          scale: {
+            x: 0.01,
+            y: 0.01,
+            z: 0.01,
+          },
+        },
+      ]
+    );
+
+    // await ssp.loadModel({
+    //   id: 'model1',
+    //   url: '../../assets/model/sbm/jianzhu01/jianzhu01_1F_0.sbm',
+    //   position: {
+    //     x: -80,
+    //     y: 0,
+    //     z: 56,
+    //   },
+    //   rotation: {
+    //     x: 0,
+    //     y: Math.PI / 12,
+    //     z: 0,
+    //   },
+    //   scale: {
+    //     x: 0.01,
+    //     y: 0.01,
+    //     z: 0.01,
+    //   },
+    // });
+    // await ssp.loadModel({
+    //   id: 'model2',
+    //   url: '../../assets/model/sbm/jianzhu02/jianzhu02_1F_0.sbm',
+    //   position: {
+    //     x: -80,
+    //     y: 0,
+    //     z: 56,
+    //   },
+    //   rotation: {
+    //     x: 0,
+    //     y: Math.PI / 12,
+    //     z: 0,
+    //   },
+    //   scale: {
+    //     x: 0.01,
+    //     y: 0.01,
+    //     z: 0.01,
+    //   },
+    // });
+    // await ssp.loadModel({
+    //   id: 'model3',
+    //   url: '../../assets/model/sbm/jianzhu03/jianzhu03_1F_0.sbm',
+    //   position: {
+    //     x: -30,
+    //     y: 0,
+    //     z: -110,
+    //   },
+    //   rotation: {
+    //     x: 0,
+    //     y: Math.PI / 12,
+    //     z: 0,
+    //   },
+    //   scale: {
+    //     x: 0.01,
+    //     y: 0.01,
+    //     z: 0.01,
+    //   },
+    // });
 
     const flyCenter = [120.16020951296798, 30.189616162125105];
     map.flyTo({ center: flyCenter, zoom: 16, duration: 500 });
