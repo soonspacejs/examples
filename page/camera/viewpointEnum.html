@@ -15,14 +15,15 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-          "three/examples/": "../../libs/three/examples/",
+          "three/": "../../libs/three/",
+          "three/addons/": "../../libs/three/examples/jsm/",
           "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
         }
       }
     </script>
     <script type="module">
       import SoonSpace from '../../libs/soonspacejs/index.js';
-      import { GUI } from '../../libs/gui.js';
+      import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
       let model;
 
@@ -38,36 +39,55 @@
         .loadModel({
           id: 'room_01',
           url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+          rotation: {
+            x: 0,
+            y: Math.PI / 4,
+            z: 0,
+          },
         })
         .then((sbm) => {
-          ssp.flyToObj(sbm, 'frontTop');
+          ssp.flyToObj(sbm, 'fronttop');
 
           model = sbm;
         });
 
       const gui = new GUI();
 
+      const viewpointSpaces = ['world', 'local'];
+      const viewports = [
+        'current',
+        'top',
+        'bottom',
+        'front',
+        'back',
+        'left',
+        'right',
+        'frontTop',
+        'backTop',
+        'leftTop',
+        'rightTop',
+        'leftFrontTop',
+        'rightFrontTop',
+        'leftBackTop',
+        'rightBackTop',
+      ];
+      const guiParams = {
+        viewpointSpace: viewpointSpaces[0],
+        viewport: 'frontTop',
+      };
+
       gui
-        .add({ 飞向角度: 'frontTop' }, '飞向角度')
-        .options([
-          'current',
-          'top',
-          'bottom',
-          'front',
-          'back',
-          'left',
-          'right',
-          'frontTop',
-          'backTop',
-          'leftTop',
-          'rightTop',
-          'leftFrontTop',
-          'rightFrontTop',
-          'leftBackTop',
-          'rightBackTop',
-        ])
+        .add(guiParams, 'viewpointSpace')
+        .options(viewpointSpaces)
+        .name('视口空间');
+      gui
+        .add(guiParams, 'viewport')
+        .options(viewports)
+        .name('对象视口')
         .onChange((value) => {
-          ssp.flyToObj(model, value);
+          ssp.flyToObj(model, value, {
+            viewpointSpace: guiParams.viewpointSpace,
+          });
         });
     </script>
   </body>
