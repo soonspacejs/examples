@@ -41,9 +41,9 @@
 
       ssp.setCameraViewpoint({
         position: {
-          x: -79.90187367051048,
-          y: 115.74327900305407,
-          z: 9.38389101417953,
+          x: 87.47298981816874,
+          y: 123.45353547262883,
+          z: 96.04573860320887,
         },
         target: {
           x: -9.583605918899758,
@@ -116,8 +116,12 @@
           y: 0,
           z: 0,
         },
-        type: '2.5d',
-        visible: false,
+        rotation: {
+          x: 0,
+          y: Math.PI / 2,
+          z: 0,
+        },
+        type: '3d',
       });
 
       // 机柜 mesh
@@ -126,7 +130,6 @@
       const cabinetCenter = cabinetBox.getCenter(new Vector3());
       po2.position.copy(cabinetCenter);
       po2.position.y = cabinetBox.max.y;
-      po2.show();
     </script>
   </body>
 </html>

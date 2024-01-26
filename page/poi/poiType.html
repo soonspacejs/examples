@@ -59,6 +59,22 @@
 
       console.log('createPoi', poi);
 
+      const poi2 = ssp.createPoi({
+        id: 'icon-3d',
+        name: '3d poi',
+        url: '../../assets/img/poi/poi_test.png',
+        type: '3d',
+        position: {
+          x: 20,
+          y: 10,
+          z: 0,
+        },
+        level: {
+          max: 5000,
+          min: 10,
+        },
+      });
+
       /**
        * createPoiToGroup
        */
