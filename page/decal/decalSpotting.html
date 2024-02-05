@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { Object3D } from 'three';
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: false,
+        },
+        events: {},
+      }));
+
+      ssp.setEnvironment({
+        file: '../../assets/img/hdr/puresky_1k.hdr',
+        background: true,
+      });
+
+      const model = await ssp.loadModel({
+        id: 'new2',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        rotation: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const box = await ssp.loadModel({
+        id: 'box',
+        url: '../../assets/model/gltf/box.glb',
+        rotation: {
+          x: 0,
+          y: Math.PI / 4,
+          z: 0,
+        },
+      });
+
+      box.position.y += 2.6;
+      box.scale.setScalar(5);
+
+      ssp.flyToObj(box, 'frontTop', { viewpointSpace: 'world' });
+
+      ssp.domElement.addEventListener('pointerup', async (event) => {
+        const [intersect] = ssp.viewport.getIntersects(event, ssp.viewport.scener.intersectsList.meshOfModelList);
+        if (intersect) {
+          const { object, face, point } = intersect;
+          const n = face.normal.clone();
+          n.transformDirection(object.matrixWorld);
+          n.add(point);
+          const dummy = new Object3D();
+          dummy.position.copy(point);
+          dummy.lookAt(n);
+
+          const decal = await ssp.createDecal({
+            id: 'decal',
+            url: '../../assets/img/poi/poi_test.png',
+            position: n,
+            rotation: dummy.rotation,
+            scale: {
+              x: 1,
+              y: 1,
+              z: 1,
+            },
+            snapping: true,
+            snappingDistance: 2,
+          });
+          console.log(decal);
+        }
+      });
+    </script>
+  </body>
+</html>

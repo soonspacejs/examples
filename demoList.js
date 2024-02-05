@@ -181,6 +181,21 @@ export default [
       },
     ],
   },
+  // decal
+  {
+    title: '贴花',
+    key: 'decal',
+    children: [
+      {
+        title: '贴花更新',
+        demoLink: './page/decal/decalTransform.html',
+      },
+      {
+        title: '创建贴花',
+        demoLink: './page/decal/decalSpotting.html',
+      },
+    ],
+  },
   // modelTool
   {
     title: '模型操作工具',
@@ -287,7 +302,7 @@ export default [
       {
         title: '动态 target',
         demoLink: './page/controls/dynamic-target.html',
-      }
+      },
     ],
   },
   // camera
@@ -453,13 +468,11 @@ export default [
               },
               {
                 title: '颜色雾点材质',
-                demoLink:
-                  './page/plugin/heatCloud/volumeMesh/colorFogPoints.html',
+                demoLink: './page/plugin/heatCloud/volumeMesh/colorFogPoints.html',
               },
               {
                 title: '梯度雾点材质',
-                demoLink:
-                  './page/plugin/heatCloud/volumeMesh/gradientFogPoints.html',
+                demoLink: './page/plugin/heatCloud/volumeMesh/gradientFogPoints.html',
               },
             ],
           },
@@ -557,7 +570,7 @@ export default [
       {
         title: '3D Tiles 加载',
         demoLink: './page/plugin/tiles.html',
-      }
+      },
     ],
   },
   {
