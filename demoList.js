@@ -488,6 +488,10 @@ export default [
         demoLink: './page/plugin/polygonHeatMap.html',
       },
       {
+        title: '快速绘制热力图',
+        demoLink: './page/plugin/heatMapDrawing.html',
+      },
+      {
         title: '特效',
         demoLink: './page/plugin/effect.html',
       },
