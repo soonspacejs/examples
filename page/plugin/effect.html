@@ -15,8 +15,8 @@
       {
         "imports": {
           "three": "../../libs/three/build/three.module.js",
-        "three/examples/": "../../libs/three/examples/",
-        "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
           "gui": "../../libs/gui.js"
@@ -66,7 +66,7 @@
           });
         },
         删除火焰: function () {
-          effectPlugin.removeEffect('testFlame');
+          effectPlugin.removeObjectById('testFlame');
         },
         创建烟雾: function () {
           const smoke = effectPlugin.createSmoke({
@@ -84,7 +84,21 @@
           console.log(smoke);
         },
         删除烟雾: function () {
-          effectPlugin.removeEffect('testSmoke');
+          ssp.removeObjectById('testSmoke');
+        },
+        创建水面: function () {
+          const water = effectPlugin.createWater({
+            id: 'testWater',
+            polygon: [
+              { x: -300, y: 2, z: 300 },
+              { x: 300, y: 2, z: 300 },
+              { x: 300, y: 2, z: -100 },
+              { x: -300, y: 2, z: -100 },
+            ],
+          });
+        },
+        删除水面: function () {
+          ssp.removeObjectById('testWater');
         },
       };
 
