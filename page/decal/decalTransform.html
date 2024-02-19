@@ -101,7 +101,7 @@
       const control = transformControls.start(decal, {
         mode: 'translate',
         onDragEnd(object) {
-          ssp.updateDecalGeometry(decal, { snappingDistance: 1, snappingTargets: [box] });
+          ssp.updateDecalGeometry(decal, { snappingDistance: 1, snappingTargets: undefined });
         },
       });
 
