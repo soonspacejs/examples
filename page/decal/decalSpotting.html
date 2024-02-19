@@ -73,7 +73,7 @@
       box.scale.setScalar(5);
 
       ssp.flyToObj(box, 'frontTop', { viewpointSpace: 'world' });
-
+      let i = 0;
       ssp.domElement.addEventListener('pointerup', async (event) => {
         const [intersect] = ssp.viewport.getIntersects(event, ssp.viewport.scener.intersectsList.meshOfModelList);
         if (intersect) {
@@ -86,7 +86,7 @@
           dummy.lookAt(n);
 
           const decal = await ssp.createDecal({
-            id: 'decal',
+            id: 'decal' + i++,
             url: '../../assets/img/poi/poi_test.png',
             position: n,
             rotation: dummy.rotation,
