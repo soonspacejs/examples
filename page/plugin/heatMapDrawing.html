@@ -25,14 +25,14 @@
       }
     </script>
     <script type="module">
-      import SoonSpace from "soonspacejs";
-      import HeatMapPlugin from "@soonspacejs/plugin-heat-map";
-      import { GUI } from "gui";
+      import SoonSpace from 'soonspacejs';
+      import HeatMapPlugin from '@soonspacejs/plugin-heat-map';
+      import { GUI } from 'gui';
 
-      import DrawingShapePlugin from "@soonspacejs/plugin-drawing-shape";
+      import DrawingShapePlugin from '@soonspacejs/plugin-drawing-shape';
 
       const ssp = (window.ssp = new SoonSpace({
-        el: "#view",
+        el: '#view',
         options: {
           showInfo: true,
           showGrid: false,
@@ -46,14 +46,14 @@
       }));
 
       // ssp.addAxesHelper({ id: 'hm_axesHelper' })
-      const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, "drawingShapePlugin");
+      const drawingShapePlugin = ssp.registerPlugin(DrawingShapePlugin, 'drawingShapePlugin');
 
-      window.heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, "heatMapPlugin");
+      window.heatMapPlugin = ssp.registerPlugin(HeatMapPlugin, 'heatMapPlugin');
 
       (async () => {
         const sbm = await ssp.loadSbm({
-          id: "room",
-          url: "../../assets/model/sbm/changjing02/changjing02_1F_0.sbm",
+          id: 'room',
+          url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
           position: {
             x: 0,
             y: 0,
@@ -65,7 +65,7 @@
         const box = new ssp.THREE.Box3();
 
         ssp.addBoxHelper({
-          id: "hm_boxHelper",
+          id: 'hm_boxHelper',
           box,
         });
       })();
@@ -75,12 +75,12 @@
       const gui = new GUI();
 
       const settings = {
-        addTriggerType: ["drag"],
-        addTriggerName: "拖拽",
-        doneTriggerType: ["dblClick"],
-        doneTriggerName: "鼠标双击",
-        undoTriggerType: [{ keyDown: ["Backspace"] }],
-        undoTriggerName: "Backspace",
+        addTriggerType: ['drag'],
+        addTriggerName: '拖拽',
+        doneTriggerType: ['dblClick'],
+        doneTriggerName: '鼠标双击',
+        undoTriggerType: [{ keyDown: ['Backspace'] }],
+        undoTriggerName: 'Backspace',
         timeInterval: 100,
         min: 0,
         max: 100,
@@ -89,65 +89,65 @@
       };
 
       const triggerTypeMap = {
-        拖拽: "drag",
-        时间: "time",
-        鼠标单击: "click",
-        鼠标移动: "mouseMove",
-        鼠标右键点击: "rightClick",
-        鼠标双击: "dblClick",
-        Backspace: { keyDown: ["Backspace"] },
-        Enter: { keyDown: ["Enter"] },
+        拖拽: 'drag',
+        时间: 'time',
+        鼠标单击: 'click',
+        鼠标移动: 'mouseMove',
+        鼠标右键点击: 'rightClick',
+        鼠标双击: 'dblClick',
+        Backspace: { keyDown: ['Backspace'] },
+        Enter: { keyDown: ['Enter'] },
       };
 
       gui
-        .add(settings, "addTriggerName", ["拖拽", "时间", "鼠标移动", "鼠标单击", "鼠标双击", "鼠标右键点击"])
-        .name("增加热力点方式")
+        .add(settings, 'addTriggerName', ['拖拽', '时间', '鼠标移动', '鼠标单击', '鼠标双击', '鼠标右键点击'])
+        .name('增加热力点方式')
         .onChange((value) => {
           settings.addTriggerType = [triggerTypeMap[value]];
         });
       gui
-        .add(settings, "undoTriggerName", ["Backspace", "鼠标单击", "鼠标右键点击", "鼠标双击"])
-        .name("撤销热力点方式")
+        .add(settings, 'undoTriggerName', ['Backspace', '鼠标单击', '鼠标右键点击', '鼠标双击'])
+        .name('撤销热力点方式')
         .onChange((value) => {
           settings.undoTriggerType = [triggerTypeMap[value]];
         });
       gui
-        .add(settings, "doneTriggerName", ["Enter", "鼠标单击", "鼠标右键点击", "鼠标双击"])
-        .name("完成热力点绘制方式")
+        .add(settings, 'doneTriggerName', ['Enter', '鼠标单击', '鼠标右键点击', '鼠标双击'])
+        .name('完成热力点绘制方式')
         .onChange((value) => {
           settings.doneTriggerType = [triggerTypeMap[value]];
         });
       gui
-        .add(settings, "max", 0, 1000)
-        .name("max")
+        .add(settings, 'max', 0, 1000)
+        .name('max')
         .listen()
         .onChange((value) => {
           settings.max = value;
         });
       gui
-        .add(settings, "min", 0, 1000)
-        .name("min")
+        .add(settings, 'min', 0, 1000)
+        .name('min')
         .listen()
         .onChange((value) => {
           settings.min = value;
         });
       gui
-        .add(settings, "radius", 0, 1000)
-        .name("热力点半径")
+        .add(settings, 'radius', 0, 1000)
+        .name('热力点半径')
         .listen()
         .onChange((value) => {
           settings.radius = value;
         });
       gui
-        .add(settings, "timeInterval", 0, 1000)
-        .name("节流时间间隔")
+        .add(settings, 'timeInterval', 0, 1000)
+        .name('节流时间间隔')
         .listen()
         .onChange((value) => {
           settings.timeInterval = value;
         });
       gui
-        .add(settings, "distanceInterval", 0, 1000)
-        .name("节流距离间隔")
+        .add(settings, 'distanceInterval', 0, 1000)
+        .name('节流距离间隔')
         .listen()
         .onChange((value) => {
           settings.distanceInterval = value;
@@ -158,20 +158,21 @@
           drawingShapePlugin
             .drawingLine(
               {
-                color: "green",
+                color: 'green',
                 opacity: 0.8,
+                offsetY: 0.1,
               },
               {
                 onCancel() {
-                  console.log("drawingLine onCancel");
+                  console.log('drawingLine onCancel');
                 },
                 onCancelPrev() {
-                  console.log("drawingLine onCancelPrev");
+                  console.log('drawingLine onCancelPrev');
                 },
               }
             )
             .then((res) => {
-              console.log("drawLine done", res);
+              console.log('drawLine done', res);
               const { points } = res;
               const data = points.map((p, index) => {
                 const i = index + 1;
@@ -179,22 +180,22 @@
               });
 
               const heatObj = heatMapPlugin.createDrawing({
-                id: "polygon",
-                name: "polygon_name",
+                id: 'polygon',
+                name: 'polygon_name',
                 max: 200,
                 min: 50,
                 points: points,
                 // data: data,
-                addTriggerType: ["drag"],
+                addTriggerType: ['drag'],
                 // doneTriggerType: [ 'mouseUp'],
                 // undoTriggerType: ['click'],
                 timeInterval: 100,
                 distanceInterval: 5,
                 onAdd: (point, data) => {
-                  console.log("新增热力点：", point, data);
+                  console.log('新增热力点：', point, data);
                 },
                 onUndo: (point, data) => {
-                  console.log("删除热力点：", point, data);
+                  console.log('删除热力点：', point, data);
                 },
                 ...settings,
                 // beforePointUpdate: (type, point, data) => {
@@ -213,10 +214,10 @@
               heatObj
                 .start()
                 .then((res) => {
-                  console.log("绘制完成", res);
+                  console.log('绘制完成', res);
                 })
                 .catch((res) => {
-                  console.log("取消绘制", res);
+                  console.log('取消绘制', res);
                 });
             });
         },
