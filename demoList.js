@@ -319,6 +319,10 @@ export default [
         demoLink: './page/camera/flyTo.html',
       },
       {
+        title: '类型',
+        demoLink: './page/camera/cameraType.html',
+      },
+      {
         title: '环绕',
         demoLink: './page/camera/surround.html',
       },
