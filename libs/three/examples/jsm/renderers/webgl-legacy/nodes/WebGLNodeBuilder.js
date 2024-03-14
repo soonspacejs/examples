@@ -1,4 +1,4 @@
-import { defaultShaderStages, NodeFrame, MathNode, GLSLNodeParser, NodeBuilder, normalView } from 'three/nodes';
+import { defaultShaderStages, NodeFrame, MathNode, GLSLNodeParser, NodeBuilder, normalView } from '../../../nodes/Nodes.js';
 import SlotNode from './SlotNode.js';
 import { PerspectiveCamera, ShaderChunk, ShaderLib, UniformsUtils, UniformsLib } from 'three';
 
@@ -102,7 +102,7 @@ class WebGLNodeBuilder extends NodeBuilder {
 		this.addSlot( 'fragment', new SlotNode( {
 			node: normalView,
 			nodeType: 'vec3',
-			source: getIncludeSnippet( 'clipping_planes_fragment' ),
+			source: 'void main() {',
 			target: 'vec3 TransformedNormalView = %RESULT%;',
 			inclusionType: 'append'
 		} ) );
@@ -439,6 +439,36 @@ class WebGLNodeBuilder extends NodeBuilder {
 
 	}
 
+	buildFunctionCode( shaderNode ) {
+
+		const layout = shaderNode.layout;
+		const flowData = this.flowShaderNode( shaderNode );
+
+		const parameters = [];
+
+		for ( const input of layout.inputs ) {
+
+			parameters.push( this.getType( input.type ) + ' ' + input.name );
+
+		}
+
+		//
+
+		const code = `${ this.getType( layout.type ) } ${ layout.name }( ${ parameters.join( ', ' ) } ) {
+
+	${ flowData.vars }
+
+${ flowData.code }
+	return ${ flowData.result };
+
+}`;
+
+		//
+
+		return code;
+
+	}
+
 	getUniforms( shaderStage ) {
 
 		const uniforms = this.uniforms[ shaderStage ];
@@ -641,7 +671,7 @@ ${this.shader[ getShaderStageProperty( shaderStage ) ]}
 
 	build() {
 
-		super.build();
+		super.build( false );
 
 		this._addSnippets();
 		this._addUniforms();

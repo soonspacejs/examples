@@ -40,7 +40,7 @@ class Node extends EventDispatcher {
 
 	}
 
-	updateReference() {
+	setReference( /*state*/ ) {
 
 		return this;
 
@@ -150,12 +150,20 @@ class Node extends EventDispatcher {
 
 	}
 
-	analyze( builder ) {
+	increaseUsage( builder ) {
 
 		const nodeData = builder.getDataFromNode( this );
-		nodeData.dependenciesCount = nodeData.dependenciesCount === undefined ? 1 : nodeData.dependenciesCount + 1;
+		nodeData.usageCount = nodeData.usageCount === undefined ? 1 : nodeData.usageCount + 1;
 
-		if ( nodeData.dependenciesCount === 1 ) {
+		return nodeData.usageCount;
+
+	}
+
+	analyze( builder ) {
+
+		const usageCount = this.increaseUsage( builder );
+
+		if ( usageCount === 1 ) {
 
 			// node flow children
 
@@ -222,6 +230,8 @@ class Node extends EventDispatcher {
 		const buildStage = builder.getBuildStage();
 
 		if ( buildStage === 'setup' ) {
+
+			this.setReference( builder );
 
 			const properties = builder.getNodeProperties( this );
 
@@ -458,7 +468,12 @@ export default Node;
 export function addNodeClass( type, nodeClass ) {
 
 	if ( typeof nodeClass !== 'function' || ! type ) throw new Error( `Node class ${ type } is not a class` );
-	if ( NodeClasses.has( type ) ) throw new Error( `Redefinition of node class ${ type }` );
+	if ( NodeClasses.has( type ) ) {
+
+		console.warn( `Redefinition of node class ${ type }` );
+		return;
+
+	}
 
 	NodeClasses.set( type, nodeClass );
 	nodeClass.type = type;

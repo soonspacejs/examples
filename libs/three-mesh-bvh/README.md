@@ -6,7 +6,7 @@
 [![twitter](https://flat.badgen.net/badge/twitter/@garrettkjohnson/?icon&label)](https://twitter.com/garrettkjohnson)
 [![sponsors](https://img.shields.io/github/sponsors/gkjohnson?style=flat-square&color=1da1f2)](https://github.com/sponsors/gkjohnson/)
 
-A Bounding Volume Hierarch (BVH) implementation to speed up raycasting and enable spatial queries against three.js meshes. See the associated [Wikipedia article](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy) for more information on bounding volume hierarchies and how they work.
+A Bounding Volume Hierarchy (BVH) implementation to speed up raycasting and enable spatial queries against three.js meshes. See the associated [Wikipedia article](https://en.wikipedia.org/wiki/Bounding_volume_hierarchy) for more information on bounding volume hierarchies and how they work.
 
 ![screenshot](./docs/example-sm.gif)
 
@@ -185,7 +185,7 @@ geometry.boundsTree = deserializedBVH;
 
 ## Asynchronous Generation
 
-_NOTE WebWorker syntax is inconsistently supported across bundlers and sometimes not supported at all so the GenerateMeshBVHWorker class is not exported from the package root. If needed the code from `src/worker` can be copied and modified to accomodate a particular build process._
+_NOTE WebWorker syntax is inconsistently supported across bundlers and sometimes not supported at all so the GenerateMeshBVHWorker class is not exported from the package root. If needed the code from `src/worker` can be copied and modified to accommodate a particular build process._
 
 ```js
 import { GenerateMeshBVHWorker } from 'three-mesh-bvh/src/workers/GenerateMeshBVHWorker.js';
@@ -194,6 +194,22 @@ import { GenerateMeshBVHWorker } from 'three-mesh-bvh/src/workers/GenerateMeshBV
 
 const geometry = new KnotBufferGeometry( 1, 0.5, 40, 10 );
 const worker = new GenerateMeshBVHWorker();
+worker.generate( geometry ).then( bvh => {
+
+    geometry.boundsTree = bvh;
+
+} );
+```
+
+_Parallel BVH generation is also supported using "ParallelMeshBVHWorker", which requires support for SharedArrayBuffer. If SharedArrayBuffer is not available it falls back to "GenerateMeshBVHWorker". It is recommended that geometry passed to this function have `position` and `index` with SharedArrayBuffer arrays, otherwise buffer copies must be made._
+
+```js
+import { ParallelMeshBVHWorker } from 'three-mesh-bvh/src/workers/ParallelMeshBVHWorker.js';
+
+// ...
+
+const geometry = new KnotBufferGeometry( 1, 0.5, 40, 10 );
+const worker = new ParallelMeshBVHWorker();
 worker.generate( geometry ).then( bvh => {
 
     geometry.boundsTree = bvh;
@@ -577,7 +593,7 @@ roots : Array<ArrayBuffer>
 index : TypedArray
 ```
 
-## MeshBVHVisualizer
+## MeshBVHHelper
 
 _extends THREE.Group_
 
@@ -644,10 +660,21 @@ The material to use when rendering as a sold meshes.
 ### .constructor
 
 ```js
-constructor( mesh: THREE.Mesh, depth = 10 : Number )
+constructor(
+	meshOrBvh: THREE.Mesh | MeshBVH,
+	depth = 10 : Number
+)
+
+constructor(
+	mesh = null : THREE.Mesh,
+	bvh = null : MeshBVH,
+	depth = 10 : Number
+)
 ```
 
-Instantiates the helper with a depth and mesh to visualize.
+Instantiates the helper to visualize a MeshBVH.
+
+If a `mesh` and no `bvh` is provided then the `mesh.geometry.boundsTree` is displayed. Otherwise the provided bvh is displayed. Addtionally, if `mesh` is provided then the helper world transform is automatically synchronized with the Mesh. Otherwise if not `mesh` is provided then the user can manage the transform.
 
 ### .update
 

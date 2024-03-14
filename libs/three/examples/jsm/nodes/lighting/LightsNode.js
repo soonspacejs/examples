@@ -169,11 +169,17 @@ class LightsNode extends Node {
 export default LightsNode;
 
 export const lights = ( lights ) => nodeObject( new LightsNode().fromLights( lights ) );
-export const lightNodes = nodeProxy( LightsNode );
+export const lightsNode = nodeProxy( LightsNode );
 
 export function addLightNode( lightClass, lightNodeClass ) {
 
-	if ( LightNodes.has( lightClass ) ) throw new Error( `Redefinition of light node ${ lightNodeClass.type }` );
+	if ( LightNodes.has( lightClass ) ) {
+
+		console.warn( `Redefinition of light node ${ lightNodeClass.type }` );
+		return;
+
+	}
+
 	if ( typeof lightClass !== 'function' ) throw new Error( `Light ${ lightClass.name } is not a class` );
 	if ( typeof lightNodeClass !== 'function' || ! lightNodeClass.type ) throw new Error( `Light node ${ lightNodeClass.type } is not a class` );
 

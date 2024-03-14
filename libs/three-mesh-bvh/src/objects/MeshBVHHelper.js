@@ -1,8 +1,9 @@
 import { LineBasicMaterial, BufferAttribute, Box3, Group, MeshBasicMaterial, Object3D, BufferGeometry } from 'three';
 import { arrayToBox } from '../utils/ArrayBoxUtilities.js';
+import { MeshBVH } from '../core/MeshBVH.js';
 
 const boundingBox = /* @__PURE__ */ new Box3();
-class MeshBVHRootVisualizer extends Object3D {
+class MeshBVHRootHelper extends Object3D {
 
 	get isMesh() {
 
@@ -22,16 +23,16 @@ class MeshBVHRootVisualizer extends Object3D {
 
 	}
 
-	constructor( mesh, material, depth = 10, group = 0 ) {
+	constructor( bvh, material, depth = 10, group = 0 ) {
 
 		super();
 
 		this.material = material;
 		this.geometry = new BufferGeometry();
-		this.name = 'MeshBVHRootVisualizer';
+		this.name = 'MeshBVHRootHelper';
 		this.depth = depth;
 		this.displayParents = false;
-		this.mesh = mesh;
+		this.bvh = bvh;
 		this.displayEdges = true;
 		this._group = group;
 
@@ -42,7 +43,7 @@ class MeshBVHRootVisualizer extends Object3D {
 	update() {
 
 		const geometry = this.geometry;
-		const boundsTree = this.mesh.geometry.boundsTree;
+		const boundsTree = this.bvh;
 		const group = this._group;
 		geometry.dispose();
 		this.visible = false;
@@ -54,7 +55,7 @@ class MeshBVHRootVisualizer extends Object3D {
 			let boundsCount = 0;
 			boundsTree.traverse( ( depth, isLeaf ) => {
 
-				if ( depth === targetDepth || isLeaf ) {
+				if ( depth >= targetDepth || isLeaf ) {
 
 					boundsCount ++;
 					return true;
@@ -72,7 +73,7 @@ class MeshBVHRootVisualizer extends Object3D {
 			const positionArray = new Float32Array( 8 * 3 * boundsCount );
 			boundsTree.traverse( ( depth, isLeaf, boundingData ) => {
 
-				const terminate = depth === targetDepth || isLeaf;
+				const terminate = depth >= targetDepth || isLeaf;
 				if ( terminate || displayParents ) {
 
 					arrayToBox( 0, boundingData, boundingBox );
@@ -198,7 +199,7 @@ class MeshBVHRootVisualizer extends Object3D {
 
 }
 
-class MeshBVHVisualizer extends Group {
+class MeshBVHHelper extends Group {
 
 	get color() {
 
@@ -219,13 +220,31 @@ class MeshBVHVisualizer extends Group {
 
 	}
 
-	constructor( mesh, depth = 10 ) {
+	constructor( mesh = null, bvh = null, depth = 10 ) {
+
+		// handle bvh, depth signature
+		if ( mesh instanceof MeshBVH ) {
+
+			depth = bvh || 10;
+			bvh = mesh;
+			mesh = null;
+
+		}
+
+		// handle mesh, depth signature
+		if ( typeof bvh === 'number' ) {
+
+			depth = bvh;
+			bvh = null;
+
+		}
 
 		super();
 
-		this.name = 'MeshBVHVisualizer';
+		this.name = 'MeshBVHHelper';
 		this.depth = depth;
 		this.mesh = mesh;
+		this.bvh = bvh;
 		this.displayParents = false;
 		this.displayEdges = true;
 		this._roots = [];
@@ -255,7 +274,7 @@ class MeshBVHVisualizer extends Group {
 
 	update() {
 
-		const bvh = this.mesh.geometry.boundsTree;
+		const bvh = this.bvh || this.mesh.geometry.boundsTree;
 		const totalRoots = bvh ? bvh._roots.length : 0;
 		while ( this._roots.length > totalRoots ) {
 
@@ -267,20 +286,22 @@ class MeshBVHVisualizer extends Group {
 
 		for ( let i = 0; i < totalRoots; i ++ ) {
 
+			const { depth, edgeMaterial, meshMaterial, displayParents, displayEdges } = this;
+
 			if ( i >= this._roots.length ) {
 
-				const root = new MeshBVHRootVisualizer( this.mesh, this.edgeMaterial, this.depth, i );
+				const root = new MeshBVHRootHelper( bvh, edgeMaterial, depth, i );
 				this.add( root );
 				this._roots.push( root );
 
 			}
 
 			const root = this._roots[ i ];
-			root.depth = this.depth;
-			root.mesh = this.mesh;
-			root.displayParents = this.displayParents;
-			root.displayEdges = this.displayEdges;
-			root.material = this.displayEdges ? this.edgeMaterial : this.meshMaterial;
+			root.bvh = bvh;
+			root.depth = depth;
+			root.displayParents = displayParents;
+			root.displayEdges = displayEdges;
+			root.material = displayEdges ? edgeMaterial : meshMaterial;
 			root.update();
 
 		}
@@ -289,9 +310,34 @@ class MeshBVHVisualizer extends Group {
 
 	updateMatrixWorld( ...args ) {
 
-		this.position.copy( this.mesh.position );
-		this.rotation.copy( this.mesh.rotation );
-		this.scale.copy( this.mesh.scale );
+		const mesh = this.mesh;
+		const parent = this.parent;
+
+		if ( mesh !== null ) {
+
+			mesh.updateWorldMatrix( true, false );
+
+			if ( parent ) {
+
+				this.matrix
+					.copy( parent.matrixWorld )
+					.invert()
+					.multiply( mesh.matrixWorld );
+
+			} else {
+
+				this.matrix
+					.copy( mesh.matrixWorld );
+
+			}
+
+			this.matrix.decompose(
+				this.position,
+				this.quaternion,
+				this.scale,
+			);
+
+		}
 
 		super.updateMatrixWorld( ...args );
 
@@ -301,12 +347,15 @@ class MeshBVHVisualizer extends Group {
 
 		this.depth = source.depth;
 		this.mesh = source.mesh;
+		this.bvh = source.bvh;
+		this.opacity = source.opacity;
+		this.color.copy( source.color );
 
 	}
 
 	clone() {
 
-		return new MeshBVHVisualizer( this.mesh, this.depth );
+		return new MeshBVHHelper( this.mesh, this.bvh, this.depth );
 
 	}
 
@@ -326,5 +375,16 @@ class MeshBVHVisualizer extends Group {
 
 }
 
+export class MeshBVHVisualizer extends MeshBVHHelper {
 
-export { MeshBVHVisualizer };
+	constructor( ...args ) {
+
+		super( ...args );
+
+		console.warn( 'MeshBVHVisualizer: MeshBVHVisualizer has been deprecated. Use MeshBVHHelper, instead.' );
+
+	}
+
+}
+
+export { MeshBVHHelper };

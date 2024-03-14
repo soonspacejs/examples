@@ -1,5 +1,51 @@
 import { IntType } from 'three';
 
+let _id = 0;
+
+class DualAttributeData {
+
+	constructor( attributeData, dualBuffer ) {
+
+		this.buffers = [ attributeData.bufferGPU, dualBuffer ];
+		this.type = attributeData.type;
+		this.bufferType = attributeData.bufferType;
+		this.pbo = attributeData.pbo;
+		this.byteLength = attributeData.byteLength;
+		this.bytesPerElement = attributeData.BYTES_PER_ELEMENT;
+		this.version = attributeData.version;
+		this.isInteger = attributeData.isInteger;
+		this.activeBufferIndex = 0;
+		this.baseId = attributeData.id;
+
+	}
+
+
+	get id() {
+
+		return `${ this.baseId }|${ this.activeBufferIndex }`;
+
+	}
+
+	get bufferGPU() {
+
+		return this.buffers[ this.activeBufferIndex ];
+
+	}
+
+	get transformBuffer() {
+
+		return this.buffers[ this.activeBufferIndex ^ 1 ];
+
+	}
+
+	switchBuffers() {
+
+		this.activeBufferIndex ^= 1;
+
+	}
+
+}
+
 class WebGLAttributeUtils {
 
 	constructor( backend ) {
@@ -23,11 +69,7 @@ class WebGLAttributeUtils {
 
 		if ( bufferGPU === undefined ) {
 
-			bufferGPU = gl.createBuffer();
-
-			gl.bindBuffer( bufferType, bufferGPU );
-			gl.bufferData( bufferType, array, usage );
-			gl.bindBuffer( bufferType, null );
+			bufferGPU = this._createBuffer( gl, bufferType, array, usage );
 
 			bufferData.bufferGPU = bufferGPU;
 			bufferData.bufferType = bufferType;
@@ -85,13 +127,27 @@ class WebGLAttributeUtils {
 
 		}
 
-		backend.set( attribute, {
+		let attributeData = {
 			bufferGPU,
+			bufferType,
 			type,
+			byteLength: array.byteLength,
 			bytesPerElement: array.BYTES_PER_ELEMENT,
 			version: attribute.version,
-			isInteger: type === gl.INT || type === gl.UNSIGNED_INT || attribute.gpuType === IntType
-		} );
+			pbo: attribute.pbo,
+			isInteger: type === gl.INT || type === gl.UNSIGNED_INT || attribute.gpuType === IntType,
+			id: _id ++
+		};
+
+		if ( attribute.isStorageBufferAttribute || attribute.isStorageInstancedBufferAttribute ) {
+
+			// create buffer for tranform feedback use
+			const bufferGPUDual = this._createBuffer( gl, bufferType, array, usage );
+			attributeData = new DualAttributeData( attributeData, bufferGPUDual );
+
+		}
+
+		backend.set( attribute, attributeData );
 
 	}
 
@@ -131,6 +187,69 @@ class WebGLAttributeUtils {
 		gl.bindBuffer( bufferType, null );
 
 		bufferData.version = bufferAttribute.version;
+
+	}
+
+	destroyAttribute( attribute ) {
+
+		const backend = this.backend;
+		const { gl } = backend;
+
+		if ( attribute.isInterleavedBufferAttribute ) {
+
+			backend.delete( attribute.data );
+
+		}
+
+		const attributeData = backend.get( attribute );
+
+		gl.deleteBuffer( attributeData.bufferGPU );
+
+		backend.delete( attribute );
+
+	}
+
+	async getArrayBufferAsync( attribute ) {
+
+		const backend = this.backend;
+		const { gl } = backend;
+
+		const bufferAttribute = attribute.isInterleavedBufferAttribute ? attribute.data : attribute;
+		const { bufferGPU } = backend.get( bufferAttribute );
+
+		const array = attribute.array;
+		const byteLength = array.byteLength;
+
+		gl.bindBuffer( gl.COPY_READ_BUFFER, bufferGPU );
+
+		const writeBuffer = gl.createBuffer();
+
+		gl.bindBuffer( gl.COPY_WRITE_BUFFER, writeBuffer );
+		gl.bufferData( gl.COPY_WRITE_BUFFER, byteLength, gl.STREAM_READ );
+
+		gl.copyBufferSubData( gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, 0, 0, byteLength );
+
+		await backend.utils._clientWaitAsync();
+
+		const dstBuffer = new attribute.array.constructor( array.length );
+
+		gl.getBufferSubData( gl.COPY_WRITE_BUFFER, 0, dstBuffer );
+
+		gl.deleteBuffer( writeBuffer );
+
+		return dstBuffer.buffer;
+
+	}
+
+	_createBuffer( gl, bufferType, array, usage ) {
+
+		const bufferGPU = gl.createBuffer();
+
+		gl.bindBuffer( bufferType, bufferGPU );
+		gl.bufferData( bufferType, array, usage );
+		gl.bindBuffer( bufferType, null );
+
+		return bufferGPU;
 
 	}
 

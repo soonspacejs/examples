@@ -55,7 +55,7 @@ class TextureNode extends UniformNode {
 
 	}
 
-	updateReference( /*frame*/ ) {
+	setReference( /*state*/ ) {
 
 		return this.value;
 
@@ -75,6 +75,20 @@ class TextureNode extends UniformNode {
 		this.updateType = value ? NodeUpdateType.FRAME : NodeUpdateType.NONE;
 
 		return this;
+
+	}
+
+	setupUV( builder, uvNode ) {
+
+		const texture = this.value;
+
+		if ( builder.isFlipY() && ( texture.isRenderTargetTexture === true || texture.isFramebufferTexture === true || texture.isDepthTexture === true ) ) {
+
+			uvNode = uvNode.setY( uvNode.y.oneMinus() );
+
+		}
+
+		return uvNode;
 
 	}
 
@@ -100,6 +114,8 @@ class TextureNode extends UniformNode {
 
 		}
 
+		uvNode = this.setupUV( builder, uvNode );
+
 		//
 
 		let levelNode = this.levelNode;
@@ -122,6 +138,12 @@ class TextureNode extends UniformNode {
 		properties.levelNode = levelNode;
 		properties.compareNode = this.compareNode;
 		properties.depthNode = this.depthNode;
+
+	}
+
+	generateUV( builder, uvNode ) {
+
+		return uvNode.build( builder, this.sampler === true ? 'vec2' : 'ivec2' );
 
 	}
 
@@ -150,21 +172,6 @@ class TextureNode extends UniformNode {
 		}
 
 		return snippet;
-
-	}
-
-	generateUV( builder, uvNode ) {
-
-		const texture = this.value;
-
-		if ( ( builder.isFlipY() && ( texture.isFramebufferTexture === true || texture.isDepthTexture === true ) ) ||
-			( builder.isFlipY() === false && texture.isRenderTargetTexture === true ) ) {
-
-			uvNode = uvNode.setY( uvNode.y.fract().oneMinus() );
-
-		}
-
-		return uvNode.build( builder, this.sampler === true ? 'vec2' : 'ivec2' );
 
 	}
 

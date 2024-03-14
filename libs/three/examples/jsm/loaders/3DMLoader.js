@@ -1,29 +1,29 @@
 import {
 	BufferGeometryLoader,
-	FileLoader,
-	Loader,
-	Object3D,
-	MeshStandardMaterial,
-	MeshPhysicalMaterial,
-	Mesh,
+	CanvasTexture,
+	ClampToEdgeWrapping,
 	Color,
-	Points,
-	PointsMaterial,
+	DirectionalLight,
+	DoubleSide,
+	FileLoader,
+	LinearFilter,
 	Line,
 	LineBasicMaterial,
+	Loader,
 	Matrix4,
-	DirectionalLight,
+	Mesh,
+	MeshPhysicalMaterial,
+	MeshStandardMaterial,
+	Object3D,
 	PointLight,
-	SpotLight,
+	Points,
+	PointsMaterial,
 	RectAreaLight,
+	RepeatWrapping,
+	SpotLight,
 	Sprite,
 	SpriteMaterial,
-	CanvasTexture,
-	LinearFilter,
-	ClampToEdgeWrapping,
-	RepeatWrapping,
-	TextureLoader,
-	DoubleSide
+	TextureLoader
 } from 'three';
 
 import { EXRLoader } from '../loaders/EXRLoader.js';
@@ -192,6 +192,7 @@ class Rhino3dmLoader extends Loader {
 		mat.color.g = material.color.g;
 		mat.color.b = material.color.b;
 		mat.type = material.type;
+		mat.vertexColors = material.vertexColors;
 
 		const json = JSON.stringify( mat );
 
@@ -205,6 +206,7 @@ class Rhino3dmLoader extends Loader {
 			_mat.color.g = m.color.g;
 			_mat.color.b = m.color.b;
 			_mat.type = m.type;
+			_mat.vertexColors = m.vertexColors;
 
 			if ( JSON.stringify( _mat ) === json ) {
 
@@ -235,7 +237,7 @@ class Rhino3dmLoader extends Loader {
 
 		//console.log(material)
 
-		let mat = new MeshPhysicalMaterial( {
+		const mat = new MeshPhysicalMaterial( {
 
 			color: new Color( material.diffuseColor.r / 255.0, material.diffuseColor.g / 255.0, material.diffuseColor.b / 255.0 ),
 			emissive: new Color( material.emissionColor.r, material.emissionColor.g, material.emissionColor.b ),
@@ -256,11 +258,11 @@ class Rhino3dmLoader extends Loader {
 
 			const pbr = material.pbr;
 
-			mat.anisotropy = pbr.anisotropy;
+			mat.anisotropy = pbr.anisotropic;
 			mat.anisotropyRotation = pbr.anisotropicRotation;
 			mat.color = new Color( pbr.baseColor.r, pbr.baseColor.g, pbr.baseColor.b );
-			mat.clearCoat = pbr.clearCoat;
-			mat.clearCoatRoughness = pbr.clearCoatRoughness;
+			mat.clearcoat = pbr.clearcoat;
+			mat.clearcoatRoughness = pbr.clearcoatRoughness;
 			mat.metalness = pbr.metallic;
 			mat.transmission = 1 - pbr.opacity;
 			mat.roughness = pbr.roughness;
@@ -310,7 +312,7 @@ class Rhino3dmLoader extends Loader {
 						mat.envMap = map;
 
 						break;
-					
+
 					case 'Opacity':
 
 						mat.transmissionMap = map;
@@ -330,7 +332,7 @@ class Rhino3dmLoader extends Loader {
 						mat.transparent = true;
 
 						break;
-					
+
 					case 'PBR_AmbientOcclusion':
 
 						mat.aoMap = map;
@@ -461,7 +463,7 @@ class Rhino3dmLoader extends Loader {
 		object.userData.settings[ 'renderSettings' ] = data.renderSettings;
 		object.userData[ 'objectType' ] = 'File3dm';
 		object.userData[ 'materials' ] = null;
-		
+
 		object.name = this.url;
 
 		let objects = data.objects;
@@ -488,18 +490,15 @@ class Rhino3dmLoader extends Loader {
 
 				default:
 
-					let matId;
+					let matId = null;
 
-					switch( attributes.materialSource.name ) {
+					switch ( attributes.materialSource.name ) {
+
 						case 'ObjectMaterialSource_MaterialFromLayer':
 							//check layer index
 							if ( attributes.layerIndex >= 0 ) {
 
 								matId = data.layers[ attributes.layerIndex ].renderMaterialIndex;
-
-							} else {
-
-								matId = null;
 
 							}
 
@@ -511,17 +510,13 @@ class Rhino3dmLoader extends Loader {
 
 								matId = attributes.materialIndex;
 
-							} else {
-
-								matId = null;
-
 							}
 
 							break;
 
 					}
 
-					let material;
+					let material = null;
 
 					if ( matId >= 0 ) {
 
@@ -529,13 +524,8 @@ class Rhino3dmLoader extends Loader {
 						material = this._createMaterial( rMaterial, data.renderEnvironment );
 
 
-					} else {
-
-						material = this._createMaterial();
-
 					}
 
-					material = this._compareMaterials( material );
 					const _object = this._createObject( obj, material );
 
 					if ( _object === undefined ) {
@@ -674,18 +664,21 @@ class Rhino3dmLoader extends Loader {
 
 				geometry = loader.parse( obj.geometry );
 
+
+				if ( mat === null ) {
+
+					mat = this._createMaterial();
+
+				}
+
+
 				if ( geometry.attributes.hasOwnProperty( 'color' ) ) {
 
 					mat.vertexColors = true;
 
 				}
 
-				if ( mat === null ) {
-
-					mat = this._createMaterial();
-					mat = this._compareMaterials( mat );
-
-				}
+				mat = this._compareMaterials( mat );
 
 				const mesh = new Mesh( geometry, mat );
 				mesh.castShadow = attributes.castsShadows;
@@ -1129,7 +1122,7 @@ function Rhino3dmWorker() {
 
 			const _material = doc.materials().get( i );
 
-			let material = extractProperties( _material );
+			const material = extractProperties( _material );
 
 			const textures = [];
 
@@ -1232,42 +1225,42 @@ function Rhino3dmWorker() {
 		// Handle Render Environments for Material Environment
 
 		// get the id of the active render environment skylight, which we'll use for environment texture
-		const reflectionId = doc.settings().renderSettings().renderEnvironments.reflectionId
+		const reflectionId = doc.settings().renderSettings().renderEnvironments.reflectionId;
 
-		const rc = doc.renderContent()
+		const rc = doc.renderContent();
 
-		let renderEnvironment = null
+		let renderEnvironment = null;
 
-		for( let i = 0; i < rc.count; i++ ) {
+		for ( let i = 0; i < rc.count; i ++ ) {
 
-			const content = rc.get(i)
+			const content = rc.get( i );
 
-			switch( content.kind ) {
+			switch ( content.kind ) {
 
 				case 'environment':
 
-					const id = content.id
+					const id = content.id;
 
 					// there could be multiple render environments in a 3dm file
 					if ( id !== reflectionId ) break;
 
-					const renderTexture = content.findChild( 'texture' )
-					const fileName = renderTexture.fileName
+					const renderTexture = content.findChild( 'texture' );
+					const fileName = renderTexture.fileName;
 
 					for ( let j = 0; j < doc.embeddedFiles().count; j ++ ) {
 
-						const _fileName = doc.embeddedFiles().get( j ).fileName
+						const _fileName = doc.embeddedFiles().get( j ).fileName;
 
 						if ( fileName === _fileName ) {
 
-							const background = doc.getEmbeddedFileAsBase64( fileName )
-							const backgroundImage = 'data:image/png;base64,' + background
+							const background = doc.getEmbeddedFileAsBase64( fileName );
+							const backgroundImage = 'data:image/png;base64,' + background;
 							renderEnvironment = { type: 'renderEnvironment', image: backgroundImage, name: fileName };
 
 						}
 
 					}
-					
+
 					break;
 
 			}
@@ -1307,7 +1300,7 @@ function Rhino3dmWorker() {
 			renderEnvironments: extractProperties( doc.settings().renderSettings().renderEnvironments ),
 			postEffects: extractProperties( doc.settings().renderSettings().postEffects ),
 
-		}
+		};
 
 		doc.delete();
 
@@ -1317,7 +1310,7 @@ function Rhino3dmWorker() {
 
 	function extractTextures( m, tTypes, d ) {
 
-		const textures = []
+		const textures = [];
 
 		for ( let i = 0; i < tTypes.length; i ++ ) {
 
@@ -1528,7 +1521,7 @@ function Rhino3dmWorker() {
 
 				// TODO: precalculate resulting vertices and faces and warn on excessive results
 				_geometry.subdivide( 3 );
-				mesh = rhino.Mesh.createFromSubDControlNet( _geometry );
+				mesh = rhino.Mesh.createFromSubDControlNet( _geometry, false );
 				if ( mesh ) {
 
 					geometry = mesh.toThreejsJSON();
@@ -1584,13 +1577,13 @@ function Rhino3dmWorker() {
 			if ( _attributes.decals().count > 0 ) {
 
 				self.postMessage( { type: 'warning', id: taskID, data: {
-					message: `THREE.3DMLoader: No conversion exists for the decals associated with this object.`,
+					message: 'THREE.3DMLoader: No conversion exists for the decals associated with this object.',
 					type: 'no conversion',
 					guid: _attributes.id
 				}
-	
+
 				} );
-				
+
 			}
 
 			attributes.drawColor = _attributes.drawColor( doc );

@@ -7,11 +7,11 @@ import { modelViewProjection } from '../accessors/ModelViewProjectionNode.js';
 import { transformedNormalView } from '../accessors/NormalNode.js';
 import { instance } from '../accessors/InstanceNode.js';
 import { positionLocal, positionView } from '../accessors/PositionNode.js';
-import { skinning } from '../accessors/SkinningNode.js';
-import { morph } from '../accessors/MorphNode.js';
+import { skinningReference } from '../accessors/SkinningNode.js';
+import { morphReference } from '../accessors/MorphNode.js';
 import { texture } from '../accessors/TextureNode.js';
 import { cubeTexture } from '../accessors/CubeTextureNode.js';
-import { lightNodes } from '../lighting/LightsNode.js';
+import { lightsNode } from '../lighting/LightsNode.js';
 import { mix } from '../math/MathNode.js';
 import { float, vec3, vec4 } from '../shadernode/ShaderNode.js';
 import AONode from '../lighting/AONode.js';
@@ -19,6 +19,8 @@ import { lightingContext } from '../lighting/LightingContextNode.js';
 import EnvironmentNode from '../lighting/EnvironmentNode.js';
 import { depthPixel } from '../display/ViewportDepthNode.js';
 import { cameraLogDepth } from '../accessors/CameraNode.js';
+import { clipping, clippingAlpha } from '../accessors/ClippingNode.js';
+import { faceDirection } from '../display/FrontFacingNode.js';
 
 const NodeMaterials = new Map();
 
@@ -53,6 +55,7 @@ class NodeMaterial extends ShaderMaterial {
 		this.positionNode = null;
 
 		this.depthNode = null;
+		this.shadowNode = null;
 
 		this.outputNode = null;
 
@@ -89,6 +92,8 @@ class NodeMaterial extends ShaderMaterial {
 
 		let resultNode;
 
+		const clippingNode = this.setupClipping( builder );
+
 		if ( this.fragmentNode === null ) {
 
 			if ( this.depthWrite === true ) this.setupDepth( builder );
@@ -99,6 +104,8 @@ class NodeMaterial extends ShaderMaterial {
 			this.setupVariants( builder );
 
 			const outgoingLightNode = this.setupLighting( builder );
+
+			if ( clippingNode !== null ) builder.stack.add( clippingNode );
 
 			resultNode = this.setupOutput( builder, vec4( outgoingLightNode, diffuseColor.a ) );
 
@@ -119,6 +126,31 @@ class NodeMaterial extends ShaderMaterial {
 		builder.stack.outputNode = resultNode;
 
 		builder.addFlow( 'fragment', builder.removeStack() );
+
+	}
+
+	setupClipping( builder ) {
+
+		const { globalClippingCount, localClippingCount } = builder.clippingContext;
+
+		let result = null;
+
+		if ( globalClippingCount || localClippingCount ) {
+
+			if ( this.alphaToCoverage ) {
+
+				// to be added to flow when the color/alpha value has been determined
+				result = clippingAlpha();
+
+			} else {
+
+				builder.stack.add( clipping() );
+
+			}
+
+		}
+
+		return result;
 
 	}
 
@@ -157,13 +189,13 @@ class NodeMaterial extends ShaderMaterial {
 
 		if ( geometry.morphAttributes.position || geometry.morphAttributes.normal || geometry.morphAttributes.color ) {
 
-			morph( object ).append();
+			morphReference( object ).append();
 
 		}
 
 		if ( object.isSkinnedMesh === true ) {
 
-			skinning( object ).append();
+			skinningReference( object ).append();
 
 		}
 
@@ -235,13 +267,13 @@ class NodeMaterial extends ShaderMaterial {
 
 			const normalNode = positionView.dFdx().cross( positionView.dFdy() ).normalize();
 
-			transformedNormalView.assign( normalNode );
+			transformedNormalView.assign( normalNode.mul( faceDirection ) );
 
 		} else {
 
 			const normalNode = this.normalNode ? vec3( this.normalNode ) : materialNormal;
 
-			transformedNormalView.assign( normalNode );
+			transformedNormalView.assign( normalNode.mul( faceDirection ) );
 
 		}
 
@@ -289,15 +321,15 @@ class NodeMaterial extends ShaderMaterial {
 
 		}
 
-		let lightsNode = this.lightsNode || builder.lightsNode;
+		let lightsN = this.lightsNode || builder.lightsNode;
 
 		if ( materialLightsNode.length > 0 ) {
 
-			lightsNode = lightNodes( [ ...lightsNode.lightNodes, ...materialLightsNode ] );
+			lightsN = lightsNode( [ ...lightsN.lightNodes, ...materialLightsNode ] );
 
 		}
 
-		return lightsNode;
+		return lightsN;
 
 	}
 
@@ -352,7 +384,7 @@ class NodeMaterial extends ShaderMaterial {
 
 		const toneMappingNode = builder.toneMappingNode;
 
-		if ( toneMappingNode ) {
+		if ( this.toneMapped === true && toneMappingNode ) {
 
 			outputNode = vec4( toneMappingNode.context( { color: outputNode.rgb } ), outputNode.a );
 
@@ -496,6 +528,7 @@ class NodeMaterial extends ShaderMaterial {
 		this.positionNode = source.positionNode;
 
 		this.depthNode = source.depthNode;
+		this.shadowNode = source.shadowNode;
 
 		this.outputNode = source.outputNode;
 
@@ -541,7 +574,12 @@ export default NodeMaterial;
 export function addNodeMaterial( type, nodeMaterial ) {
 
 	if ( typeof nodeMaterial !== 'function' || ! type ) throw new Error( `Node material ${ type } is not a class` );
-	if ( NodeMaterials.has( type ) ) throw new Error( `Redefinition of node material ${ type }` );
+	if ( NodeMaterials.has( type ) ) {
+
+		console.warn( `Redefinition of node material ${ type }` );
+		return;
+
+	}
 
 	NodeMaterials.set( type, nodeMaterial );
 	nodeMaterial.type = type;

@@ -340,6 +340,48 @@ function checkTypedArrayEquality( a, b ) {
 
 }
 
+function invertGeometry( geometry ) {
+
+	const { index, attributes } = geometry;
+	if ( index ) {
+
+		for ( let i = 0, l = index.count; i < l; i += 3 ) {
+
+			const v0 = index.getX( i );
+			const v2 = index.getX( i + 2 );
+			index.setX( i, v2 );
+			index.setX( i + 2, v0 );
+
+		}
+
+	} else {
+
+		for ( const key in attributes ) {
+
+			const attr = attributes[ key ];
+			const itemSize = attr.itemSize;
+			for ( let i = 0, l = attr.count; i < l; i += 3 ) {
+
+				for ( let j = 0; j < itemSize; j ++ ) {
+
+					const v0 = attr.getComponent( i, j );
+					const v2 = attr.getComponent( i + 2, j );
+					attr.setComponent( i, j, v2 );
+					attr.setComponent( i + 2, j, v0 );
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return geometry;
+
+
+}
+
 // Checks whether the geometry changed between this and last evaluation
 class GeometryDiff {
 
@@ -500,7 +542,31 @@ export class StaticGeometryGenerator {
 
 		}
 
-		mergeBufferGeometries( _intermediateGeometry, { useGroups, skipAttributes }, targetGeometry );
+		if ( _intermediateGeometry.length === 0 ) {
+
+			// if there are no geometries then just create a fake empty geometry to provide
+			targetGeometry.setIndex( null );
+
+			// remove all geometry
+			const attrs = targetGeometry.attributes;
+			for ( const key in attrs ) {
+
+				targetGeometry.deleteAttribute( key );
+
+			}
+
+			// create dummy attributes
+			for ( const key in this.attributes ) {
+
+				targetGeometry.setAttribute( this.attributes[ key ], new BufferAttribute( new Float32Array( 0 ), 4, false ) );
+
+			}
+
+		} else {
+
+			mergeBufferGeometries( _intermediateGeometry, { useGroups, skipAttributes }, targetGeometry );
+
+		}
 
 		for ( const key in targetGeometry.attributes ) {
 
@@ -522,9 +588,9 @@ export class StaticGeometryGenerator {
 		const targetAttributes = targetGeometry.attributes;
 
 		// initialize the attributes if they don't exist
-		if ( ! targetGeometry.index ) {
+		if ( ! targetGeometry.index && geometry.index ) {
 
-			targetGeometry.index = geometry.index;
+			targetGeometry.index = geometry.index.clone();
 
 		}
 
@@ -574,6 +640,14 @@ export class StaticGeometryGenerator {
 		const normalMatrix = new Matrix3();
 		normalMatrix.getNormalMatrix( mesh.matrixWorld );
 
+		// copy the index
+		if ( geometry.index ) {
+
+			targetGeometry.index.array.set( geometry.index.array );
+
+		}
+
+		// copy and apply other attributes
 		for ( let i = 0, l = attributes.position.count; i < l; i ++ ) {
 
 			_positionVector.fromBufferAttribute( position, i );
@@ -684,6 +758,12 @@ export class StaticGeometryGenerator {
 
 			validateAttributes( attributes[ key ], targetAttributes[ key ] );
 			copyAttributeContents( attributes[ key ], targetAttributes[ key ] );
+
+		}
+
+		if ( mesh.matrixWorld.determinant() < 0 ) {
+
+			invertGeometry( targetGeometry );
 
 		}
 

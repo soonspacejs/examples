@@ -40,6 +40,16 @@ class XRButton {
 
 			button.textContent = 'START XR';
 
+			const sessionOptions = {
+				...sessionInit,
+				optionalFeatures: [
+					'local-floor',
+					'bounded-floor',
+					'layers',
+					...( sessionInit.optionalFeatures || [] )
+				],
+			};
+
 			button.onmouseenter = function () {
 
 				button.style.opacity = '1.0';
@@ -56,17 +66,6 @@ class XRButton {
 
 				if ( currentSession === null ) {
 
-					const sessionOptions = {
-						...sessionInit,
-						optionalFeatures: [
-							'local-floor',
-							'bounded-floor',
-							'hand-tracking',
-							'layers',
-							...( sessionInit.optionalFeatures || [] )
-						],
-					};
-
 					navigator.xr.requestSession( mode, sessionOptions )
 						.then( onSessionStarted );
 
@@ -74,9 +73,33 @@ class XRButton {
 
 					currentSession.end();
 
+					if ( navigator.xr.offerSession !== undefined ) {
+
+						navigator.xr.offerSession( mode, sessionOptions )
+							.then( onSessionStarted )
+							.catch( ( err ) => {
+
+								console.warn( err );
+
+							} );
+
+					}
+
 				}
 
 			};
+
+			if ( navigator.xr.offerSession !== undefined ) {
+
+				navigator.xr.offerSession( mode, sessionOptions )
+					.then( onSessionStarted )
+					.catch( ( err ) => {
+
+						console.warn( err );
+
+					} );
+
+			}
 
 		}
 
