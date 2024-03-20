@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           source: "libs,page,demoList.js,index.html"
-          target: "/mnt/soonspacejs/examples/"
+          target: "/home/xwmodel/deploy/soonspacejs/examples/"
           timeout: 120s
 
       - name: copy file 2
