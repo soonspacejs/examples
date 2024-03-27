@@ -98,6 +98,10 @@ export default [
         demoLink: './page/poiNode/createPoiNode.html',
       },
       {
+        title: 'PoiNode 遮挡朝向',
+        demoLink: './page/poiNode/poiNodeNormal.html',
+      },
+      {
         title: 'PoiNode 遮挡',
         demoLink: './page/poiNode/poiNodeOcclude.html',
       },

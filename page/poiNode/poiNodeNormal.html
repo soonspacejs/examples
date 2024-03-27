@@ -42,18 +42,74 @@
       }
     </script>
     <script type="module">
+      import { Vector3 } from 'three';
       import SoonSpace from 'soonspacejs';
       import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
       import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
-      const ssp = new SoonSpace({
+      const ssp = (window.ssp = new SoonSpace({
         el: '#view',
-      });
+      }));
 
       ssp.setEnvironment({
         path: '../../assets/img/hdr/',
         file: 'puresky_1k.hdr',
         background: true,
+      });
+
+      /**
+       * 加载场景
+       */
+
+      const soonmanager2Sync = (window.soonmanagerSync = ssp.registerPlugin(
+        Soonmanager2SyncPlugin,
+        'soonmanager2Sync'
+      ));
+
+      soonmanager2Sync.setPath('../../assets/sceneData/2.0/管道测试-out');
+
+      await soonmanager2Sync.loadScene().then(() => {
+        console.log('加载完成');
+      });
+
+      ssp.flyMainViewpoint();
+
+      const el = document.createElement('div');
+      // el.innerHTML = '一段文字';
+      // el.style.width = '2rem';
+      el.style.height = '0.5rem';
+      el.style.fontSize = '0.5rem';
+      el.style.lineHeight = '0.5rem';
+      // el.style.borderRadius = '4px';
+      // el.style.padding = '2px 4px';
+      // el.style.transformOrigin = 'right center';
+      el.style.color = '#fff';
+      el.style.backgroundColor = '#000';
+
+      const models = ssp.getObjectByName('瓦特斯609A对夹式蝶阀 DN200-2014');
+
+      models.forEach((model, index) => {
+        const clonedEl = el.cloneNode(true);
+        clonedEl.innerText = model.name;
+
+        // 随机角度
+        const occlude = new Vector3().randomDirection();
+
+        const poiNode = ssp.createPoiNode({
+          id: model.id + index,
+          name: model.name + index,
+          type: '2.5d',
+          element: clonedEl,
+          elementAutoDisplay: false,
+          occlude,
+          onChange(visible) {
+            clonedEl.style.opacity = visible ? 1 : 0.1;
+          },
+        });
+
+        poiNode.scale.setScalar(0.01);
+
+        ssp.addObject(poiNode, model);
       });
     </script>
   </body>
