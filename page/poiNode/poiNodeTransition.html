@@ -39,6 +39,7 @@
       }
     </script>
     <script type="module">
+      import { Vector3 } from 'three';
       import SoonSpace from 'soonspacejs';
       import EffectPlugin from '@soonspacejs/plugin-effect';
       import { GUI } from '../../libs/gui.js';
@@ -48,6 +49,7 @@
         options: {
           showGrid: false,
           showInfo: false,
+          showViewHelper: true,
           background: {
             color: '#ccc',
           },
@@ -114,7 +116,7 @@
         },
         element: poiNodeEl1,
         elementAutoDisplay: false,
-        occlude: true,
+        occlude: new Vector3(1, 0, 0),
         onChange(visible) {
           console.log('change1', visible);
           poiNodeContent1.style.opacity = visible ? 1 : 0;
@@ -148,7 +150,7 @@
         },
         element: poiNodeEl2,
         elementAutoDisplay: false,
-        occlude: true,
+        occlude: new Vector3(1, 0, 0),
         onChange(visible) {
           console.log('change2', visible);
           poiNodeContent2.style.opacity = visible ? 1 : 0;

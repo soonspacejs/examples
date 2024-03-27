@@ -19,8 +19,7 @@
           "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
           "soonspacejs": "../../libs/soonspacejs/index.js",
           "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js",
-          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js",
-          "gui": "../../libs/gui.js"
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
         }
       }
     </script>
@@ -28,7 +27,7 @@
       import SoonSpace from 'soonspacejs';
       import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
       import EffectPlugin from '@soonspacejs/plugin-effect';
-      import { GUI } from 'gui';
+      import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
 
       const ssp = (window.ssp = new SoonSpace({
         el: '#view',
@@ -37,6 +36,11 @@
             color: '#ccc',
           },
           showGrid: false,
+        },
+        events: {
+          // modelClick(p) {
+          //   console.log(p);
+          // },
         },
       }));
 
@@ -132,11 +136,7 @@
 
       paramsHandle();
 
-      gui
-        .add(params, 'file')
-        .options(files)
-        .name('HDR环境')
-        .onChange(paramsHandle);
+      gui.add(params, 'file').options(files).name('HDR环境').onChange(paramsHandle);
 
       gui.add(params, 'background').name('同步至背景').onChange(paramsHandle);
     </script>

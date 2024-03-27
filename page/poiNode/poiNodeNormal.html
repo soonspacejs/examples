@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <style>
+      #poiTemplate {
+        width: 668px;
+        height: 432px;
+        background: #f0f0f0;
+        border-radius: 3px;
+        padding: 0;
+      }
+
+      #poiTemplate > iframe {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="tips">相机转动至 PoiNode 指定方向的背面时将会隐藏</div>
+    <div id="view"></div>
+
+    <div id="poiTemplate" style="display: none">
+      <iframe src="https://xwbuilders.com/soonspacejs/" frameborder="0"></iframe>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-soonmanager2-sync": "../../libs/soonspacejs/plugins/soonmanager2-sync.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import Soonmanager2SyncPlugin from '@soonspacejs/plugin-soonmanager2-sync';
+      import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+
+      const ssp = new SoonSpace({
+        el: '#view',
+      });
+
+      ssp.setEnvironment({
+        path: '../../assets/img/hdr/',
+        file: 'puresky_1k.hdr',
+        background: true,
+      });
+    </script>
+  </body>
+</html>
