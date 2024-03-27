@@ -57,6 +57,20 @@
         background: true,
       });
 
+      ssp.setCameraViewpoint({
+        position: {
+          x: 13.764731531313158,
+          y: 2.056697315261549,
+          z: -14.550276531951718,
+        },
+        target: {
+          x: 4.899650573730462,
+          y: 1.4542759285023124,
+          z: -11.472850561141957,
+        },
+        zoom: 1,
+      });
+
       /**
        * 加载场景
        */
@@ -71,8 +85,6 @@
       await soonmanager2Sync.loadScene().then(() => {
         console.log('加载完成');
       });
-
-      ssp.flyMainViewpoint();
 
       const el = document.createElement('div');
       // el.innerHTML = '一段文字';
