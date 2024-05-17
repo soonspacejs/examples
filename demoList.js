@@ -585,20 +585,20 @@ export default [
       },
     ],
   },
-  {
-    title: 'SoonGIS',
-    key: 'soongis',
-    children: [
-      {
-        title: 'gis融合',
-        demoLink: './page/soongis/get-started.html',
-      },
-      {
-        title: '线条效果',
-        demoLink: './page/soongis/trips.html',
-      },
-    ],
-  },
+  // {
+  //   title: 'SoonGIS',
+  //   key: 'soongis',
+  //   children: [
+  //     {
+  //       title: 'gis融合',
+  //       demoLink: './page/soongis/get-started.html',
+  //     },
+  //     {
+  //       title: '线条效果',
+  //       demoLink: './page/soongis/trips.html',
+  //     },
+  //   ],
+  // },
   // featrue
   {
     title: '特性',
