@@ -599,22 +599,22 @@ export default [
   //     },
   //   ],
   // },
-  // featrue
+  // feature
   {
     title: '特性',
-    key: 'featrue',
+    key: 'feature',
     children: [
       {
         title: '多场景',
-        demoLink: './page/featrue/moreScene.html',
+        demoLink: './page/feature/moreScene.html',
       },
       {
         title: '方向辅助器',
-        demoLink: './page/featrue/directionHelper.html',
+        demoLink: './page/feature/directionHelper.html',
       },
       {
         title: '扶梯运行',
-        demoLink: './page/featrue/escalatorOperation.html',
+        demoLink: './page/feature/escalatorOperation.html',
       },
     ],
   },
