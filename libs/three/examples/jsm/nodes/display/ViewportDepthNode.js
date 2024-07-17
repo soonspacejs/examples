@@ -21,7 +21,7 @@ class ViewportDepthNode extends Node {
 
 		const { scope } = this;
 
-		if ( scope === ViewportDepthNode.DEPTH_PIXEL ) {
+		if ( scope === ViewportDepthNode.DEPTH ) {
 
 			return builder.getFragDepth();
 
@@ -31,28 +31,52 @@ class ViewportDepthNode extends Node {
 
 	}
 
-	setup( /*builder*/ ) {
+	setup( { camera } ) {
 
 		const { scope } = this;
+		const texture = this.valueNode;
 
 		let node = null;
 
 		if ( scope === ViewportDepthNode.DEPTH ) {
 
-			node = viewZToOrthographicDepth( positionView.z, cameraNear, cameraFar );
+			if ( texture !== null ) {
 
-		} else if ( scope === ViewportDepthNode.DEPTH_TEXTURE ) {
+ 				node = depthBase().assign( texture );
 
-			const texture = this.valueNode || viewportDepthTexture();
+			} else {
 
-			const viewZ = perspectiveDepthToViewZ( texture, cameraNear, cameraFar );
-			node = viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+				if ( camera.isPerspectiveCamera ) {
 
-		} else if ( scope === ViewportDepthNode.DEPTH_PIXEL ) {
+					node = viewZToPerspectiveDepth( positionView.z, cameraNear, cameraFar );
 
-			if ( this.valueNode !== null ) {
+				} else {
 
- 				node = depthPixelBase().assign( this.valueNode );
+					node = viewZToOrthographicDepth( positionView.z, cameraNear, cameraFar );
+
+				}
+
+			}
+
+		} else if ( scope === ViewportDepthNode.LINEAR_DEPTH ) {
+
+			if ( texture !== null ) {
+
+				if ( camera.isPerspectiveCamera ) {
+
+					const viewZ = perspectiveDepthToViewZ( texture, cameraNear, cameraFar );
+
+					node = viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+
+				} else {
+
+					node = texture;
+
+				}
+
+			} else {
+
+				node = viewZToOrthographicDepth( positionView.z, cameraNear, cameraFar );
 
 			}
 
@@ -75,23 +99,22 @@ export const orthographicDepthToViewZ = ( depth, near, far ) => near.sub( far ).
 // NOTE: https://twitter.com/gonnavis/status/1377183786949959682
 
 // -near maps to 0; -far maps to 1
-export const viewZToPerspectiveDepth = ( viewZ, near, far ) => near.add( viewZ ).mul( far ).div( near.sub( far ).mul( viewZ ) );
+export const viewZToPerspectiveDepth = ( viewZ, near, far ) => near.add( viewZ ).mul( far ).div( far.sub( near ).mul( viewZ ) );
 
 // maps perspective depth in [ 0, 1 ] to viewZ
 export const perspectiveDepthToViewZ = ( depth, near, far ) => near.mul( far ).div( far.sub( near ).mul( depth ).sub( far ) );
 
 ViewportDepthNode.DEPTH = 'depth';
-ViewportDepthNode.DEPTH_TEXTURE = 'depthTexture';
-ViewportDepthNode.DEPTH_PIXEL = 'depthPixel';
+ViewportDepthNode.LINEAR_DEPTH = 'linearDepth';
 
 export default ViewportDepthNode;
 
-const depthPixelBase = nodeProxy( ViewportDepthNode, ViewportDepthNode.DEPTH_PIXEL );
+const depthBase = nodeProxy( ViewportDepthNode, ViewportDepthNode.DEPTH );
 
 export const depth = nodeImmutable( ViewportDepthNode, ViewportDepthNode.DEPTH );
-export const depthTexture = nodeProxy( ViewportDepthNode, ViewportDepthNode.DEPTH_TEXTURE );
-export const depthPixel = nodeImmutable( ViewportDepthNode, ViewportDepthNode.DEPTH_PIXEL );
+export const linearDepth = nodeProxy( ViewportDepthNode, ViewportDepthNode.LINEAR_DEPTH );
+export const viewportLinearDepth = linearDepth( viewportDepthTexture() );
 
-depthPixel.assign = ( value ) => depthPixelBase( value );
+depth.assign = ( value ) => depthBase( value );
 
 addNodeClass( 'ViewportDepthNode', ViewportDepthNode );

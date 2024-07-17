@@ -43,9 +43,15 @@ class Line2NodeMaterial extends NodeMaterial {
 		this.dashSizeNode = null;
 		this.gapSizeNode = null;
 
+		this.setValues( params );
+
+	}
+
+	setup( builder ) {
+
 		this.setupShaders();
 
-		this.setValues( params );
+		super.setup( builder );
 
 	}
 
@@ -141,7 +147,7 @@ class Line2NodeMaterial extends NodeMaterial {
 
 				const worldPos = varyingProperty( 'vec4', 'worldPos' );
 
-				worldPos.assign( positionGeometry.y.lessThan( 0.5 ).cond( start, end) );
+				worldPos.assign( positionGeometry.y.lessThan( 0.5 ).cond( start, end ) );
 
 				// height offset
 				const hw = materialLineWidth.mul( 0.5 );
@@ -371,8 +377,6 @@ class Line2NodeMaterial extends NodeMaterial {
 
 		} )();
 
-		this.needsUpdate = true;
-
 	}
 
 
@@ -387,7 +391,7 @@ class Line2NodeMaterial extends NodeMaterial {
 		if ( this.useWorldUnits !== value ) {
 
 			this.useWorldUnits = value;
-			this.setupShaders();
+			this.needsUpdate = true;
 
 		}
 
@@ -405,7 +409,7 @@ class Line2NodeMaterial extends NodeMaterial {
 		if ( this.useDash !== value ) {
 
 			this.useDash = value;
-			this.setupShaders();
+			this.needsUpdate = true;
 
 		}
 
@@ -423,7 +427,7 @@ class Line2NodeMaterial extends NodeMaterial {
 		if ( this.useAlphaToCoverage !== value ) {
 
 			this.useAlphaToCoverage = value;
-			this.setupShaders();
+			this.needsUpdate = true;
 
 		}
 

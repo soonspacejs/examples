@@ -90,6 +90,12 @@ class ReferenceNode extends Node {
 
 	getNodeType( builder ) {
 
+		if ( this.node === null ) {
+
+			this.updateValue();
+
+		}
+
 		return this.node.getNodeType( builder );
 
 	}
@@ -110,7 +116,7 @@ class ReferenceNode extends Node {
 
 	}
 
-	setReference( state ) {
+	updateReference( state ) {
 
 		this.reference = this.object !== null ? this.object : state.object;
 

@@ -17,8 +17,16 @@ class Node extends EventDispatcher {
 
 		this.updateType = NodeUpdateType.NONE;
 		this.updateBeforeType = NodeUpdateType.NONE;
+		this.updateAfterType = NodeUpdateType.NONE;
 
 		this.uuid = MathUtils.generateUUID();
+
+		this.version = 0;
+
+		this._cacheKey = null;
+		this._cacheKeyVersion = 0;
+
+		this.global = false;
 
 		this.isNode = true;
 
@@ -26,9 +34,54 @@ class Node extends EventDispatcher {
 
 	}
 
+	set needsUpdate( value ) {
+
+		if ( value === true ) {
+
+			this.version ++;
+
+		}
+
+	}
+
 	get type() {
 
 		return this.constructor.type;
+
+	}
+
+	onUpdate( callback, updateType ) {
+
+		this.updateType = updateType;
+		this.update = callback.bind( this.getSelf() );
+
+		return this;
+
+	}
+
+	onFrameUpdate( callback ) {
+
+		return this.onUpdate( callback, NodeUpdateType.FRAME );
+
+	}
+
+	onRenderUpdate( callback ) {
+
+		return this.onUpdate( callback, NodeUpdateType.RENDER );
+
+	}
+
+	onObjectUpdate( callback ) {
+
+		return this.onUpdate( callback, NodeUpdateType.OBJECT );
+
+	}
+
+	onReference( callback ) {
+
+		this.updateReference = callback.bind( this.getSelf() );
+
+		return this;
 
 	}
 
@@ -40,7 +93,7 @@ class Node extends EventDispatcher {
 
 	}
 
-	setReference( /*state*/ ) {
+	updateReference( /*state*/ ) {
 
 		return this;
 
@@ -48,7 +101,7 @@ class Node extends EventDispatcher {
 
 	isGlobal( /*builder*/ ) {
 
-		return false;
+		return this.global;
 
 	}
 
@@ -80,9 +133,18 @@ class Node extends EventDispatcher {
 
 	}
 
-	getCacheKey() {
+	getCacheKey( force = false ) {
 
-		return getCacheKey( this );
+		force = force || this.version !== this._cacheKeyVersion;
+
+		if ( force === true || this._cacheKey === null ) {
+
+			this._cacheKey = getCacheKey( this, force );
+			this._cacheKeyVersion = this.version;
+
+		}
+
+		return this._cacheKey;
 
 	}
 
@@ -101,6 +163,21 @@ class Node extends EventDispatcher {
 	getUpdateBeforeType() {
 
 		return this.updateBeforeType;
+
+	}
+
+	getUpdateAfterType() {
+
+		return this.updateAfterType;
+
+	}
+
+	getElementType( builder ) {
+
+		const type = this.getNodeType( builder );
+		const elementType = builder.getElementType( type );
+
+		return elementType;
 
 	}
 
@@ -131,9 +208,11 @@ class Node extends EventDispatcher {
 
 		const nodeProperties = builder.getNodeProperties( this );
 
+		let index = 0;
+
 		for ( const childNode of this.getChildren() ) {
 
-			nodeProperties[ '_node' + childNode.id ] = childNode;
+			nodeProperties[ 'node' + index ++ ] = childNode;
 
 		}
 
@@ -201,6 +280,12 @@ class Node extends EventDispatcher {
 
 	}
 
+	updateAfter( /*frame*/ ) {
+
+		console.warn( 'Abstract function.' );
+
+	}
+
 	update( /*frame*/ ) {
 
 		console.warn( 'Abstract function.' );
@@ -231,11 +316,11 @@ class Node extends EventDispatcher {
 
 		if ( buildStage === 'setup' ) {
 
-			this.setReference( builder );
+			this.updateReference( builder );
 
 			const properties = builder.getNodeProperties( this );
 
-			if ( properties.initialized !== true || builder.context.tempRead === false ) {
+			if ( properties.initialized !== true ) {
 
 				const stackNodesBeforeSetup = builder.stack.nodes.length;
 
@@ -275,7 +360,7 @@ class Node extends EventDispatcher {
 
 				result = nodeData.snippet;
 
-				if ( result === undefined /*|| builder.context.tempRead === false*/ ) {
+				if ( result === undefined ) {
 
 					result = this.generate( builder ) || '';
 

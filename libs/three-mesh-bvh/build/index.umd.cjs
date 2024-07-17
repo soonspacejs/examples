@@ -2858,7 +2858,7 @@
 	const _normalC = /* @__PURE__ */ new three.Vector3();
 
 	const _intersectionPoint = /* @__PURE__ */ new three.Vector3();
-	function checkIntersection( ray, pA, pB, pC, point, side ) {
+	function checkIntersection( ray, pA, pB, pC, point, side, near, far ) {
 
 		let intersect;
 		if ( side === three.BackSide ) {
@@ -2875,6 +2875,8 @@
 
 		const distance = ray.origin.distanceTo( point );
 
+		if ( distance < near || distance > far ) return null;
+
 		return {
 
 			distance: distance,
@@ -2884,13 +2886,13 @@
 
 	}
 
-	function checkBufferGeometryIntersection( ray, position, normal, uv, uv1, a, b, c, side ) {
+	function checkBufferGeometryIntersection( ray, position, normal, uv, uv1, a, b, c, side, near, far ) {
 
 		_vA.fromBufferAttribute( position, a );
 		_vB.fromBufferAttribute( position, b );
 		_vC.fromBufferAttribute( position, c );
 
-		const intersection = checkIntersection( ray, _vA, _vB, _vC, _intersectionPoint, side );
+		const intersection = checkIntersection( ray, _vA, _vB, _vC, _intersectionPoint, side, near, far );
 
 		if ( intersection ) {
 
@@ -2949,7 +2951,7 @@
 	}
 
 	// https://github.com/mrdoob/three.js/blob/0aa87c999fe61e216c1133fba7a95772b503eddf/src/objects/Mesh.js#L258
-	function intersectTri( geo, side, ray, tri, intersections ) {
+	function intersectTri( geo, side, ray, tri, intersections, near, far ) {
 
 		const triOffset = tri * 3;
 		let a = triOffset + 0;
@@ -2966,7 +2968,7 @@
 		}
 
 		const { position, normal, uv, uv1 } = geo.attributes;
-		const intersection = checkBufferGeometryIntersection( ray, position, normal, uv, uv1, a, b, c, side );
+		const intersection = checkBufferGeometryIntersection( ray, position, normal, uv, uv1, a, b, c, side, near, far );
 
 		if ( intersection ) {
 
@@ -3102,20 +3104,20 @@
 	/*************************************************************/
 	/* eslint-disable indent */
 
-	function intersectTris( bvh, side, ray, offset, count, intersections ) {
+	function intersectTris( bvh, side, ray, offset, count, intersections, near, far ) {
 
 		const { geometry, _indirectBuffer } = bvh;
 		for ( let i = offset, end = offset + count; i < end; i ++ ) {
 
 
-			intersectTri( geometry, side, ray, i, intersections );
+			intersectTri( geometry, side, ray, i, intersections, near, far );
 
 
 		}
 
 	}
 
-	function intersectClosestTri( bvh, side, ray, offset, count ) {
+	function intersectClosestTri( bvh, side, ray, offset, count, near, far ) {
 
 		const { geometry, _indirectBuffer } = bvh;
 		let dist = Infinity;
@@ -3124,7 +3126,7 @@
 
 			let intersection;
 
-			intersection = intersectTri( geometry, side, ray, i );
+			intersection = intersectTri( geometry, side, ray, i, null, near, far );
 
 
 			if ( intersection && intersection.distance < dist ) {
@@ -3343,11 +3345,82 @@
 
 	}
 
-	const _boundingBox = /* @__PURE__ */ new three.Box3();
-	function intersectRay( nodeIndex32, array, ray, target ) {
+	/**
+	 * This function performs intersection tests similar to Ray.intersectBox in three.js,
+	 * with the difference that the box values are read from an array to improve performance.
+	 */
+	function intersectRay( nodeIndex32, array, ray, near, far ) {
 
-		arrayToBox( nodeIndex32, array, _boundingBox );
-		return ray.intersectBox( _boundingBox, target );
+		let tmin, tmax, tymin, tymax, tzmin, tzmax;
+
+		const invdirx = 1 / ray.direction.x,
+			invdiry = 1 / ray.direction.y,
+			invdirz = 1 / ray.direction.z;
+
+		const ox = ray.origin.x;
+		const oy = ray.origin.y;
+		const oz = ray.origin.z;
+
+		let minx = array[ nodeIndex32 ];
+		let maxx = array[ nodeIndex32 + 3 ];
+
+		let miny = array[ nodeIndex32 + 1 ];
+		let maxy = array[ nodeIndex32 + 3 + 1 ];
+
+		let minz = array[ nodeIndex32 + 2 ];
+		let maxz = array[ nodeIndex32 + 3 + 2 ];
+
+		if ( invdirx >= 0 ) {
+
+			tmin = ( minx - ox ) * invdirx;
+			tmax = ( maxx - ox ) * invdirx;
+
+		} else {
+
+			tmin = ( maxx - ox ) * invdirx;
+			tmax = ( minx - ox ) * invdirx;
+
+		}
+
+		if ( invdiry >= 0 ) {
+
+			tymin = ( miny - oy ) * invdiry;
+			tymax = ( maxy - oy ) * invdiry;
+
+		} else {
+
+			tymin = ( maxy - oy ) * invdiry;
+			tymax = ( miny - oy ) * invdiry;
+
+		}
+
+		if ( ( tmin > tymax ) || ( tymin > tmax ) ) return false;
+
+		if ( tymin > tmin || isNaN( tmin ) ) tmin = tymin;
+
+		if ( tymax < tmax || isNaN( tmax ) ) tmax = tymax;
+
+		if ( invdirz >= 0 ) {
+
+			tzmin = ( minz - oz ) * invdirz;
+			tzmax = ( maxz - oz ) * invdirz;
+
+		} else {
+
+			tzmin = ( maxz - oz ) * invdirz;
+			tzmax = ( minz - oz ) * invdirz;
+
+		}
+
+		if ( ( tmin > tzmax ) || ( tzmin > tmax ) ) return false;
+
+		if ( tzmin > tmin || tmin !== tmin ) tmin = tzmin;
+
+		if ( tzmax < tmax || tmax !== tmax ) tmax = tzmax;
+
+		//return point closest to the ray (positive side)
+
+		return tmin <= far && tmax >= near;
 
 	}
 
@@ -3356,20 +3429,20 @@
 	/*************************************************************/
 	/* eslint-disable indent */
 
-	function intersectTris_indirect( bvh, side, ray, offset, count, intersections ) {
+	function intersectTris_indirect( bvh, side, ray, offset, count, intersections, near, far ) {
 
 		const { geometry, _indirectBuffer } = bvh;
 		for ( let i = offset, end = offset + count; i < end; i ++ ) {
 
 			let vi = _indirectBuffer ? _indirectBuffer[ i ] : i;
-			intersectTri( geometry, side, ray, vi, intersections );
+			intersectTri( geometry, side, ray, vi, intersections, near, far );
 
 
 		}
 
 	}
 
-	function intersectClosestTri_indirect( bvh, side, ray, offset, count ) {
+	function intersectClosestTri_indirect( bvh, side, ray, offset, count, near, far ) {
 
 		const { geometry, _indirectBuffer } = bvh;
 		let dist = Infinity;
@@ -3377,7 +3450,7 @@
 		for ( let i = offset, end = offset + count; i < end; i ++ ) {
 
 			let intersection;
-			intersection = intersectTri( geometry, side, ray, _indirectBuffer ? _indirectBuffer[ i ] : i );
+			intersection = intersectTri( geometry, side, ray, _indirectBuffer ? _indirectBuffer[ i ] : i, null, near, far );
 
 
 			if ( intersection && intersection.distance < dist ) {
@@ -3430,16 +3503,15 @@
 	/* This file is generated from "raycast.template.js". */
 	/******************************************************/
 
-	const _boxIntersection$3 = /* @__PURE__ */ new three.Vector3();
-	function raycast( bvh, root, side, ray, intersects ) {
+	function raycast( bvh, root, side, ray, intersects, near, far ) {
 
 		BufferStack.setBuffer( bvh._roots[ root ] );
-		_raycast$1( 0, bvh, side, ray, intersects );
+		_raycast$1( 0, bvh, side, ray, intersects, near, far );
 		BufferStack.clearBuffer();
 
 	}
 
-	function _raycast$1( nodeIndex32, bvh, side, ray, intersects ) {
+	function _raycast$1( nodeIndex32, bvh, side, ray, intersects, near, far ) {
 
 		const { float32Array, uint16Array, uint32Array } = BufferStack;
 		const nodeIndex16 = nodeIndex32 * 2;
@@ -3450,22 +3522,22 @@
 			const count = COUNT( nodeIndex16, uint16Array );
 
 
-			intersectTris( bvh, side, ray, offset, count, intersects );
+			intersectTris( bvh, side, ray, offset, count, intersects, near, far );
 
 
 		} else {
 
 			const leftIndex = LEFT_NODE( nodeIndex32 );
-			if ( intersectRay( leftIndex, float32Array, ray, _boxIntersection$3 ) ) {
+			if ( intersectRay( leftIndex, float32Array, ray, near, far ) ) {
 
-				_raycast$1( leftIndex, bvh, side, ray, intersects );
+				_raycast$1( leftIndex, bvh, side, ray, intersects, near, far );
 
 			}
 
 			const rightIndex = RIGHT_NODE( nodeIndex32, uint32Array );
-			if ( intersectRay( rightIndex, float32Array, ray, _boxIntersection$3 ) ) {
+			if ( intersectRay( rightIndex, float32Array, ray, near, far ) ) {
 
-				_raycast$1( rightIndex, bvh, side, ray, intersects );
+				_raycast$1( rightIndex, bvh, side, ray, intersects, near, far );
 
 			}
 
@@ -3476,19 +3548,20 @@
 	/***********************************************************/
 	/* This file is generated from "raycastFirst.template.js". */
 	/***********************************************************/
-	const _boxIntersection$2 = /* @__PURE__ */ new three.Vector3();
+
 	const _xyzFields$1 = [ 'x', 'y', 'z' ];
-	function raycastFirst( bvh, root, side, ray ) {
+
+	function raycastFirst( bvh, root, side, ray, near, far ) {
 
 		BufferStack.setBuffer( bvh._roots[ root ] );
-		const result = _raycastFirst$1( 0, bvh, side, ray );
+		const result = _raycastFirst$1( 0, bvh, side, ray, near, far );
 		BufferStack.clearBuffer();
 
 		return result;
 
 	}
 
-	function _raycastFirst$1( nodeIndex32, bvh, side, ray ) {
+	function _raycastFirst$1( nodeIndex32, bvh, side, ray, near, far ) {
 
 		const { float32Array, uint16Array, uint32Array } = BufferStack;
 		let nodeIndex16 = nodeIndex32 * 2;
@@ -3500,7 +3573,8 @@
 			const count = COUNT( nodeIndex16, uint16Array );
 
 
-			return intersectClosestTri( bvh, side, ray, offset, count );
+			// eslint-disable-next-line no-unreachable
+			return intersectClosestTri( bvh, side, ray, offset, count, near, far );
 
 
 		} else {
@@ -3526,8 +3600,8 @@
 
 			}
 
-			const c1Intersection = intersectRay( c1, float32Array, ray, _boxIntersection$2 );
-			const c1Result = c1Intersection ? _raycastFirst$1( c1, bvh, side, ray ) : null;
+			const c1Intersection = intersectRay( c1, float32Array, ray, near, far );
+			const c1Result = c1Intersection ? _raycastFirst$1( c1, bvh, side, ray, near, far ) : null;
 
 			// if we got an intersection in the first node and it's closer than the second node's bounding
 			// box, we don't need to consider the second node because it couldn't possibly be a better result
@@ -3550,8 +3624,8 @@
 
 			// either there was no intersection in the first node, or there could still be a closer
 			// intersection in the second, so check the second node and then take the better of the two
-			const c2Intersection = intersectRay( c2, float32Array, ray, _boxIntersection$2 );
-			const c2Result = c2Intersection ? _raycastFirst$1( c2, bvh, side, ray ) : null;
+			const c2Intersection = intersectRay( c2, float32Array, ray, near, far );
+			const c2Result = c2Intersection ? _raycastFirst$1( c2, bvh, side, ray, near, far ) : null;
 
 			if ( c1Result && c2Result ) {
 
@@ -4156,16 +4230,15 @@
 	/* This file is generated from "raycast.template.js". */
 	/******************************************************/
 
-	const _boxIntersection$1 = /* @__PURE__ */ new three.Vector3();
-	function raycast_indirect( bvh, root, side, ray, intersects ) {
+	function raycast_indirect( bvh, root, side, ray, intersects, near, far ) {
 
 		BufferStack.setBuffer( bvh._roots[ root ] );
-		_raycast( 0, bvh, side, ray, intersects );
+		_raycast( 0, bvh, side, ray, intersects, near, far );
 		BufferStack.clearBuffer();
 
 	}
 
-	function _raycast( nodeIndex32, bvh, side, ray, intersects ) {
+	function _raycast( nodeIndex32, bvh, side, ray, intersects, near, far ) {
 
 		const { float32Array, uint16Array, uint32Array } = BufferStack;
 		const nodeIndex16 = nodeIndex32 * 2;
@@ -4175,22 +4248,22 @@
 			const offset = OFFSET( nodeIndex32, uint32Array );
 			const count = COUNT( nodeIndex16, uint16Array );
 
-			intersectTris_indirect( bvh, side, ray, offset, count, intersects );
+			intersectTris_indirect( bvh, side, ray, offset, count, intersects, near, far );
 
 
 		} else {
 
 			const leftIndex = LEFT_NODE( nodeIndex32 );
-			if ( intersectRay( leftIndex, float32Array, ray, _boxIntersection$1 ) ) {
+			if ( intersectRay( leftIndex, float32Array, ray, near, far ) ) {
 
-				_raycast( leftIndex, bvh, side, ray, intersects );
+				_raycast( leftIndex, bvh, side, ray, intersects, near, far );
 
 			}
 
 			const rightIndex = RIGHT_NODE( nodeIndex32, uint32Array );
-			if ( intersectRay( rightIndex, float32Array, ray, _boxIntersection$1 ) ) {
+			if ( intersectRay( rightIndex, float32Array, ray, near, far ) ) {
 
-				_raycast( rightIndex, bvh, side, ray, intersects );
+				_raycast( rightIndex, bvh, side, ray, intersects, near, far );
 
 			}
 
@@ -4201,19 +4274,20 @@
 	/***********************************************************/
 	/* This file is generated from "raycastFirst.template.js". */
 	/***********************************************************/
-	const _boxIntersection = /* @__PURE__ */ new three.Vector3();
+
 	const _xyzFields = [ 'x', 'y', 'z' ];
-	function raycastFirst_indirect( bvh, root, side, ray ) {
+
+	function raycastFirst_indirect( bvh, root, side, ray, near, far ) {
 
 		BufferStack.setBuffer( bvh._roots[ root ] );
-		const result = _raycastFirst( 0, bvh, side, ray );
+		const result = _raycastFirst( 0, bvh, side, ray, near, far );
 		BufferStack.clearBuffer();
 
 		return result;
 
 	}
 
-	function _raycastFirst( nodeIndex32, bvh, side, ray ) {
+	function _raycastFirst( nodeIndex32, bvh, side, ray, near, far ) {
 
 		const { float32Array, uint16Array, uint32Array } = BufferStack;
 		let nodeIndex16 = nodeIndex32 * 2;
@@ -4224,7 +4298,7 @@
 			const offset = OFFSET( nodeIndex32, uint32Array );
 			const count = COUNT( nodeIndex16, uint16Array );
 
-			return intersectClosestTri_indirect( bvh, side, ray, offset, count );
+			return intersectClosestTri_indirect( bvh, side, ray, offset, count, near, far );
 
 
 		} else {
@@ -4250,8 +4324,8 @@
 
 			}
 
-			const c1Intersection = intersectRay( c1, float32Array, ray, _boxIntersection );
-			const c1Result = c1Intersection ? _raycastFirst( c1, bvh, side, ray ) : null;
+			const c1Intersection = intersectRay( c1, float32Array, ray, near, far );
+			const c1Result = c1Intersection ? _raycastFirst( c1, bvh, side, ray, near, far ) : null;
 
 			// if we got an intersection in the first node and it's closer than the second node's bounding
 			// box, we don't need to consider the second node because it couldn't possibly be a better result
@@ -4274,8 +4348,8 @@
 
 			// either there was no intersection in the first node, or there could still be a closer
 			// intersection in the second, so check the second node and then take the better of the two
-			const c2Intersection = intersectRay( c2, float32Array, ray, _boxIntersection );
-			const c2Result = c2Intersection ? _raycastFirst( c2, bvh, side, ray ) : null;
+			const c2Intersection = intersectRay( c2, float32Array, ray, near, far );
+			const c2Result = c2Intersection ? _raycastFirst( c2, bvh, side, ray, near, far ) : null;
 
 			if ( c1Result && c2Result ) {
 
@@ -5079,7 +5153,7 @@
 
 				result = {
 					roots: rootData.map( root => root.slice() ),
-					index: indexAttribute.array.slice(),
+					index: indexAttribute ? indexAttribute.array.slice() : null,
 					indirectBuffer: indirectBuffer ? indirectBuffer.slice() : null,
 				};
 
@@ -5087,7 +5161,7 @@
 
 				result = {
 					roots: rootData,
-					index: indexAttribute.array,
+					index: indexAttribute ? indexAttribute.array : null,
 					indirectBuffer: indirectBuffer,
 				};
 
@@ -5184,8 +5258,7 @@
 
 			}
 
-			const { _indirectBuffer } = this;
-			this.resolveTriangleIndex = options.indirect ? i => _indirectBuffer[ i ] : i => i;
+			this.resolveTriangleIndex = options.indirect ? i => this._indirectBuffer[ i ] : i => i;
 
 		}
 
@@ -5235,7 +5308,7 @@
 		}
 
 		/* Core Cast Functions */
-		raycast( ray, materialOrSide = three.FrontSide ) {
+		raycast( ray, materialOrSide = three.FrontSide, near = 0, far = Infinity ) {
 
 			const roots = this._roots;
 			const geometry = this.geometry;
@@ -5251,7 +5324,7 @@
 				const materialSide = isArrayMaterial ? materialOrSide[ groups[ i ].materialIndex ].side : side;
 				const startCount = intersects.length;
 
-				raycastFunc( this, i, materialSide, ray, intersects );
+				raycastFunc( this, i, materialSide, ray, intersects, near, far );
 
 				if ( isArrayMaterial ) {
 
@@ -5270,7 +5343,7 @@
 
 		}
 
-		raycastFirst( ray, materialOrSide = three.FrontSide ) {
+		raycastFirst( ray, materialOrSide = three.FrontSide, near = 0, far = Infinity ) {
 
 			const roots = this._roots;
 			const geometry = this.geometry;
@@ -5285,7 +5358,7 @@
 			for ( let i = 0, l = roots.length; i < l; i ++ ) {
 
 				const materialSide = isArrayMaterial ? materialOrSide[ groups[ i ].materialIndex ].side : side;
-				const result = raycastFirstFunc( this, i, materialSide, ray );
+				const result = raycastFirstFunc( this, i, materialSide, ray, near, far );
 				if ( result != null && ( closestResult == null || result.distance < closestResult.distance ) ) {
 
 					closestResult = result;
@@ -6076,7 +6149,7 @@
 
 			for ( let key in curr ) {
 
-				if ( ! curr.hasOwnProperty( key ) ) {
+				if ( ! Object.hasOwn( curr, key ) ) {
 
 					continue;
 
@@ -6256,21 +6329,15 @@
 		hit.distance = hit.point.distanceTo( raycaster.ray.origin );
 		hit.object = object;
 
-		if ( hit.distance < raycaster.near || hit.distance > raycaster.far ) {
-
-			return null;
-
-		} else {
-
-			return hit;
-
-		}
+		return hit;
 
 	}
 
 	const ray = /* @__PURE__ */ new three.Ray();
+	const direction = /* @__PURE__ */ new three.Vector3();
 	const tmpInverseMatrix = /* @__PURE__ */ new three.Matrix4();
 	const origMeshRaycastFunc = three.Mesh.prototype.raycast;
+	const _worldScale = /* @__PURE__ */ new three.Vector3();
 
 	function acceleratedRaycast( raycaster, intersects ) {
 
@@ -6281,10 +6348,17 @@
 			tmpInverseMatrix.copy( this.matrixWorld ).invert();
 			ray.copy( raycaster.ray ).applyMatrix4( tmpInverseMatrix );
 
+			extractMatrixScale( this.matrixWorld, _worldScale );
+			direction.copy( ray.direction ).multiply( _worldScale );
+
+			const scaleFactor = direction.length();
+			const near = raycaster.near / scaleFactor;
+			const far = raycaster.far / scaleFactor;
+
 			const bvh = this.geometry.boundsTree;
 			if ( raycaster.firstHitOnly === true ) {
 
-				const hit = convertRaycastIntersect( bvh.raycastFirst( ray, this.material ), this, raycaster );
+				const hit = convertRaycastIntersect( bvh.raycastFirst( ray, this.material, near, far ), this, raycaster );
 				if ( hit ) {
 
 					intersects.push( hit );
@@ -6293,7 +6367,7 @@
 
 			} else {
 
-				const hits = bvh.raycast( ray, this.material );
+				const hits = bvh.raycast( ray, this.material, near, far );
 				for ( let i = 0, l = hits.length; i < l; i ++ ) {
 
 					const hit = convertRaycastIntersect( hits[ i ], this, raycaster );
@@ -6325,6 +6399,18 @@
 	function disposeBoundsTree() {
 
 		this.boundsTree = null;
+
+	}
+
+	// https://github.com/mrdoob/three.js/blob/dev/src/math/Matrix4.js#L732
+	// extracting the scale directly is ~3x faster than using "decompose"
+	function extractMatrixScale( matrix, target ) {
+
+		const te = matrix.elements;
+		const sx = target.set( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
+		const sy = target.set( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
+		const sz = target.set( te[ 8 ], te[ 9 ], te[ 10 ] ).length();
+		return target.set( sx, sy, sz );
 
 	}
 

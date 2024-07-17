@@ -23,6 +23,27 @@ class WebGPUPipelineUtils {
 
 	}
 
+	_getSampleCount( renderObjectContext ) {
+
+		let sampleCount = this.backend.utils.getSampleCount( renderObjectContext );
+
+		if ( sampleCount > 1 ) {
+
+			// WebGPU only supports power-of-two sample counts and 2 is not a valid value
+			sampleCount = Math.pow( 2, Math.floor( Math.log2( sampleCount ) ) );
+
+			if ( sampleCount === 2 ) {
+
+				sampleCount = 4;
+
+			}
+
+		}
+
+		return sampleCount;
+
+	}
+
 	createRenderPipeline( renderObject, promises ) {
 
 		const { object, material, geometry, pipeline } = renderObject;
@@ -33,7 +54,18 @@ class WebGPUPipelineUtils {
 		const utils = backend.utils;
 
 		const pipelineData = backend.get( pipeline );
-		const bindingsData = backend.get( renderObject.getBindings() );
+
+		// bind group layouts
+
+		const bindGroupLayouts = [];
+
+		for ( const bindGroup of renderObject.getBindings() ) {
+
+			const bindingsData = backend.get( bindGroup );
+
+			bindGroupLayouts.push( bindingsData.layout );
+
+		}
 
 		// vertex buffers
 
@@ -102,22 +134,11 @@ class WebGPUPipelineUtils {
 		const primitiveState = this._getPrimitiveState( object, geometry, material );
 		const depthCompare = this._getDepthCompare( material );
 		const depthStencilFormat = utils.getCurrentDepthStencilFormat( renderObject.context );
-		let sampleCount = utils.getSampleCount( renderObject.context );
 
-		if ( sampleCount > 1 ) {
-
-			// WebGPU only supports power-of-two sample counts and 2 is not a valid value
-			sampleCount = Math.pow( 2, Math.floor( Math.log2( sampleCount ) ) );
-
-			if ( sampleCount === 2 ) {
-
-				sampleCount = 4;
-
-			}
-
-		}
+		const sampleCount = this._getSampleCount( renderObject.context );
 
 		const pipelineDescriptor = {
+			label: 'renderPipeline',
 			vertex: Object.assign( {}, vertexModule, { buffers: vertexBuffers } ),
 			fragment: Object.assign( {}, fragmentModule, { targets } ),
 			primitive: primitiveState,
@@ -135,7 +156,7 @@ class WebGPUPipelineUtils {
 				alphaToCoverageEnabled: material.alphaToCoverage
 			},
 			layout: device.createPipelineLayout( {
-				bindGroupLayouts: [ bindingsData.layout ]
+				bindGroupLayouts
 			} )
 		};
 
@@ -162,6 +183,35 @@ class WebGPUPipelineUtils {
 
 	}
 
+	createBundleEncoder( renderContext, renderObject ) {
+
+		const backend = this.backend;
+		const { utils, device } = backend;
+
+		const renderContextData = backend.get( renderContext );
+		const renderObjectData = backend.get( renderObject );
+
+		const depthStencilFormat = utils.getCurrentDepthStencilFormat( renderContext );
+		const colorFormat = utils.getCurrentColorFormat( renderContext );
+		const sampleCount = this._getSampleCount( renderObject.context );
+
+		const descriptor = {
+			label: 'renderBundleEncoder',
+			colorFormats: [ colorFormat ],
+			depthStencilFormat,
+			sampleCount
+		};
+
+		const bundleEncoder = device.createRenderBundleEncoder( descriptor );
+
+		renderObjectData.bundleEncoder = bundleEncoder;
+		renderContextData.currentSets = { attributes: {} };
+		renderContextData._renderBundleViewport = renderContext.width + '_' + renderContext.height;
+
+		return bundleEncoder;
+
+	}
+
 	createComputePipeline( pipeline, bindings ) {
 
 		const backend = this.backend;
@@ -170,12 +220,23 @@ class WebGPUPipelineUtils {
 		const computeProgram = backend.get( pipeline.computeProgram ).module;
 
 		const pipelineGPU = backend.get( pipeline );
-		const bindingsData = backend.get( bindings );
+
+		// bind group layouts
+
+		const bindGroupLayouts = [];
+
+		for ( const bindingsGroup of bindings ) {
+
+			const bindingsData = backend.get( bindingsGroup );
+
+			bindGroupLayouts.push( bindingsData.layout );
+
+		}
 
 		pipelineGPU.pipeline = device.createComputePipeline( {
 			compute: computeProgram,
 			layout: device.createPipelineLayout( {
-				bindGroupLayouts: [ bindingsData.layout ]
+				bindGroupLayouts
 			} )
 		} );
 
@@ -186,17 +247,21 @@ class WebGPUPipelineUtils {
 		let color, alpha;
 
 		const blending = material.blending;
+		const blendSrc = material.blendSrc;
+		const blendDst = material.blendDst;
+		const blendEquation = material.blendEquation;
+
 
 		if ( blending === CustomBlending ) {
 
-			const blendSrcAlpha = material.blendSrcAlpha !== null ? material.blendSrcAlpha : GPUBlendFactor.One;
-			const blendDstAlpha = material.blendDstAlpha !== null ? material.blendDstAlpha : GPUBlendFactor.Zero;
-			const blendEquationAlpha = material.blendEquationAlpha !== null ? material.blendEquationAlpha : GPUBlendFactor.Add;
+			const blendSrcAlpha = material.blendSrcAlpha !== null ? material.blendSrcAlpha : blendSrc;
+			const blendDstAlpha = material.blendDstAlpha !== null ? material.blendDstAlpha : blendDst;
+			const blendEquationAlpha = material.blendEquationAlpha !== null ? material.blendEquationAlpha : blendEquation;
 
 			color = {
-				srcFactor: this._getBlendFactor( material.blendSrc ),
-				dstFactor: this._getBlendFactor( material.blendDst ),
-				operation: this._getBlendOperation( material.blendEquation )
+				srcFactor: this._getBlendFactor( blendSrc ),
+				dstFactor: this._getBlendFactor( blendDst ),
+				operation: this._getBlendOperation( blendEquation )
 			};
 
 			alpha = {

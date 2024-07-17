@@ -53,6 +53,18 @@ class LightsNode extends Node {
 
 	}
 
+	analyze( builder ) {
+
+		const properties = builder.getDataFromNode( this );
+
+		for ( const node of properties.nodes ) {
+
+			node.build( builder );
+
+		}
+
+	}
+
 	setup( builder ) {
 
 		const context = builder.context;
@@ -67,6 +79,11 @@ class LightsNode extends Node {
 			context.outgoingLight = outgoingLightNode;
 
 			const stack = builder.addStack();
+
+			//
+
+			const properties = builder.getDataFromNode( this );
+			properties.nodes = stack.nodes;
 
 			//
 
@@ -95,7 +112,17 @@ class LightsNode extends Node {
 
 			if ( backdrop !== null ) {
 
-				totalDiffuse = vec3( backdropAlpha !== null ? backdropAlpha.mix( totalDiffuse, backdrop ) : backdrop );
+				if ( backdropAlpha !== null ) {
+
+					totalDiffuse = vec3( backdropAlpha.mix( totalDiffuse, backdrop ) );
+
+				} else {
+
+					totalDiffuse = vec3( backdrop );
+
+				}
+
+				context.material.transparent = true;
 
 			}
 

@@ -1,11 +1,13 @@
 import { addNodeClass } from '../core/Node.js';
 import TempNode from '../core/TempNode.js';
-import TextureNode from '../accessors/TextureNode.js';
+import { default as TextureNode/*, texture*/ } from '../accessors/TextureNode.js';
 import { NodeUpdateType } from '../core/constants.js';
 import { nodeObject } from '../shadernode/ShaderNode.js';
 import { uniform } from '../core/UniformNode.js';
 import { viewZToOrthographicDepth, perspectiveDepthToViewZ } from './ViewportDepthNode.js';
 import { RenderTarget, Vector2, HalfFloatType, DepthTexture, NoToneMapping/*, FloatType*/ } from 'three';
+
+const _size = new Vector2();
 
 class PassTextureNode extends TextureNode {
 
@@ -65,7 +67,8 @@ class PassNode extends TempNode {
 		this._textureNode = nodeObject( new PassTextureNode( this, renderTarget.texture ) );
 		this._depthTextureNode = nodeObject( new PassTextureNode( this, depthTexture ) );
 
-		this._depthNode = null;
+		this._linearDepthNode = null;
+		this._viewZNode = null;
 		this._cameraNear = uniform( 0 );
 		this._cameraFar = uniform( 0 );
 
@@ -91,24 +94,41 @@ class PassNode extends TempNode {
 
 	}
 
-	getDepthNode() {
+	getViewZNode() {
 
-		if ( this._depthNode === null ) {
+		if ( this._viewZNode === null ) {
 
 			const cameraNear = this._cameraNear;
 			const cameraFar = this._cameraFar;
 
-			this._depthNode = viewZToOrthographicDepth( perspectiveDepthToViewZ( this._depthTextureNode, cameraNear, cameraFar ), cameraNear, cameraFar );
+			this._viewZNode = perspectiveDepthToViewZ( this._depthTextureNode, cameraNear, cameraFar );
 
 		}
 
-		return this._depthNode;
+		return this._viewZNode;
+
+	}
+
+	getLinearDepthNode() {
+
+		if ( this._linearDepthNode === null ) {
+
+			const cameraNear = this._cameraNear;
+			const cameraFar = this._cameraFar;
+
+			// TODO: just if ( builder.camera.isPerspectiveCamera )
+
+			this._linearDepthNode = viewZToOrthographicDepth( this.getViewZNode(), cameraNear, cameraFar );
+
+		}
+
+		return this._linearDepthNode;
 
 	}
 
 	setup() {
 
-		return this.scope === PassNode.COLOR ? this.getTextureNode() : this.getDepthNode();
+		return this.scope === PassNode.COLOR ? this.getTextureNode() : this.getLinearDepthNode();
 
 	}
 
@@ -119,7 +139,7 @@ class PassNode extends TempNode {
 
 		this._pixelRatio = renderer.getPixelRatio();
 
-		const size = renderer.getSize( new Vector2() );
+		const size = renderer.getSize( _size );
 
 		this.setSize( size.width, size.height );
 

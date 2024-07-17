@@ -2,15 +2,15 @@ import LightingNode from './LightingNode.js';
 import { NodeUpdateType } from '../core/constants.js';
 import { uniform } from '../core/UniformNode.js';
 import { addNodeClass } from '../core/Node.js';
-import { /*vec2,*/ vec3, vec4 } from '../shadernode/ShaderNode.js';
+import { vec3, vec4 } from '../shadernode/ShaderNode.js';
 import { reference } from '../accessors/ReferenceNode.js';
 import { texture } from '../accessors/TextureNode.js';
 import { positionWorld } from '../accessors/PositionNode.js';
 import { normalWorld } from '../accessors/NormalNode.js';
 import { WebGPUCoordinateSystem } from 'three';
-//import { add } from '../math/OperatorNode.js';
+import { mix } from '../math/MathNode.js';
 
-import { Color, DepthTexture, NearestFilter, LessCompare } from 'three';
+import { Color, DepthTexture, NearestFilter, LessCompare, NoToneMapping } from 'three';
 
 let overrideMaterial = null;
 
@@ -26,6 +26,7 @@ class AnalyticLightNode extends LightingNode {
 
 		this.rtt = null;
 		this.shadowNode = null;
+		this.shadowMaskNode = null;
 
 		this.color = new Color();
 		this._defaultColorNode = uniform( this.color );
@@ -50,6 +51,10 @@ class AnalyticLightNode extends LightingNode {
 
 	setupShadow( builder ) {
 
+		const { object } = builder;
+
+		if ( object.receiveShadow === false ) return;
+
 		let shadowNode = this.shadowNode;
 
 		if ( shadowNode === null ) {
@@ -63,7 +68,7 @@ class AnalyticLightNode extends LightingNode {
 			}
 
 			const shadow = this.light.shadow;
-			const rtt = builder.getRenderTarget( shadow.mapSize.width, shadow.mapSize.height );
+			const rtt = builder.createRenderTarget( shadow.mapSize.width, shadow.mapSize.height );
 
 			const depthTexture = new DepthTexture();
 			depthTexture.minFilter = NearestFilter;
@@ -78,10 +83,13 @@ class AnalyticLightNode extends LightingNode {
 
 			//
 
+			const shadowIntensity = reference( 'intensity', 'float', shadow );
 			const bias = reference( 'bias', 'float', shadow );
 			const normalBias = reference( 'normalBias', 'float', shadow );
 
-			let shadowCoord = uniform( shadow.matrix ).mul( positionWorld.add( normalWorld.mul( normalBias ) ) );
+			const position = object.material.shadowPositionNode || positionWorld;
+
+			let shadowCoord = uniform( shadow.matrix ).mul( position.add( normalWorld.mul( normalBias ) ) );
 			shadowCoord = shadowCoord.xyz.div( shadowCoord.w );
 
 			const frustumTest = shadowCoord.x.greaterThanEqual( 0 )
@@ -145,15 +153,17 @@ class AnalyticLightNode extends LightingNode {
 				textureCompare( depthTexture, shadowCoord.xy.add( vec2( 0, dy1 ) ), shadowCoord.z ),
 				textureCompare( depthTexture, shadowCoord.xy.add( vec2( dx1, dy1 ) ), shadowCoord.z )
 			).mul( 1 / 17 );
-			*/
+			 */
 			//
 
 			const shadowColor = texture( rtt.texture, shadowCoord );
+			const shadowMaskNode = frustumTest.mix( 1, shadowNode.mix( shadowColor.a.mix( 1, shadowColor ), 1 ) );
 
 			this.rtt = rtt;
-			this.colorNode = this.colorNode.mul( frustumTest.mix( 1, shadowNode.mix( shadowColor.a.mix( 1, shadowColor ), 1 ) ) );
+			this.colorNode = this.colorNode.mul( mix( 1, shadowMaskNode, shadowIntensity ) );
 
 			this.shadowNode = shadowNode;
+			this.shadowMaskNode = shadowMaskNode;
 
 			//
 
@@ -173,7 +183,7 @@ class AnalyticLightNode extends LightingNode {
 	updateShadow( frame ) {
 
 		const { rtt, light } = this;
-		const { renderer, scene } = frame;
+		const { renderer, scene, camera } = frame;
 
 		const currentOverrideMaterial = scene.overrideMaterial;
 
@@ -182,7 +192,9 @@ class AnalyticLightNode extends LightingNode {
 		rtt.setSize( light.shadow.mapSize.width, light.shadow.mapSize.height );
 
 		light.shadow.updateMatrices( light );
+		light.shadow.camera.layers.mask = camera.layers.mask;
 
+		const currentToneMapping = renderer.toneMapping;
 		const currentRenderTarget = renderer.getRenderTarget();
 		const currentRenderObjectFunction = renderer.getRenderObjectFunction();
 
@@ -197,11 +209,14 @@ class AnalyticLightNode extends LightingNode {
 		} );
 
 		renderer.setRenderTarget( rtt );
+		renderer.toneMapping = NoToneMapping;
 
 		renderer.render( scene, light.shadow.camera );
 
 		renderer.setRenderTarget( currentRenderTarget );
 		renderer.setRenderObjectFunction( currentRenderObjectFunction );
+
+		renderer.toneMapping = currentToneMapping;
 
 		scene.overrideMaterial = currentOverrideMaterial;
 
@@ -212,6 +227,7 @@ class AnalyticLightNode extends LightingNode {
 		this.rtt.dispose();
 
 		this.shadowNode = null;
+		this.shadowMaskNode = null;
 		this.rtt = null;
 
 		this.colorNode = this._defaultColorNode;
