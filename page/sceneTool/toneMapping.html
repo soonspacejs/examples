@@ -49,10 +49,7 @@
         ssp.setToneMapping(params);
       };
 
-      gui
-        .add(params, 'type')
-        .options(['Reinhard', 'Cineon', 'ACESFilmic'])
-        .onChange(changeHandle);
+      gui.add(params, 'type').options(['None', 'Reinhard', 'Cineon', 'ACESFilmic']).onChange(changeHandle);
 
       gui.add(params, 'exposure', 0, 2).onChange(changeHandle);
     </script>
