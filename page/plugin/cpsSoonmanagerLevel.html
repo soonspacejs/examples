@@ -54,8 +54,10 @@
         },
       });
 
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
-        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(
+        CpsSoonmanagerPlugin,
+        'cpsSoonmanagerPlugin'
+      ));
 
       cpsSoonmanagerPlugin.setPath('../../assets/sceneData/cps/智慧园区');
 
@@ -68,34 +70,39 @@
           cpsSoonmanagerPlugin.loadScene({
             loadTargetId: '8M626VCDV6N6',
             loadLevel: 1,
+            asId: 'id',
           });
         },
         '2F': () => {
           cpsSoonmanagerPlugin.loadScene({
             loadTargetId: '8M626VCDV6N8',
             loadLevel: 1,
+            asId: 'id',
           });
         },
         '3F': () => {
           cpsSoonmanagerPlugin.loadScene({
             loadTargetId: '8M626VCDV6NA',
             loadLevel: 1,
+            asId: 'id',
           });
         },
         '4F': () => {
           cpsSoonmanagerPlugin.loadScene({
             loadTargetId: '8M626VCDV6N9',
             loadLevel: 1,
+            asId: 'id',
           });
         },
         '5F': () => {
           cpsSoonmanagerPlugin.loadScene({
             loadTargetId: '8M626VCDV6N7',
             loadLevel: 1,
+            asId: 'id',
           });
         },
         加载全部: () => {
-          cpsSoonmanagerPlugin.loadScene();
+          cpsSoonmanagerPlugin.loadScene({ asId: 'id' });
         },
         清空: () => {
           ssp.getAllModel().forEach((model) => ssp.removeObject(model));

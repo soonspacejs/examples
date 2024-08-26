@@ -44,17 +44,17 @@
 
       ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
 
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
-        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(
+        CpsSoonmanagerPlugin,
+        'cpsSoonmanagerPlugin'
+      ));
 
-      cpsSoonmanagerPlugin.setPath(
-        '../../assets/sceneData/cps/养正-建模-首层平面图讯维视图'
-      );
+      cpsSoonmanagerPlugin.setPath('../../assets/sceneData/cps/养正-建模-首层平面图讯维视图');
 
       /**
        * 加载场景
        */
-      await cpsSoonmanagerPlugin.loadScene();
+      await cpsSoonmanagerPlugin.loadScene({ asId: 'id' });
 
       /**
        * 加载拓扑路径数据

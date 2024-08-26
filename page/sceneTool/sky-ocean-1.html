@@ -75,7 +75,7 @@
         'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDO0R1vcfWt4v2SoWDdODBA6NoMhRW1jBXta5AJNCRcIhdipCDni/ef23Vnqop2Cjbb8G3iMm62tuZn47RXeKRs1/41kuQL2/Vhra2kdenJIQ5txNxUReRtrsih/seOnU/vpNmSZcX8l/iWPmwp5ERFHosYXqnpEsyMaw/8Z7npSQIDAQAB'
       );
       cpsSoonmanagerPlugin.setPath('../../assets/sceneData/上海长江大桥demo_导入');
-      await cpsSoonmanagerPlugin.loadScene();
+      await cpsSoonmanagerPlugin.loadScene({ asId: 'id' });
 
       // 动画播放
       const animationsData = await cpsSoonmanagerPlugin.fetchAnimationsData();

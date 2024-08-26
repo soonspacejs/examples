@@ -97,6 +97,7 @@
     cpsSoonmanagerPlugin.setPath(path);
     await cpsSoonmanagerPlugin.loadScene({
       loadFlowData: true,
+      asId: 'id'
     });
     await ssp.flyMainViewpoint(undefined, { duration: 0 });
 

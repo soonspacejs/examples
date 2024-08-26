@@ -60,20 +60,21 @@
       /**
        * load scene
        */
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
-        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(
+        CpsSoonmanagerPlugin,
+        'cpsSoonmanagerPlugin'
+      ));
 
       cpsSoonmanagerPlugin.setPath('../../assets/sceneData/2.0/东方之门0525');
 
-      await cpsSoonmanagerPlugin.loadScene();
+      await cpsSoonmanagerPlugin.loadScene({
+        asId: 'id',
+      });
 
       /**
        * 第一人称
        */
-      const firstPersonControls = ssp.registerPlugin(
-        FirstPersonControlsPlugin,
-        'firstPersonControls'
-      );
+      const firstPersonControls = ssp.registerPlugin(FirstPersonControlsPlugin, 'firstPersonControls');
 
       firstPersonControls.start({
         position: { x: 37, y: 5, z: 4 },

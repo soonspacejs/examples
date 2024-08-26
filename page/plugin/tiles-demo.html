@@ -58,18 +58,11 @@
 
       const tilesPlugin = ssp.registerPlugin(TilesPlugin, 'tilesPlugin');
 
-      const baseUrl =
-        'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles/杭州交规院';
+      const baseUrl = 'https://xunwweiresource.oss-cn-shenzhen.aliyuncs.com/3dtiles/杭州交规院';
 
-      const tiles = await tilesPlugin.loadTiles(
-        baseUrl + '/交规院1101块/tileset.json'
-      );
-      const tiles1 = await tilesPlugin.loadTiles(
-        baseUrl + '/交规院1022块/tileset.json'
-      );
-      const tiles2 = await tilesPlugin.loadTiles(
-        baseUrl + '/交规院1027块/tileset.json'
-      );
+      const tiles = await tilesPlugin.loadTiles(baseUrl + '/交规院1101块/tileset.json');
+      const tiles1 = await tilesPlugin.loadTiles(baseUrl + '/交规院1022块/tileset.json');
+      const tiles2 = await tilesPlugin.loadTiles(baseUrl + '/交规院1027块/tileset.json');
 
       window.tilesArr = [tiles, tiles1, tiles2];
 
@@ -110,14 +103,16 @@
       controls.camera.up.copy(up);
       controls.updateCameraUp();
 
-      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin =
-        ssp.registerPlugin(CpsSoonmanagerPlugin, 'cpsSoonmanagerPlugin'));
+      const cpsSoonmanagerPlugin = (window.cpsSoonmanagerPlugin = ssp.registerPlugin(
+        CpsSoonmanagerPlugin,
+        'cpsSoonmanagerPlugin'
+      ));
 
       cpsSoonmanagerPlugin.setPath(baseUrl + '/杭州交规院Scene');
       cpsSoonmanagerPlugin.setKey(
         'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOcXDr8lcaQcg5b6XSK4ov9//GTEynWkfalnawqQK5ngATR5sFastfaVQK7ISRNlsZ/trggyXZPTmBD3m+Uy2e6PtELOIhusie8n4xGjno2ZhRu5dB8IuzFyEDM05WwHNlUFJPKInVikyLzmW1wKO/j69PAnsULsHwcMVLb6pKmQIDAQAB'
       );
-      await cpsSoonmanagerPlugin.loadScene({ needsModelsBoundsTree: false });
+      await cpsSoonmanagerPlugin.loadScene({ needsModelsBoundsTree: false, asId: 'id' });
       // await ssp.computeModelsBoundsTree();
       // const modelGroup = await ssp.loadModel({
       //   id: 'test-opt',
@@ -126,17 +121,8 @@
 
       const [modelGroup] = ssp.getObjectByName('编组1');
 
-      modelGroup.position.set(
-        ...[-2763238.779194681, 4758145.7093269, 3214945.9224052825]
-      );
-      modelGroup.rotation.set(
-        ...[
-          -2.6640808767967856,
-          -0.25157887271232854,
-          2.6848083784246044,
-          'XYZ',
-        ]
-      );
+      modelGroup.position.set(...[-2763238.779194681, 4758145.7093269, 3214945.9224052825]);
+      modelGroup.rotation.set(...[-2.6640808767967856, -0.25157887271232854, 2.6848083784246044, 'XYZ']);
 
       // 重置中心点
       // ssp.signals.click.add((event) => {
@@ -178,9 +164,7 @@
 
       ssp.signals.sceneRendered.add(() => {
         const totalLoaded =
-          tiles.lruCache.itemList.length -
-          tiles.parseQueue.items.length -
-          tiles.downloadQueue.items.length;
+          tiles.lruCache.itemList.length - tiles.parseQueue.items.length - tiles.downloadQueue.items.length;
 
         const { calls, triangles } = ssp.viewport.renderer.info.render;
         infoEl.innerText =
