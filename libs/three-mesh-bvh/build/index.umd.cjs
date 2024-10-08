@@ -89,10 +89,10 @@
 	//                      g1 = [16, 40]           g2 = [41, 60]
 	//
 	// we would need four BVH roots: [0, 15], [16, 20], [21, 40], [41, 60].
-	function getFullGeometryRange( geo ) {
+	function getFullGeometryRange( geo, range ) {
 
 		const triCount = getTriCount( geo );
-		const drawRange = geo.drawRange;
+		const drawRange = range ? range : geo.drawRange;
 		const start = drawRange.start / 3;
 		const end = ( drawRange.start + drawRange.count ) / 3;
 
@@ -105,18 +105,18 @@
 
 	}
 
-	function getRootIndexRanges( geo ) {
+	function getRootIndexRanges( geo, range ) {
 
 		if ( ! geo.groups || ! geo.groups.length ) {
 
-			return getFullGeometryRange( geo );
+			return getFullGeometryRange( geo, range );
 
 		}
 
 		const ranges = [];
 		const rangeBoundaries = new Set();
 
-		const drawRange = geo.drawRange;
+		const drawRange = range ? range : geo.drawRange;
 		const drawRangeStart = drawRange.start / 3;
 		const drawRangeEnd = ( drawRange.start + drawRange.count ) / 3;
 		for ( const group of geo.groups ) {
@@ -147,16 +147,10 @@
 
 	}
 
-	function hasGroupGaps( geometry ) {
-
-		if ( geometry.groups.length === 0 ) {
-
-			return false;
-
-		}
+	function hasGroupGaps( geometry, range ) {
 
 		const vertexCount = getTriCount( geometry );
-		const groups = getRootIndexRanges( geometry )
+		const groups = getRootIndexRanges( geometry, range )
 			.sort( ( a, b ) => a.offset - b.offset );
 
 		const finalGroup = groups[ groups.length - 1 ];
@@ -249,7 +243,7 @@
 		let triangleBounds;
 		if ( target === null ) {
 
-			triangleBounds = new Float32Array( triCount * 6 * 4 );
+			triangleBounds = new Float32Array( triCount * 6 );
 			offset = 0;
 			count = triCount;
 
@@ -1179,10 +1173,10 @@
 
 			bvh._indirectBuffer = generateIndirectBuffer( geometry, options.useSharedArrayBuffer );
 
-			if ( hasGroupGaps( geometry ) && ! options.verbose ) {
+			if ( hasGroupGaps( geometry, options.range ) && ! options.verbose ) {
 
 				console.warn(
-					'MeshBVH: Provided geometry contains groups that do not fully span the vertex contents while using the "indirect" option. ' +
+					'MeshBVH: Provided geometry contains groups or a range that do not fully span the vertex contents while using the "indirect" option. ' +
 					'BVH may incorrectly report intersections on unrendered portions of the geometry.'
 				);
 
@@ -1199,7 +1193,7 @@
 		const BufferConstructor = options.useSharedArrayBuffer ? SharedArrayBuffer : ArrayBuffer;
 
 		const triangleBounds = computeTriangleBounds( geometry );
-		const geometryRanges = options.indirect ? getFullGeometryRange( geometry ) : getRootIndexRanges( geometry );
+		const geometryRanges = options.indirect ? getFullGeometryRange( geometry, options.range ) : getRootIndexRanges( geometry, options.range );
 		bvh._roots = geometryRanges.map( range => {
 
 			const root = buildTree( bvh, triangleBounds, range.offset, range.count, options );
@@ -2843,6 +2837,8 @@
 
 	}
 
+	const IS_GT_REVISION_169 = parseInt( three.REVISION ) >= 169;
+
 	// Ripped and modified From THREE.js Mesh raycast
 	// https://github.com/mrdoob/three.js/blob/0aa87c999fe61e216c1133fba7a95772b503eddf/src/objects/Mesh.js#L115
 	const _vA = /* @__PURE__ */ new three.Vector3();
@@ -2896,6 +2892,9 @@
 
 		if ( intersection ) {
 
+			const barycoord = new three.Vector3();
+			three.Triangle.getBarycoord( _intersectionPoint, _vA, _vB, _vC, barycoord );
+
 			if ( uv ) {
 
 				_uvA.fromBufferAttribute( uv, a );
@@ -2943,6 +2942,12 @@
 
 			intersection.face = face;
 			intersection.faceIndex = a;
+
+			if ( IS_GT_REVISION_169 ) {
+
+				intersection.barycoord = barycoord;
+
+			}
 
 		}
 
@@ -3052,6 +3057,10 @@
 
 		}
 
+		// extract barycoord
+		const barycoord = target && target.barycoord ? target.barycoord : new three.Vector3();
+		three.Triangle.getBarycoord( point, tempV1, tempV2, tempV3, barycoord );
+
 		// extract uvs
 		let uv = null;
 		if ( uvs ) {
@@ -3079,6 +3088,7 @@
 			three.Triangle.getNormal( tempV1, tempV2, tempV3, target.face.normal );
 
 			if ( uv ) target.uv = uv;
+			target.barycoord = barycoord;
 
 			return target;
 
@@ -3092,7 +3102,8 @@
 					materialIndex: materialIndex,
 					normal: three.Triangle.getNormal( tempV1, tempV2, tempV3, new three.Vector3() )
 				},
-				uv: uv
+				uv: uv,
+				barycoord: barycoord,
 			};
 
 		}
@@ -4856,7 +4867,7 @@
 			// iterate over the second set of roots
 			for ( let j = 0, jl = otherRoots.length; j < jl; j ++ ) {
 
-				_bufferStack2.setBuffer( otherRoots[ i ] );
+				_bufferStack2.setBuffer( otherRoots[ j ] );
 
 				result = _traverse(
 					0, 0, matrixToLocal, invMat, intersectsRanges,
@@ -5133,6 +5144,7 @@
 		onProgress: null,
 		indirect: false,
 		verbose: true,
+		range: null
 	};
 
 	class MeshBVH {
@@ -5645,6 +5657,8 @@
 	}
 
 	const boundingBox = /* @__PURE__ */ new three.Box3();
+	const matrix = /* @__PURE__ */ new three.Matrix4();
+
 	class MeshBVHRootHelper extends three.Object3D {
 
 		get isMesh() {
@@ -5662,6 +5676,13 @@
 		get isLine() {
 
 			return this.displayEdges;
+
+		}
+
+		getVertexPosition( ...args ) {
+
+			// implement this function so it works with Box3.setFromObject
+			return three.Mesh.prototype.getVertexPosition.call( this, ...args );
 
 		}
 
@@ -5889,6 +5910,7 @@
 			this.bvh = bvh;
 			this.displayParents = false;
 			this.displayEdges = true;
+			this.objectIndex = 0;
 			this._roots = [];
 
 			const edgeMaterial = new three.LineBasicMaterial( {
@@ -5916,7 +5938,21 @@
 
 		update() {
 
-			const bvh = this.bvh || this.mesh.geometry.boundsTree;
+			const mesh = this.mesh;
+			let bvh = this.bvh || mesh.geometry.boundsTree || null;
+			if ( mesh.isBatchedMesh && mesh.boundsTrees && ! bvh ) {
+
+				// get the bvh from a batchedMesh if not provided
+				// TODO: we should have an official way to get the geometry index cleanly
+				const drawInfo = mesh._drawInfo[ this.objectIndex ];
+				if ( drawInfo ) {
+
+					bvh = mesh.boundsTrees[ drawInfo.geometryIndex ] || bvh;
+
+				}
+
+			}
+
 			const totalRoots = bvh ? bvh._roots.length : 0;
 			while ( this._roots.length > totalRoots ) {
 
@@ -5970,6 +6006,14 @@
 
 					this.matrix
 						.copy( mesh.matrixWorld );
+
+				}
+
+				// handle batched and instanced mesh bvhs
+				if ( mesh.isInstancedMesh || mesh.isBatchedMesh ) {
+
+					mesh.getMatrixAt( this.objectIndex, matrix );
+					this.matrix.multiply( matrix );
 
 				}
 
@@ -6333,13 +6377,106 @@
 
 	}
 
+	const IS_REVISION_166 = parseInt( three.REVISION ) >= 166;
 	const ray = /* @__PURE__ */ new three.Ray();
 	const direction = /* @__PURE__ */ new three.Vector3();
 	const tmpInverseMatrix = /* @__PURE__ */ new three.Matrix4();
 	const origMeshRaycastFunc = three.Mesh.prototype.raycast;
+	const origBatchedRaycastFunc = three.BatchedMesh.prototype.raycast;
 	const _worldScale = /* @__PURE__ */ new three.Vector3();
+	const _mesh = /* @__PURE__ */ new three.Mesh();
+	const _batchIntersects = [];
 
 	function acceleratedRaycast( raycaster, intersects ) {
+
+		if ( this.isBatchedMesh ) {
+
+			acceleratedBatchedMeshRaycast.call( this, raycaster, intersects );
+
+		} else {
+
+			acceleratedMeshRaycast.call( this, raycaster, intersects );
+
+		}
+
+	}
+
+	function acceleratedBatchedMeshRaycast( raycaster, intersects ) {
+
+		if ( this.boundsTrees ) {
+
+			const boundsTrees = this.boundsTrees;
+			const drawInfo = this._drawInfo;
+			const drawRanges = this._drawRanges;
+			const matrixWorld = this.matrixWorld;
+
+			_mesh.material = this.material;
+			_mesh.geometry = this.geometry;
+
+			const oldBoundsTree = _mesh.geometry.boundsTree;
+			const oldDrawRange = _mesh.geometry.drawRange;
+
+			if ( _mesh.geometry.boundingSphere === null ) {
+
+				_mesh.geometry.boundingSphere = new three.Sphere();
+
+			}
+
+			// TODO: provide new method to get instances count instead of 'drawInfo.length'
+			for ( let i = 0, l = drawInfo.length; i < l; i ++ ) {
+
+				if ( ! this.getVisibleAt( i ) ) {
+
+					continue;
+
+				}
+
+				// TODO: use getGeometryIndex
+				const geometryId = drawInfo[ i ].geometryIndex;
+
+				_mesh.geometry.boundsTree = boundsTrees[ geometryId ];
+
+				this.getMatrixAt( i, _mesh.matrixWorld ).premultiply( matrixWorld );
+
+				if ( ! _mesh.geometry.boundsTree ) {
+
+					this.getBoundingBoxAt( geometryId, _mesh.geometry.boundingBox );
+					this.getBoundingSphereAt( geometryId, _mesh.geometry.boundingSphere );
+
+					const drawRange = drawRanges[ geometryId ];
+					_mesh.geometry.setDrawRange( drawRange.start, drawRange.count );
+
+				}
+
+				_mesh.raycast( raycaster, _batchIntersects );
+
+				for ( let j = 0, l = _batchIntersects.length; j < l; j ++ ) {
+
+					const intersect = _batchIntersects[ j ];
+					intersect.object = this;
+					intersect.batchId = i;
+					intersects.push( intersect );
+
+				}
+
+				_batchIntersects.length = 0;
+
+			}
+
+			_mesh.geometry.boundsTree = oldBoundsTree;
+			_mesh.geometry.drawRange = oldDrawRange;
+			_mesh.material = null;
+			_mesh.geometry = null;
+
+		} else {
+
+			origBatchedRaycastFunc.call( this, raycaster, intersects );
+
+		}
+
+	}
+
+	function acceleratedMeshRaycast( raycaster, intersects ) {
 
 		if ( this.geometry.boundsTree ) {
 
@@ -6348,7 +6485,7 @@
 			tmpInverseMatrix.copy( this.matrixWorld ).invert();
 			ray.copy( raycaster.ray ).applyMatrix4( tmpInverseMatrix );
 
-			extractMatrixScale( this.matrixWorld, _worldScale );
+			_worldScale.setFromMatrixScale( this.matrixWorld );
 			direction.copy( ray.direction ).multiply( _worldScale );
 
 			const scaleFactor = direction.length();
@@ -6389,7 +6526,7 @@
 
 	}
 
-	function computeBoundsTree( options ) {
+	function computeBoundsTree( options = {} ) {
 
 		this.boundsTree = new MeshBVH( this, options );
 		return this.boundsTree;
@@ -6402,15 +6539,82 @@
 
 	}
 
-	// https://github.com/mrdoob/three.js/blob/dev/src/math/Matrix4.js#L732
-	// extracting the scale directly is ~3x faster than using "decompose"
-	function extractMatrixScale( matrix, target ) {
+	function computeBatchedBoundsTree( index = - 1, options = {} ) {
 
-		const te = matrix.elements;
-		const sx = target.set( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
-		const sy = target.set( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
-		const sz = target.set( te[ 8 ], te[ 9 ], te[ 10 ] ).length();
-		return target.set( sx, sy, sz );
+		if ( ! IS_REVISION_166 ) {
+
+			throw new Error( 'BatchedMesh: Three r166+ is required to compute bounds trees.' );
+
+		}
+
+		if ( options.indirect ) {
+
+			console.warn( '"Indirect" is set to false because it is not supported for BatchedMesh.' );
+
+		}
+
+		options = {
+			...options,
+			indirect: false,
+			range: null
+		};
+
+		const drawRanges = this._drawRanges;
+		const geometryCount = this._geometryCount;
+		if ( ! this.boundsTrees ) {
+
+			this.boundsTrees = new Array( geometryCount ).fill( null );
+
+		}
+
+		const boundsTrees = this.boundsTrees;
+		while ( boundsTrees.length < geometryCount ) {
+
+			boundsTrees.push( null );
+
+		}
+
+		if ( index < 0 ) {
+
+			for ( let i = 0; i < geometryCount; i ++ ) {
+
+				options.range = drawRanges[ i ];
+				boundsTrees[ i ] = new MeshBVH( this.geometry, options );
+
+			}
+
+			return boundsTrees;
+
+		} else {
+
+			if ( index < drawRanges.length ) {
+
+				options.range = drawRanges[ index ];
+				boundsTrees[ index ] = new MeshBVH( this.geometry, options );
+
+			}
+
+			return boundsTrees[ index ] || null;
+
+		}
+
+	}
+
+	function disposeBatchedBoundsTree( index = - 1 ) {
+
+		if ( index < 0 ) {
+
+			this.boundsTrees.fill( null );
+
+		} else {
+
+			if ( index < this.boundsTree.length ) {
+
+				this.boundsTrees[ index ] = null;
+
+			}
+
+		}
 
 	}
 
@@ -8186,7 +8390,9 @@ struct BVH {
 	exports.UIntVertexAttributeTexture = UIntVertexAttributeTexture;
 	exports.VertexAttributeTexture = VertexAttributeTexture;
 	exports.acceleratedRaycast = acceleratedRaycast;
+	exports.computeBatchedBoundsTree = computeBatchedBoundsTree;
 	exports.computeBoundsTree = computeBoundsTree;
+	exports.disposeBatchedBoundsTree = disposeBatchedBoundsTree;
 	exports.disposeBoundsTree = disposeBoundsTree;
 	exports.estimateMemoryInBytes = estimateMemoryInBytes;
 	exports.getBVHExtremes = getBVHExtremes;

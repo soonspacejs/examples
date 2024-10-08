@@ -30,6 +30,8 @@ Casting 500 rays against an 80,000 polygon model at 60fps!
 
 [BVH options inspector](https://gkjohnson.github.io/three-mesh-bvh/example/bundle/inspector.html)
 
+[BatchedMesh Raycasting](https://gkjohnson.github.io/three-mesh-bvh/example/bundle/batchedMesh.html)
+
 **Tools**
 
 [Sculpting](https://gkjohnson.github.io/three-mesh-bvh/example/bundle/sculpt.html)
@@ -73,35 +75,40 @@ Casting 500 rays against an 80,000 polygon model at 60fps!
 Using pre-made functions
 
 ```js
-// Import via ES6 modules
 import * as THREE from 'three';
-import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
-
-// Or UMD
-const { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } = window.MeshBVHLib;
-
+import {
+	computeBoundsTree, disposeBoundsTree,
+	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+} from 'three-mesh-bvh';
 
 // Add the extension functions
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
+THREE.BatchedMesh.prototype.computeBoundsTree = computeBatchedBoundsTree;
+THREE.BatchedMesh.prototype.disposeBoundsTree = disposeBatchedBoundsTree;
+THREE.BatchedMesh.prototype.raycast = acceleratedRaycast;
+
 // Generate geometry and associated BVH
-const geom = new THREE.TorusKnotBufferGeometry( 10, 3, 400, 100 );
+const geom = new THREE.TorusKnotGeometry( 10, 3, 400, 100 );
 const mesh = new THREE.Mesh( geom, material );
 geom.computeBoundsTree();
+
+// Or generate BatchedMesh and associated BVHs
+const batchedMesh = new THREE.BatchedMesh( ... );
+const geomId = batchedMesh.addGeometry( geom );
+const instId = batchedMesh.addGeometry( geom );
+
+// Generate bounds tree for sub geometry
+batchedMesh.computeBoundsTree( geomId );
 ```
 
 Or manually building the BVH
 
 ```js
-// Import via ES6 modules
 import * as THREE from 'three';
 import { MeshBVH, acceleratedRaycast } from 'three-mesh-bvh';
-
-// Or UMD
-const { MeshBVH, acceleratedRaycast } = window.MeshBVHLib;
-
 
 // Add the raycast function. Assumes the BVH is available on
 // the `boundsTree` variable
@@ -173,7 +180,7 @@ geometry.boundsTree.refit();
 ## Serialization and Deserialization
 
 ```js
-const geometry = new KnotBufferGeometry( 1, 0.5, 40, 10 );
+const geometry = new KnotGeometry( 1, 0.5, 40, 10 );
 const bvh = new MeshBVH( geometry );
 const serialized = MeshBVH.serialize( bvh );
 
@@ -192,7 +199,7 @@ import { GenerateMeshBVHWorker } from 'three-mesh-bvh/src/workers/GenerateMeshBV
 
 // ...
 
-const geometry = new KnotBufferGeometry( 1, 0.5, 40, 10 );
+const geometry = new KnotGeometry( 1, 0.5, 40, 10 );
 const worker = new GenerateMeshBVHWorker();
 worker.generate( geometry ).then( bvh => {
 
@@ -208,7 +215,7 @@ import { ParallelMeshBVHWorker } from 'three-mesh-bvh/src/workers/ParallelMeshBV
 
 // ...
 
-const geometry = new KnotBufferGeometry( 1, 0.5, 40, 10 );
+const geometry = new KnotGeometry( 1, 0.5, 40, 10 );
 const worker = new ParallelMeshBVHWorker();
 worker.generate( geometry ).then( bvh => {
 
@@ -348,11 +355,15 @@ Constructs the bounds tree for the given geometry and produces a new index attri
     // structure and the index buffer (or lack thereof) is retained. This can be used
     // when the existing index layout is important or groups are being used so a
     // single BVH hierarchy can be created to improve performance.
-    // Note: This setting is experimental
+    // Note: This setting is experimental.
     indirect: false,
 
     // Print out warnings encountered during tree construction.
     verbose: true,
+
+    // If given, the MeshBVH will be computed for the given range on the geometry.
+    // If not specified, geometry.drawRange is used.
+    range: { start: number, count: number }
 
 }
 ```
@@ -641,6 +652,14 @@ displayEdges = true : Boolean
 
 If true displays the bounds as edges other displays the bounds as solid meshes.
 
+### .objectIndex
+
+```js
+objectIndex = 0 : Number
+```
+
+When using an `InstancedMesh` or a `BatchedMesh` this refers to the item index to use for the BVH and / or matrix transformation to use.
+
 ### .edgeMaterial
 
 ```js
@@ -830,10 +849,10 @@ If the `Raycaster` member `firstHitOnly` is set to true then the [.acceleratedRa
 ### .computeBoundsTree
 
 ```js
-computeBoundsTree( options : Object ) : void
+computeBoundsTree( options? : Object ) : void
 ```
 
-A pre-made BufferGeometry extension function that builds a new BVH, assigns it to `boundsTree`, and applies the new index buffer to the geometry. Comparable to `computeBoundingBox` and `computeBoundingSphere`.
+A pre-made BufferGeometry extension function that builds a new BVH, assigns it to `boundsTree` for BufferGeometry, and applies the new index buffer to the geometry. Comparable to `computeBoundingBox` and `computeBoundingSphere`.
 
 ```js
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
@@ -849,6 +868,30 @@ A BufferGeometry extension function that disposes of the BVH.
 
 ```js
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+```
+
+### .computeBatchedBoundsTree
+
+```js
+computeBatchedBoundsTree( index = - 1 : Number, options? : Object ) : void
+```
+
+Equivalent of `computeBoundsTree` for BatchedMesh. Calling this generates a `BatchedMesh.boundsTrees` array if it doesn't exist and assigns the newly generated BVHs. If `index` is -1 then BVHs for all available geometry are generated. Otherwise only the BVH for the geometry at the given index is generated.
+
+```js
+THREE.BatchedMesh.prototype.computeBoundsTree = computeBatchedBoundsTree;
+```
+
+### .disposeBatchedBoundsTree
+
+```js
+disposeBatchedBoundsTree( index = - 1 : Number, options? : Object ) : void
+```
+
+Equivalent of `disposeBoundsTree` for BatchedMesh. Calling this sets entries in `BatchedMesh.boundsTrees` array to null. If `index` is -1 then BVHs are disposed. Otherwise only the BVH for the geometry at the given index is disposed.
+
+```js
+THREE.BatchedMesh.prototype.disposeBoundsTree = disposeBatchedBoundsTree;
 ```
 
 ### .acceleratedRaycast
