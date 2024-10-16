@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-effect": "../../libs/soonspacejs/plugins/effect.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from 'soonspacejs';
+      import EffectPlugin from '@soonspacejs/plugin-effect';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+        },
+        events: {
+          selectPosition(pos) {
+            console.log(pos);
+          },
+        },
+      }));
+
+      const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
+
+      const smoke = effectPlugin.createSmoke2({
+        id: 'smoke2',
+        position: { x: 0, y: -20, z: 0 },
+        scale: {
+          x: 5,
+          y: 5,
+          z: 5,
+        },
+        radius: 2,
+        maxSize: 80,
+        maxLife: 30,
+        rate: 20,
+      });
+
+      const flame = effectPlugin.createFlame({
+        id: 'testFlame',
+        position: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+      });
+
+      const { controls } = ssp;
+
+      controls.dolly(1000, true);
+      controls.rotatePolarTo(Math.PI / 2, true);
+    </script>
+  </body>
+</html>

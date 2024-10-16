@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <video id="video" loop hidden autoplay muted src="../../assets/video/poi3D.mp4"></video>
+    <div id="view"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import SoonSpace from '../../libs/soonspacejs/index.js';
+      import DragControlsPlugin from '../../libs/soonspacejs/plugins/drag-controls.js';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showGrid: true,
+        },
+        events: {
+          selectPosition(position) {
+            // console.log(position);
+          },
+          modelClick(p) {
+            // console.log(p);
+          },
+        },
+      }));
+
+      const model = await ssp.loadModel({
+        id: 'room_test1',
+        url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
+        position: {
+          x: 120,
+          y: 0,
+          z: 0,
+        },
+        scale: {
+          x: 0.1,
+          y: 0.1,
+          z: 0.1,
+        },
+      });
+
+      const videoDom = document.getElementById('video');
+      await videoDom.play();
+
+      const poiMesh = ssp.createPoiMesh({
+        id: 'poiMesh1',
+        image: videoDom,
+        width: 100,
+        height: 100,
+      });
+      poiMesh.position.x = -100;
+
+      // 注册插件
+      const dragControlsPlugin = ssp.registerPlugin(DragControlsPlugin, 'dragControlsPlugin');
+
+      dragControlsPlugin.start({
+        objects: [poiMesh, model],
+        drag(object) {
+          console.log(object);
+        },
+        dragStart(object) {
+          console.log(object);
+        },
+        dragEnd(object) {
+          console.log(object);
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -500,6 +500,10 @@ export default [
         demoLink: './page/plugin/effect.html',
       },
       {
+        title: '火焰烟雾',
+        demoLink: './page/plugin/flameSmoke.html',
+      },
+      {
         title: '特效：粒子簇',
         demoLink: './page/plugin/particle.html',
       },
@@ -570,6 +574,10 @@ export default [
       {
         title: '模型爆炸拆分（objects）',
         demoLink: './page/plugin/modelBlast-objects.html',
+      },
+      {
+        title: '拖拽模型',
+        demoLink: './page/plugin/dragControls.html',
       },
       {
         title: '测量',
