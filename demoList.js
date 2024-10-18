@@ -504,6 +504,10 @@ export default [
         demoLink: './page/plugin/flameSmoke.html',
       },
       {
+        title: '火焰烟雾2',
+        demoLink: './page/plugin/flameSmoke2.html',
+      },
+      {
         title: '特效：粒子簇',
         demoLink: './page/plugin/particle.html',
       },

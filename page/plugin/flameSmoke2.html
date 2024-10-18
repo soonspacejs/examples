@@ -23,6 +23,7 @@
       }
     </script>
     <script type="module">
+      import { AdditiveBlending } from 'three';
       import SoonSpace from 'soonspacejs';
       import EffectPlugin from '@soonspacejs/plugin-effect';
 
@@ -39,36 +40,44 @@
         },
       }));
 
+      ssp.setCameraViewpoint({
+        position: {
+          x: 12.119629869927795,
+          y: 7.098982539461048,
+          z: 11.312157737446435,
+        },
+        target: {
+          x: -0.5779524714447183,
+          y: 2.576060203418034,
+          z: -0.7549461834230933,
+        },
+        zoom: 1,
+      });
+
       const effectPlugin = ssp.registerPlugin(EffectPlugin, 'effectPlugin');
 
-      const smoke = effectPlugin.createSmoke2({
+      const fire2 = effectPlugin.createSmoke2({
+        id: 'fire2',
+        position: { x: 0, y: 0, z: 0 },
+        imgUrl: '../../assets/img/fire.png',
+        maxSize: 10,
+        maxLife: 2.5,
+        rate: 50,
+        colors: ['#fff', '#ff8080'],
+        blending: AdditiveBlending,
+      });
+      // fire2.scale.setScalar(2);
+
+      const smoke2 = effectPlugin.createSmoke2({
         id: 'smoke2',
-        position: { x: 0, y: -20, z: 0 },
-        scale: {
-          x: 5,
-          y: 5,
-          z: 5,
-        },
-        radius: 2,
-        maxSize: 80,
-        maxLife: 30,
-        rate: 20,
-        // colors: ['#000', '#f00'],
+        position: { x: 0, y: 0, z: 0 },
+        radius: 1,
+        maxSize: 10,
+        maxLife: 10,
+        // rate: 50,
+        // colors: ['#fff', '#fff'],
+        blending: AdditiveBlending,
       });
-
-      const flame = effectPlugin.createFlame({
-        id: 'testFlame',
-        position: {
-          x: 0,
-          y: 0,
-          z: 0,
-        },
-      });
-
-      const { controls } = ssp;
-
-      controls.dolly(1000, true);
-      controls.rotatePolarTo(Math.PI / 2, true);
     </script>
   </body>
 </html>
