@@ -40,6 +40,7 @@
         },
       }));
 
+      // model
       const model = await ssp.loadModel({
         id: 'room_test1',
         url: '../../assets/model/sbm/changjing02/changjing02_1F_0.sbm',
@@ -55,9 +56,9 @@
         },
       });
 
+      // poimesh
       const videoDom = document.getElementById('video');
       await videoDom.play();
-
       const poiMesh = ssp.createPoiMesh({
         id: 'poiMesh1',
         image: videoDom,
@@ -66,11 +67,35 @@
       });
       poiMesh.position.x = -100;
 
+      // poinode
+      const el = document.createElement('div');
+      el.innerHTML = '<div>一段文字</div>';
+      el.style.fontSize = '3rem';
+      el.style.color = '#fff';
+      el.style.backgroundColor = '#000';
+      const poiNode = ssp.createPoiNode({
+        type: '3d',
+        element: el,
+        elementAutoDisplay: false,
+        id: '2dtest',
+        name: '2dtest',
+        position: {
+          x: 30,
+          y: 11,
+          z: -32,
+        },
+        userData: {},
+        occlude: { x: 0, y: 0, z: 1 },
+        onChange(visible) {
+          console.log(visible);
+          el.style.opacity = visible ? 1 : 0.1;
+        },
+      });
+
       // 注册插件
       const dragControlsPlugin = ssp.registerPlugin(DragControlsPlugin, 'dragControlsPlugin');
 
-      dragControlsPlugin.start({
-        objects: [poiMesh, model],
+      dragControlsPlugin.start([model, poiMesh, poiNode], {
         drag(object) {
           console.log(object);
         },
