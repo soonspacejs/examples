@@ -6405,9 +6405,10 @@
 
 		if ( this.boundsTrees ) {
 
+			// TODO: remove use of geometry info, instance info when r170 is minimum version
 			const boundsTrees = this.boundsTrees;
-			const drawInfo = this._drawInfo;
-			const drawRanges = this._drawRanges;
+			const drawInfo = this._drawInfo || this._instanceInfo;
+			const drawRanges = this._drawRanges || this._geometryInfo;
 			const matrixWorld = this.matrixWorld;
 
 			_mesh.material = this.material;
@@ -6559,7 +6560,7 @@
 			range: null
 		};
 
-		const drawRanges = this._drawRanges;
+		const drawRanges = this._drawRanges || this._geometryInfo;
 		const geometryCount = this._geometryCount;
 		if ( ! this.boundsTrees ) {
 

@@ -1,9 +1,11 @@
 import {
 	Color,
 	Mesh,
-	Vector3
-} from 'three';
-import { Fn, NodeMaterial, add, cameraPosition, div, normalize, positionWorld, sub, timerLocal, texture, vec2, vec3, vec4, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix } from 'three/tsl';
+	Vector3,
+	NodeMaterial
+} from 'three/webgpu';
+
+import { Fn, add, cameraPosition, div, normalize, positionWorld, sub, time, texture, vec2, vec3, vec4, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix } from 'three/tsl';
 
 /**
  * Work based on :
@@ -36,19 +38,19 @@ class WaterMesh extends Mesh {
 
 		// TSL
 
-		const timeNode = timerLocal();
-
 		const getNoise = Fn( ( [ uv ] ) => {
 
-			const uv0 = add( div( uv, 103 ), vec2( div( timeNode, 17 ), div( timeNode, 29 ) ) ).toVar();
-			const uv1 = div( uv, 107 ).sub( vec2( div( timeNode, - 19 ), div( timeNode, 31 ) ) ).toVar();
-			const uv2 = add( div( uv, vec2( 8907.0, 9803.0 ) ), vec2( div( timeNode, 101 ), div( timeNode, 97 ) ) ).toVar();
-			const uv3 = sub( div( uv, vec2( 1091.0, 1027.0 ) ), vec2( div( timeNode, 109 ), div( timeNode, - 113 ) ) ).toVar();
+			const offset = time;
 
-			const sample0 = this.waterNormals.uv( uv0 );
-			const sample1 = this.waterNormals.uv( uv1 );
-			const sample2 = this.waterNormals.uv( uv2 );
-			const sample3 = this.waterNormals.uv( uv3 );
+			const uv0 = add( div( uv, 103 ), vec2( div( offset, 17 ), div( offset, 29 ) ) ).toVar();
+			const uv1 = div( uv, 107 ).sub( vec2( div( offset, - 19 ), div( offset, 31 ) ) ).toVar();
+			const uv2 = add( div( uv, vec2( 8907.0, 9803.0 ) ), vec2( div( offset, 101 ), div( offset, 97 ) ) ).toVar();
+			const uv3 = sub( div( uv, vec2( 1091.0, 1027.0 ) ), vec2( div( offset, 109 ), div( offset, - 113 ) ) ).toVar();
+
+			const sample0 = this.waterNormals.sample( uv0 );
+			const sample1 = this.waterNormals.sample( uv1 );
+			const sample2 = this.waterNormals.sample( uv2 );
+			const sample3 = this.waterNormals.sample( uv3 );
 
 			const noise = sample0.add( sample1 ).add( sample2 ).add( sample3 );
 
@@ -74,7 +76,7 @@ class WaterMesh extends Mesh {
 
 			const distance = length( worldToEye );
 
-			const distortion = surfaceNormal.xy.mul( float( 0.001 ).add( float( 1.0 ).div( distance ) ) ).mul( this.distortionScale );
+			const distortion = surfaceNormal.xz.mul( float( 0.001 ).add( float( 1.0 ).div( distance ) ) ).mul( this.distortionScale );
 
 			const mirrorSampler = reflector();
 			mirrorSampler.uvNode = mirrorSampler.uvNode.add( distortion );
