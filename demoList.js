@@ -269,10 +269,6 @@ export default [
         demoLink: './page/sceneTool/SSAO.html',
       },
       {
-        title: '空间反射',
-        demoLink: './page/sceneTool/SSR.html',
-      },
-      {
         title: '泛光',
         demoLink: './page/sceneTool/bloom.html',
       },
