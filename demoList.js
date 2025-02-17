@@ -432,6 +432,10 @@ export default [
         demoLink: './page/plugin/cpsScheme.html',
       },
       {
+        title: '大气环境',
+        demoLink: './page/plugin/atmosphere.html',
+      },
+      {
         title: '导航插件',
         demoLink: './page/plugin/navigation.html',
       },
