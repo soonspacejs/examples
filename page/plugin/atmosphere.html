@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoonSpace Example</title>
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+  </head>
+
+  <body>
+    <div id="view" style="width: 100vw; height: 100vh"></div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "../../libs/three/build/three.module.js",
+          "three/": "../../libs/three/",
+          "three/addons/": "../../libs/three/examples/jsm/",
+          "three/examples/": "../../libs/three/examples/",
+          "three-mesh-bvh": "../../libs/three-mesh-bvh/build/index.module.js",
+          "postprocessing": "../../libs/postprocessing/build/index.js",
+          "soonspacejs": "../../libs/soonspacejs/index.js",
+          "@soonspacejs/plugin-atmosphere": "../../libs/soonspacejs/plugins/atmosphere.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+      import SoonSpace from 'soonspacejs';
+      import AtmospherePlugin from '@soonspacejs/plugin-atmosphere';
+
+      const ssp = (window.ssp = new SoonSpace({
+        el: '#view',
+        options: {
+          showInfo: true,
+          showViewHelper: true,
+        },
+      }));
+
+      ssp.setModelDracoDecoderPath('../../libs/soonspacejs/draco/');
+
+      const model = await ssp.loadModel({
+        id: 'model',
+        url: '../../assets/model/gltf/sports-center.glb',
+      });
+      await ssp.flyToObj(model, 'back');
+      await ssp.render();
+
+      const box = model.getBoundingBox();
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const length = size.length();
+
+      const atmospherePlugin = ssp.registerPlugin(AtmospherePlugin, 'atmospherePlugin');
+      atmospherePlugin.distance = length;
+      atmospherePlugin.target.copy(center);
+      atmospherePlugin.start('../../assets/atmosphere');
+      atmospherePlugin.date.setHours(8);
+      window.atmospherePlugin = atmospherePlugin;
+
+      const render = () => ssp.render();
+
+      const gui = new GUI();
+
+      const location = gui.addFolder('location');
+      location.add(atmospherePlugin, 'longitude', -180, 180).name('经度').onChange(render);
+      location.add(atmospherePlugin, 'latitude', -90, 90).name('纬度').onChange(render);
+      location.add(atmospherePlugin, 'altitude', 0, 50000).name('高度').onChange(render);
+      location.open();
+
+      const localDate = gui.addFolder('local date');
+      const localDateParams = {
+        month: atmospherePlugin.date.getMonth() + 1,
+        day: atmospherePlugin.date.getDate(),
+        hours: atmospherePlugin.date.getHours(),
+      };
+      localDate
+        .add(localDateParams, 'month', 1, 12, 1)
+        .name('月份')
+        .onChange((v) => {
+          atmospherePlugin.date.setMonth(v - 1);
+          render();
+        });
+      localDate
+        .add(localDateParams, 'day', 1, 31, 1)
+        .name('日期')
+        .onChange((v) => {
+          atmospherePlugin.date.setDate(v);
+          render();
+        });
+      localDate
+        .add(localDateParams, 'hours', 0, 24, 0.01)
+        .name('时刻')
+        .onChange((v) => {
+          const miutes = (v % 1) * 60;
+          const seconds = (miutes % 1) * 60;
+          atmospherePlugin.date.setHours(~~v, ~~miutes, ~~seconds);
+          render();
+        });
+      localDate.open();
+    </script>
+  </body>
+</html>
